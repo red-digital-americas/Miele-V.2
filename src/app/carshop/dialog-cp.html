@@ -1,0 +1,68 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<form #ibsfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="col-md-12" style="text-align:center">
+    <h3 style="height:20px">Servicos Home Program y Certificados</h3>
+    <div class="box-body" style="width:600px; ">
+      <div class="example-container mat-elevation-z2" id="marco1">
+        <div class="input-group col-xs-12">
+          <span>
+            Al capturar el código postal se calcularán automáticamente los costos de los servicios
+          </span>
+          <div class="col-md-12">
+            <mat-form-field class="full-width" style="text-align:center; width:40%;">
+              <input maxlength="5" minlength="5" type="number" matInput name="hpcp" id="hpcp" [disabled]="deshabilitaCP"
+                     [(ngModel)]="cod_p" placeholder="Codigo Postal" (keydown)="ActualizaCP($event)" required>
+            </mat-form-field>
+          </div>
+          <div *ngIf="hp.id>0" class="form-group col-md-12" style="height:80px">
+            <div class="col-md-12" style="color:#A5000D;"><strong>{{hp.nombre}}</strong></div>
+            <!--<div class="row">-->
+            <div class="form-group col-md-7">
+              <strong>Estados de servicio</strong><br />{{hp.descripcion_corta}}<br />
+            </div>
+            <div class="form-group col-md-5">
+              <strong>Precio IVA Incluido</strong><br /> <strong>{{hp.precio_con_iva | currency }}</strong>
+            </div>
+            <div class="form-group col-md-12">
+              <mat-divider></mat-divider>
+            </div>
+            <!--</div>-->
+          </div>
+          <div class="col-md-12"><span><strong style="color:#A5000D;" *ngIf="lista_detalle.certificados_.length>0">Certificados incluidos</strong></span></div>
+          <div class="form-group col-md-12" style="width:100%; padding-right:10px; height:85px; overflow-y:auto;" *ngIf="lista_detalle.certificados_.length>0">
+            <div class="col-md-12" *ngFor="let certificado of lista_detalle.certificados_; let i = index;">
+              <div style="text-align:left;">{{certificado.nombre}} <strong style="text-align:right; float:right">{{certificado.cantidad}}</strong></div>
+            </div>
+          </div>
+          <div class="form-group col-md-12" style="width:100%" *ngIf="lista_detalle.certificados_.length>0">
+            <div style="text-align:left; font-size:14px;"> Costo de viaticos:<strong style="float:right;">{{lista_detalle.costo_viaticos <  0 ? 0 : lista_detalle.costo_viaticos | currency}}</strong></div>
+            <div style="text-align:left; font-size:14px;"> Costo de mano de obra: <strong style="float:right;">{{lista_detalle.costo_labor | currency}}</strong></div>
+            <div style="text-align:left; font-size:14px;"> Costo de refacciones y consumibles: <strong style="float:right;">{{lista_detalle.costo_consumibles | currency}}</strong></div>
+            <div style="height:30px; vertical-align:central; text-align:left; font-size:15px; border-top:2px solid; border-color:#A5000D;"> Total Certificados (IVA incliudo): <strong style="float:right;">{{(lista_detalle.costo_viaticos <  0 ? 0 : lista_detalle.costo_viaticos) + lista_detalle.costo_labor + lista_detalle.costo_consumibles | currency}}</strong></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="form-group col-md-12 justify-content-between" style="text-align:left">
+      <div class="btn-group" style="padding-right:15px;">
+        <button [mat-dialog-close]="0" style="" class="pull-center btn btn-default" (click)="onOmitir()">
+          Cancelar
+        </button>
+      </div>
+      <div class="btn-group" style="padding-right:15px;">
+        <button *ngIf="hp.id>0" [disabled]="deshabilita" style="background-color: #A5000D; color: #fff; border-color: #A5000D;" class="pull-center btn btn-default btn-default-rojo" (click)="AgregarServicios(0);">
+          Agrega Home Program&nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button [disabled]="deshabilita" style="background-color: #A5000D; color: #fff; border-color: #A5000D;" class="pull-center btn btn-default btn-default-rojo" (click)="AgregarServicios(1);">
+        Agrega Certificados&nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i>
+      </button>
+      <button *ngIf="hp.id>0" [disabled]="deshabilita" style="float:right; background-color: #A5000D; color: #fff; border-color: #A5000D;" class="pull-center btn btn-default" (click)="AgregarServicios(2);">
+        Agrega Todo&nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i>
+      </button>
+    </div>
+
+  </div>
+</form>

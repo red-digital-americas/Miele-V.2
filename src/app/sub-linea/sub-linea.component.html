@@ -1,0 +1,119 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #subLineaForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Detalle de Sub linea</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" id="sublinea_descripcion"
+                         name="sublinea_descripcion" [(ngModel)]="sublinea.descripcion"
+                         #sublinea_descripcion="ngModel"
+                         placeholder="Descripcion de la sub linea" required>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-4">
+                <div class="input-append">
+                  <mat-form-field class="full-width">
+
+                    <mat-select [disabled]="false"
+                                placeholder="Linea"
+                                name="sublinea_id_linea_producto_"
+                                id="promocion_id_tipos_herencia_promo"
+                                #promocion_id_tipos_herencia_promo_="ngModel"
+                                [(ngModel)]="sublinea.id_linea_producto" required>
+
+                      <mat-option *ngFor="let line of this.lines" [value]="line.id">
+                        {{ line.descripcion }}
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+
+                  <!--<div class="text-right">
+                    <button class="pull-center btn btn-default" (click)="addLine();">Añadir Linea</button>
+                  </div>-->
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+
+                <mat-checkbox id="linea_estatus" name="linea_estatus" *ngIf="sublinea.id!= 0"
+                              [(ngModel)]="sublinea.estatus"
+                              #linea_estatus_="ngModel">
+                  Activo
+                </mat-checkbox>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Lista de categorias</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+              <div class="col-xs-12 text-right">
+                <button class="pull-center btn btn-default btn-default-rojo" (click)="nuevCategoria();">Agregar Categoria</button>
+                <br />
+              </div>
+              <table class="table table-striped sortable">
+                <thead>
+                  <tr>
+                    <th>Numero de Técnicos</th>
+                    <th>Horas Técnicos</th>
+                    <th>Precio de Visita</th>
+                    <th>Precio Hora Técnico</th>
+                    <th>Tipo de Servicio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of categorias  let i = index" (click)="openCategoriasDialog(item)">
+                    <td align="center">{{item.no_tecnicos}}</td>
+                    <td align="center">{{item.horas_tecnicos}}</td>
+                    <td align="center">{{item.precio_visita | currency}}</td>
+                    <td align="center">{{item.precio_hora_tecnico | currency}}</td>
+                    <td align="center">{{item.servicio}}</td>
+
+                  </tr>
+                </tbody>
+              </table>
+
+
+            </div>
+          </div>
+
+          <div class="col-xs-12 text-right">
+            <button class="pull-center btn btn-default" (click)="goBack();">Regresar</button> &nbsp;&nbsp;&nbsp;&nbsp;
+            <button [disabled]="" class="pull-center btn btn-default btn-default-rojo" (click)="saveChanges(subLineaForm.valid);">Guardar</button>
+            <br />
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+

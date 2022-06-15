@@ -1,0 +1,445 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #promocionForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Información general del Producto</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" id="producto_nombre" name="producto_nombre" [(ngModel)]="prod.nombre" #producto_nombre_="ngModel" placeholder="Nombre del producto" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+                  <input matInput type="text" id="producto_sku" name="producto_sku" [(ngModel)]="prod.sku" #producto_sku_="ngModel" placeholder="SKU del producto" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+                  <input matInput type="text"
+                         id="modelo" name="modelo"
+                         [(ngModel)]="prod.modelo"
+                         #modelo_="ngModel"
+                         placeholder="Modelo" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+                  <mat-select [disabled]="false"
+                              placeholder="Tipo"
+                              name="tipo"
+                              id="tipo"
+                              #tipo="ngModel"
+                              [(ngModel)]="prod.tipoID" required>
+
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                      {{ type.descripcion }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-4">
+                <div class="input-append">
+                  <mat-form-field class="full-width">
+                    <mat-select [disabled]="false"
+                                (change)="lineChange(prod.lienaID)"
+                                placeholder="Linea"
+                                name="promocion_id_tipos_herencia_promo"
+                                id="promocion_id_tipos_herencia_promo"
+                                #promocion_id_tipos_herencia_promo_="ngModel"
+                                [(ngModel)]="prod.lienaID" required>
+                      <mat-option *ngFor="let line of this.lines" [value]="line.id">
+                        {{ line.descripcion }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-append" *ngIf="prod.lienaID != 0">
+                  <mat-form-field class="full-width" *ngIf="subLines.length > 0">
+                    <mat-select [disabled]="false"
+                                placeholder="Sublinea"
+                                name="product-subline"
+                                id="product-subline"
+                                #productSubline="ngModel"
+                                [(ngModel)]="prod.subLineaID" required>
+                      <mat-option *ngFor="let sline of subLines" [value]="sline.id">
+                        {{ sline.descripcion }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <!--<div class="text-right" *ngIf = "prod.lienaID && prod.lienaID != 0 ">
+        <button  class="pull-center btn btn-default" (click)="addSubLine();">Añadir Sublinea</button>
+      </div>-->
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-append" *ngIf="prod.lienaID != 0">
+                  <mat-form-field class="full-width" *ngIf="subLines.length > 0">
+                    <mat-select [disabled]="false"
+                                placeholder="Caracteristica base"
+                                name="product-caracteristicab"
+                                id="product-caracteristicab"
+                                #caracteristicaBId="ngModel"
+                                [(ngModel)]="prod.caracteristicaBId" required>
+                      <mat-option *ngFor="let car of car_base" [value]="car.id">
+                        {{ car.descripcion }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <div class="text-right">
+                  <button *ngIf="permisos_edicion" class="btn btn-default btn-default-rojo" (click)="addLine();">
+                    Añadir Línea
+                    &nbsp;&nbsp;<i class="fa fa-sitemap"></i>
+                  </button>
+                </div>
+                <mat-form-field class="full-width" *ngIf="prod.categoria == 1000">
+                  <mat-select [disabled]="false"
+                              placeholder="Categoria"
+                              name="categoria"
+                              id="categproa"
+                              #categoria="ngModel"
+                              [(ngModel)]="prod.categoria" required>
+
+                    <mat-option *ngFor="let cat of categories" [value]="cat.id">
+                      {{ cat.descripcion }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Descripción</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea matInput type="text" id="descripcion_corta" name="descripcion_corta" [(ngModel)]="prod.descripcion" #producto_descripcion_corta="ngModel" placeholder="Descripción Corta" required></textarea>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea matInput type="textarea" id="descripcionLarga" name="descripcionLarga" [(ngModel)]="prod.descripcionLarga" #producto_descripcion_larga="ngModel" placeholder="Descripción Larga" style="height: 200px" required></textarea>
+                </mat-form-field>
+              </div>
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea matInput type="textarea" id="atributos_" name="atributos_" [(ngModel)]="prod.atributos" #atributos_="ngModel" placeholder="Atributos" style="height: 200px" required></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Imagenes</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+
+              <div class="imageGalery col-md-12">
+                <ul>
+                  <li *ngFor="let i of prod.imagenes" class='image-container'>
+                    <div class="area-photo">
+                      <button *ngIf="permisos_edicion" mat-mini-fab color="grey" class="buttonclose" [disabled]="preventAbuse" (click)="Elimina_img(i)">
+                        <p style="font-size: 18px;"><i class="fa fa-remove" aria-hidden="true" style="font-size: 20px; color:#A5000D"></i></p>
+                      </button>
+                      <a href="{{i.url}}" target="_blank">
+                        <img [attr.src]="i.url" class="image-product" [attr.id]="i.id" />
+
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <mat-divider class='col-md-12'></mat-divider><br>
+              <div class="form-group col-md-12 upload-image-form">
+                <input class="pull-center btn btn-default btn-default"
+                       style="float:left; padding-left: 0px; padding-right: 5px;"
+                       #fileInput multiple
+                       type="file"
+                       accept="image/*"
+                       (change)="prepareImages($event)" />
+
+                <button id="btncomp"
+                        name="btncomp"
+                        style="float:left;"
+                        type="submit"
+                        class="pull-center btn btn-default btn-default-rojo"
+                        (click)="addImages()"
+                        [disabled]="newImages.length == 0">
+                  Subir Imagenes
+                  <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!--productos relacionados-->
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Lista de productos relacionados</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+              <div class="col-xs-12 text-right">
+                <button class="pull-center btn btn-default btn-default-rojo" (click)="nuevoRelacionado();">Agregar producto</button>
+                <br />
+              </div>
+              <table class="table table-striped sortable">
+                <thead style="text-align:center; vertical-align:middle;">
+                  <tr>
+                    <th align="center">Nombre del producto</th>
+                    <th align="center">SKU</th>
+                    <th>Categoria</th>
+                    <th>Linea</th>
+                    <th>SubLinea</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of relacionados; let i = index">
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.sku}}</td>
+                    <td>{{item.categoria}}</td>
+                    <td>{{item.linea}}</td>
+                    <td>{{item.sublinea}}</td>
+                    <td>
+                      <button style="float:right; background-color: #A5000D;color: #fff; border-color: #A5000D"
+                              (click)="eliminaRelacionado(item.id_producto_2)" type="submit" class="pull-center btn btn-default btn-default-rojo">
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Información Adicional</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="box-body">
+
+              <!--- Precios-->
+              <div class="form-group col-md-6">
+                <mat-form-field class="full-width">
+                  <input matInput type="text"
+                         id="precio" name="precio"
+                         [(ngModel)]="prod.precio"
+                         currencyMask
+                         class="moneyInput"
+                         (keyup)="calculaIVA()"
+                         #precio="ngModel"
+                         placeholder="Precio" required>
+
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-6">
+                <mat-form-field class="full-width">
+                  <input matInput type="text"
+                         id="precioIVA" name="precioIVA"
+                         class="moneyInput"
+                         [(ngModel)]="prod.precioIVA"
+                         currencyMask
+                         disabled
+                         #precioIVA_="ngModel"
+                         placeholder="Precio con IVA" required>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-4">
+                <mat-checkbox id="instalacion" name="instalacion"
+                              [(ngModel)]="prod.instalacion"
+                              #instalacion_="ngModel" required>
+                  Requiere instalación
+                </mat-checkbox>
+              </div>
+              <div class="form-group col-md-4">
+                <mat-checkbox id="visible-partners" name="visible-partners"
+                              [(ngModel)]="prod.visiblePartners"
+                              #instalacion_="ngModel" required>
+                  Visible en Partners
+                </mat-checkbox>
+              </div>
+
+              <div class="form-group col-md-4">
+                <mat-form-field class="full-width" *ngIf="prod.categoria == 1000">
+                  <input matInput type="text"
+                         class="moneyInput"
+                         id="precioHora" name="precioHora"
+                         [(ngModel)]="prod.precioHora"
+                         currencyMask
+                         #precioHora_="ngModel"
+                         [style.text-align]="left"
+                         placeholder="Precio por HORA" required>
+                </mat-form-field>
+              </div>
+              <div class="form-group col-md-12 upload-image-form">
+                <span style=" clear: both; width: 100%; display: block; margin-bottom: 5px;" for="manualURL">Guia del Producto</span>
+                <div id="guiaForm" *ngIf="prod.guiaURL!=''">
+                  <div class="prod-enlace">
+                    <span class='link'><a [attr.href]="prod.guiaURL" [innerHTML]="prod.guiaURL" target="_blank"></a></span>
+                    <button id="guiabtn" name="guiabtn" style="float:left;" class="pull-center btn btn-default btn-default-rojo" (click)="clearOption('guiaURL')">
+                      cambiar
+                    </button>
+                  </div>
+                </div>
+                <div id="guiaForm" *ngIf="prod.guiaURL==''">
+                  <input class="pull-center btn btn-default btn-default"
+                         style="float:left; padding-left: 0px; padding-right: 5px;"
+                         #fileInput
+                         id="guiaProducto"
+                         name="guiaProducto"
+                         type="file"
+                         accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+    text/plain, application/pdf, image/*"
+                         (change)="prepareFile($event)" />
+
+                  <button id="btncomp"
+                          name="btncomp"
+                          style="float:left;"
+                          class="pull-center btn btn-default btn-default-rojo"
+                          (click)="uploadFile('guiaURL')"
+                          [disabled]="newImages.lenght == 0">
+                    Subir Guia
+                    <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group col-md-12 upload-image-form">
+                <span style=" clear: both; width: 100%; display: block; margin-bottom: 5px;" for="manualURL">Manual del Producto</span>
+                <div id="guiaForm" *ngIf="prod.manualURL!=''">
+                  <div class="prod-enlace">
+                    <span class='link'><a [attr.href]="prod.manualURL" [innerHTML]="prod.manualURL" target="_blank"></a></span>
+                    <button id="guiabtn" name="guiabtn" style="float:left;" class="pull-center btn btn-default btn-default-rojo" (click)="clearOption('manualURL')">
+                      cambiar
+                    </button>
+                  </div>
+                </div>
+                <div id="guiaForm" *ngIf="prod.manualURL==''">
+                  <input class="pull-center btn btn-default btn-default"
+                         style="float:left; padding-left: 0px; padding-right: 5px;"
+                         #fileInput
+                         id="guiaProducto"
+                         name="manualURL"
+                         type="file"
+                         accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+  text/plain, application/pdf, image/*"
+                         (change)="prepareFile($event)" />
+
+                  <button id="btncomp"
+                          name="btncomp"
+                          style="float:left;"
+                          class="pull-center btn btn-default btn-default-rojo"
+                          (click)="uploadFile('manualURL')"
+                          [disabled]="newImages.lenght == 0">
+                    Subir Manual
+                    <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group col-md-12 upload-image-form">
+                <span style=" clear: both; width: 100%; display: block; margin-bottom: 5px;" for="impresionURL">Impresion</span>
+                <div id="guiaForm" *ngIf="prod.impresionURL!=''">
+                  <div class="prod-enlace">
+                    <span class='link'><a [attr.href]="prod.impresionURL" [innerHTML]="prod.impresionURL" target="_blank"></a></span>
+                    <button id="guiabtn" name="guiabtn" style="float:left;" class="pull-center btn btn-default btn-default-rojo" (click)="clearOption('impresionURL')">
+                      cambiar
+                    </button>
+                  </div>
+                </div>
+                <div id="guiaForm" *ngIf="prod.impresionURL==''">
+                  <input class="pull-center btn btn-default btn-default"
+                         style="float:left; padding-left: 0px; padding-right: 5px;"
+                         #fileInput
+                         id="impresionProducto"
+                         name="impresionURL"
+                         type="file"
+                         accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+  text/plain, application/pdf, image/*"
+                         (change)="prepareFile($event)" />
+
+                  <button id="btncomp"
+                          name="btncomp"
+                          style="float:left;"
+                          class="pull-center btn btn-default btn-default-rojo"
+                          (click)="uploadFile('impresionURL')"
+                          [disabled]="newImages.lenght == 0">
+                    Impresión
+                    <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ends box body-->
+            </div>
+          </div>
+
+          <div class="col-xs-12 text-right">
+            <button style="float:left;" class="pull-center btn btn-default btn-default-rojo" (click)="goBack();">Regresar</button> &nbsp;&nbsp;&nbsp;&nbsp;
+            <button *ngIf="permisos_edicion" class="pull-center btn btn-default btn-default-rojo" (click)="saveChanges();">Guardar</button>
+            <br />
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>

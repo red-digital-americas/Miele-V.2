@@ -1,0 +1,54 @@
+
+  <form #promocionForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12"> 
+          
+          <h3>Nueva Linea</h3><br>
+          
+          <mat-form-field class="full-width">
+            <input matInput type="text" 
+                  id="linea_name" 
+                  name="linea_name" 
+                  [(ngModel)]="newProductLine.descripcion" 
+                  #linea_nombre="ngModel" 
+                  placeholder="Nombre de la Linea" required>          
+          </mat-form-field>
+
+  
+          <!-- mat-form-field class="full-width">
+
+            <mat-select [disabled]="false" 
+                        placeholder="Seleccionar Categoria" 
+                        name="catLine" 
+                        id="catLine" 
+                        #catLine_="ngModel" 
+                        [(ngModel)]="newProductLine.id_categoria" required>
+                        
+              <mat-option *ngFor="let cat of this.categories; trackBy: index;" [value]="cat.id">
+                {{ cat.descripcion }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field-->
+                
+               
+
+          <div>
+            <button class="pull-center btn btn-default" (click)="onNoClick();">Cancelar</button> 
+            <button [disabled]="newProductLine.descripcion == '' || newProductLine.id_categoria == 0 " 
+                    [class.btn-default-rojo] = "newProductLine.descripcion != '' && newProductLine.id_categoria != 0" 
+                    class="pull-right btn btn-default " 
+                    (click)="addLine();"> Añadir Linea</button> 
+          </div>
+          
+        </div>
+        
+      </div>
+
+      <div class="succes-overlay" *ngIf = "status == 'sent'">
+        <h3>Linea Añadida con éxito</h3>
+      </div>
+    </section>      
+  </form>
+
+  

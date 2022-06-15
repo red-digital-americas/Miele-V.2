@@ -1,0 +1,194 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #cotizacionfrm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="col xs-12 box-header with-border">
+              <div class="col-xs-6">
+                <h3 class="box-header negritas">Resumen de compra <i class="ion ion-ios-cart-outline" style="font-size:33px"></i></h3>
+              </div>
+              <div class="col-xs-6 text-right" style="padding-top:20px;">
+                <button  type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GotoAddProds()" style="margin-bottom: 5px;" >
+                  {{ preventAbuse ? 'Cargando...' : 'Agregar Productos' }} &nbsp; &nbsp; <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                </button>
+                <button style="margin-bottom: 5px;" type="submit" class="btn btn-default btn-default-rojo" (click)="openDialogConfirma()">
+                  {{ 'Vaciar Carrito' }} &nbsp; &nbsp; <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <button style="margin-bottom: 5px;" type="submit" class="btn btn-default btn-default-rojo" (click)="ToCreate()" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Cargando...' : 'Continuar ' }}&nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="box-body col-md-12">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h2 class="box-title negritas">Productos</h2>
+                      <button style="float:right" type="button" class="pull-center btn btn-default btn-default-rojo" (click)="openCPialog()">
+                        Agregar Servicios  &nbsp; &nbsp; <i class="fa fa-search-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="form-group col-md-12" style="padding-left:0px;">
+                      <mat-table #table [dataSource]="dataSource" style="padding-left:0px; max-height: 100%;">
+                        <ng-container matColumnDef="imagen" style="padding: 0 0px;">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass1'"> Producto </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass1'">
+                            <img *ngIf="element.cat_imagenes_producto[0].url" _ngcontent-c2="" class="img-responsive" src="{{element.cat_imagenes_producto[0].url}}" style="padding:0 0px;" onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="sku">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> SKU   </mat-header-cell>
+                          <mat-cell style="" *matCellDef="let element" [ngClass]="'customWidthClass0'"> {{element.sku}} </mat-cell>
+                        </ng-container>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="modelo">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Modelo </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.modelo}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="nombre">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass2'"> Nombre </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass2'">
+                            <label style="font-size: 12px; font-weight:400;">{{element.nombre}}</label>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="desccorta">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass2'"> Descripción </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass2'">
+                            <label style="font-size: 11px; font-weight:400;">{{element.descripcion_corta}}</label>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="cantidad">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Cantidad </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">
+                            <input *ngIf="element.id_sublinea != 113" min="1" max="99" class="form-control" type="number" id="cant_{{element.id}}" name="cant_{{element.id}}" (blur)="set_productos($event, row, i);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;" pattern="" [disabled]="element.agregado_automaticamente || element.es_regalo  || element.id == 388">
+                            <div *ngIf=" !element.agregado_automaticamente && !element.es_regalo && element.id != 388">
+                              <span *ngIf="element.id_sublinea == 113" style="font-size:12px;">3 Horas</span>
+                              <img id="del_{{element.id}}" name="del_{{element.id}}" src="..\assets\img\trash.png" style="cursor: pointer; width:17px; height:21px;" (click)="del_productos($event, row, i);">
+                            </div>
+                            <div *ngIf="element.id_sublinea == 113 && muestra_btn_addHP" (click)="AgregarHE(element.id)"><a style="text-decoration: underline; color:#A5000D; cursor: pointer;"><br /><i class="fa fa-plus-square" aria-hidden="true"></i> Horas Extra</a></div>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_precio_lista">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Precio Unitario </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.importe_precio_lista | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_total_bruto">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe Lista  </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.importe_total_bruto | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="descuento">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Descuento </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">{{element.descuento * element.cantidad | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importetotal">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe Cliente </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">
+                            <strong *ngIf="!element.es_regalo">{{element.importetotal | currency}}</strong>
+                            <img *ngIf="element.es_regalo" _ngcontent-c2="" class="img-responsive" src="/front/miele_partners/assets/img/regalo.png" style="width:30px; height:30px;">
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="margen_cc">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Margen CC </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">-{{element.margen_cc}}%</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_condiciones_com">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe CC </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"><strong>{{element.importe_condiciones_com | currency}}</strong></mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns" style="padding-left:0px;"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                      </mat-table>
+                      <br />
+                      <div class="form-group col-md-12" style="padding-left:0px;">
+                        <div class="form-group col-md-6" style="overflow:auto; padding-right:0; float:left; min-height:240px;">
+                          <label>Promociones aplicadas:</label>
+                          <br />
+                          <div [style.width]='180 * Promociones_disponibles.length +"px"' style="float:left; height:100%;" *ngIf="Promociones_disponibles.length > 0 ">
+                            <div *ngFor="let pm of Promociones_disponibles; let i = index" style="float:left; box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); height:187px; width:160px;margin-top:5px; margin-right:5px; padding:4px;">
+                              <div style="border-bottom: 1px solid red; padding-bottom:10px;">
+                                <p style="font-weight:bolder; font-size:12px; "><strong>{{pm.nombre}}</strong></p>
+                                <mat-checkbox *ngIf="cotizacion.Estatus < 3" style="font-size:11px;" name="_requiere_fact" [disabled]="preventAbuse || pm.beneficio_obligatorio" color="warn" [checked]="pm.aplicada" (click)="!preventAbuse && !pm.beneficio_obligatorio ? agregar_quitar_promocion(pm.id, pm.aplicada) : false">Aplicada</mat-checkbox>
+                                <span *ngIf="cotizacion.Estatus > 2 && pm.aplicada"><br /><i class="icon ion-ios-checkbox"></i> Aplicada</span>
+                                <span *ngIf="cotizacion.Estatus > 2 && !pm.aplicada"><br /><i class="icon ion-md-square-outline"></i> Aplicada</span>
+                                <p style="font-size: 10px;">
+                                  Vigencia hasta (mm/dd/aaaa):<br />
+                                  <label *ngIf="pm.vigencia_indefinida" style="font-size: 9px;">Indefinido</label>
+                                  <label *ngIf="!pm.vigencia_indefinida" style="font-size: 9px;">{{pm.fin}}</label>
+                                </p>
+                                <p style="padding-top:3px;">
+                                  <strong>
+                                    <span *ngIf="pm.beneficio_obligatorio" style="font-size:9px; color:red; float:left; padding-bottom:3px;"> Obligatoria </span>
+                                    <span *ngIf="!pm.beneficio_obligatorio" style="font-size:9px; float:left; padding-bottom:3px;"> Opcional </span>
+                                  </strong>
+                                </p>
+                              </div>
+                              <div style="padding-top:5px; max-width: 150px;">
+                                <p style="font-size: 9px; font-weight:600;">Beneficio: {{pm.beneficios}}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-6" style="border:none;">
+                          <!--<div style="text-align:right; float:right; padding-left:5px; padding-right:0px;" >
+                <strong>DETALLE COND. COMERCIALES</strong><br />
+                <strong>IMPORTE TOTAL: </strong> {{importe_condiciones_com + iva_condiciones_com | currency}}<br />
+                -----------------------------------------------<br />
+                <strong>Importe sin Iva: </strong> {{importe_precio_lista | currency}}<br />
+                <strong>Desc. Comercial: </strong>{{descuento_acumulado_cond_com | currency}}<br />
+                <strong>Sub Total: </strong> {{importe_precio_lista - descuento_acumulado_cond_com | currency}}<br />
+                <strong>Iva: </strong> {{iva_condiciones_com | currency}}<br />
+                ------------------------------------------------<br />
+                <strong>IMPORTE TOTAL: {{importe_condiciones_com + iva_condiciones_com| currency}}</strong><br />
+              </div>-->
+                          <div style="text-align:right; float:right;">
+                            <strong>DETALLE DEL IMPORTE</strong><br />
+                            <strong>IMPORTE TOTAL: </strong> {{importe_promociones + iva_promociones | currency}}<br />
+                            ------------------------------------------------<br />
+                            <strong>Importe sin Iva: </strong> {{importe_precio_lista | currency}}<br />
+                            <strong>Descuentos sin Iva: </strong>{{descuento_acumulado | currency}}<br />
+                            <strong>Sub Total: </strong> {{importe_precio_lista - descuento_acumulado | currency}}<br />
+                            <strong>Iva: </strong> {{iva_promociones | currency}}<br />
+                            ------------------------------------------------<br />
+                            <strong>IMPORTE TOTAL: {{importe_promociones + iva_promociones | currency}}</strong><br />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box-body col-md-12">
+              <div class="example-container">
+                <div class="col-md-12">
+                  <br />
+                  <div class="col-md-3 text-left">
+                    <button  type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GotoAddProds()" style="float:right;" >
+                      {{ preventAbuse ? 'Cargando...' : 'Agregar Productos' }} &nbsp; &nbsp; <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="col-md-3 text-left">
+                    <button  type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="openDialogConfirma()">
+                      {{ 'Vaciar Carrito' }} &nbsp; &nbsp; <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="ToCreate()" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Cargando...' : 'Continuar ' }}&nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

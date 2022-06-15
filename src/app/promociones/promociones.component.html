@@ -1,0 +1,156 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Buscar Promociones</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <button *ngIf="permisos_edicion" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="goTodetalle(0);" [disabled]="preventAbuse" style="margin-right:5px; float:right;">
+                Nueva promoción
+              </button>
+              <br /><br />
+                      <div class="form-group col-md-12">
+                        <mat-form-field class="full-width">
+                          <input matInput type="text" id="busqueda" (keyup)="doFilter($event.target.value)" name="busqueda" [(ngModel)]="text_busqueda" #busqueda="ngModel" placeholder="Buscar por: Nombre de promoción o Beneficio">
+                        </mat-form-field>
+                      </div>
+              <!--<div *ngIf="valid"
+                   class="alert alert-danger col-md-8">
+                <div>
+                  Escribe un parametro de busqueda.
+                </div>
+              </div>
+              <br />-->
+              <div class="col-xs-12" style="padding:0;">
+                <div class="form-group col-md-3" style="">
+                  <mat-form-field>
+                    <mat-select placeholder="Tipo Condicion" name="id_cat_tipo_condicion_" #_id_cat_tipo_condicion="ngModel" (change)="searchProduct();" [(ngModel)]="id_cat_tipo_condicion">
+                      <mat-option *ngFor="let condicion of tipos_concdicion" value="{{condicion.id}}">
+                        {{condicion.desc}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="form-group col-md-4">
+                  <input matInput id="rangofechas" [(ngModel)]="rangofechas" name="rangofechas" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Rango de Fechas aaaa/mm/dd" />
+                  <mat-icon matSuffix><i class="fa fa-calendar" aria-hidden="true"></i></mat-icon>
+                </div>
+
+                <div class="col-md-1" style="padding:0; text-align:right">
+                  <button type="submit" class="pull-center btn btn-default" (click)="verservicioForm.resetForm({});limpiar_controles();" [disabled]="preventAbuse" style="margin-right:5px; padding-left: 35px; padding-right:35px;">
+                    Limpiar
+                  </button>
+                </div>
+                <!--<div class="col-md-2" style="padding:0; text-align:right">
+
+  </div>-->
+              </div>
+              <div class="col-md-12">
+                <div class="col-xs-12" style="padding:0;">
+                  <div class="col-xs-12" style="padding:0;">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Promociones</h3>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12" style="padding:0;">
+                  <div class="example-container mat-elevation-z2">
+                    <mat-table #table [dataSource]="dataSource">
+                      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                      <!-- Position Column -->
+                      <ng-container matColumnDef="id">
+                        <mat-header-cell *matHeaderCellDef> Núm. </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.id}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="nombre">
+                        <mat-header-cell *matHeaderCellDef> Promocion </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.nombre}}</a>
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Symbol Column -->
+                      <ng-container matColumnDef="fecha_hora_inicio">
+                        <mat-header-cell *matHeaderCellDef> Fecha Inicio </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.fecha_hora_inicio}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                      <!-- Weight Column -->
+                      <ng-container matColumnDef="fecha_hora_fin">
+                        <mat-header-cell *matHeaderCellDef> Fecha Fin </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.fecha_hora_fin}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+
+                      <!-- Symbol Column -->
+                      <ng-container matColumnDef="tipo_beneficios">
+                        <mat-header-cell *matHeaderCellDef> Beneficio </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.tipo_beneficios}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="tipo_condicion">
+                        <mat-header-cell *matHeaderCellDef> Tipo condición </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.tipo_condicion}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="obligatoria">
+                        <mat-header-cell *matHeaderCellDef> Es obligatoria </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.obligatoria}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                      <ng-container matColumnDef="tipos_herencia_promo">
+                        <mat-header-cell *matHeaderCellDef> Tipo herencia </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="font-size:x-small;">
+                          <a style="cursor:pointer; color:inherit" [routerLink]="['/nuevapromocion', element.id]">{{element.tipos_herencia_promo}}</a>
+                        </mat-cell>
+                      </ng-container>
+
+                    </mat-table>
+
+                    <mat-paginator #paginator
+                                   [pageSize]="5"
+                                   [pageSizeOptions]="[5, 10]">
+                    </mat-paginator>
+                  </div>
+                </div>
+
+                <!--<div class="col-md-12" *ngIf="result_personas == 0 && result_direcciones == 0 && result_telefonos == 0 && result_ordenes == 0">
+                  <h4>No hay resultados para la busqueda <span style="color:#A5000D; font-weight:bold;">{{text_busqueda}}</span></h4>
+                </div>-->
+              </div>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

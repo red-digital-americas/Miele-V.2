@@ -1,0 +1,70 @@
+<form #categoriasForm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="box-body">
+    <div class="example-container mat-elevation-z2">
+      <div class="input-group col-xs-12">
+        <div class="box-header with-border">
+          <h3 class="box-title negritas">Edicion de Categorias</h3>
+        </div>
+        <div class="input-group col-xs-12">
+          <br />
+          <div class="form-group col-md-4" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="cat_no_tec" id="cat_no_tec" [(ngModel)]="ecategoria.no_tecnicos" placeholder="Numero de técnicos" value="" required>
+            </mat-form-field>
+
+          </div>
+          <div class="form-group col-md-4" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="cat_horas_tecnicos" id="cat_horas_tecnicos" [(ngModel)]="ecategoria.horas_tecnicos" placeholder="Horas técnico" value="" required>
+            </mat-form-field>
+
+          </div>
+          <div class="form-group col-md-4" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="cat_precio_visita" id="cat_precio_visita" [(ngModel)]="ecategoria.precio_visita" placeholder="Precio por visita" value="" required>
+            </mat-form-field>
+
+          </div>
+        </div>
+        
+
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-6" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="cat_precio_hora_tecnico" id="cat_precio_hora_tecnico" [(ngModel)]="ecategoria.precio_hora_tecnico" placeholder="Precio por Hora técnico" value="" required>
+            </mat-form-field>
+
+          </div>
+          <div class="form-group col-md-6" style="">
+            <mat-form-field class="full-width">
+
+              <mat-select [disabled]="false"
+                          placeholder="Tipo de Servicio"
+                          name="cat_id_tipo_servicio"
+                          id="cat_id_tipo_servicio"
+                          #cat_id_tipo_servicio="ngModel"
+                          [(ngModel)]="ecategoria.id_tipo_servicio" required>
+
+                <mat-option *ngFor="let item of tipos" [value]="item.id">
+                  {{ item.desc_tipo_servicio }}
+                </mat-option>
+              </mat-select>
+
+            </mat-form-field>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+  <div mat-dialog-actions>
+    <button style="float:right; background-color: #A5000D;color: #fff; border-color: #A5000D" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GuardarSolcitar(categoriasForm.valid)">
+      Guardar
+    </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="onNoClick()">
+      Cancelar
+    </button>
+  </div>
+</form>

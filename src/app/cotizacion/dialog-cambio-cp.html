@@ -1,0 +1,29 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<form #ibsfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="col-md-12" style="text-align:center">
+    <h3 style="height:20px">Confirmacion cambios</h3>
+    <div class="box-body" style="width:100%; ">
+      <div class="example-container mat-elevation-z2" style="height:150px">
+        <div class="form-group col-md-12">
+          <span>
+            El código postal capturado no coincide con los servicios Home Program y Certificados de mantenimiento de esta cotización, desea actualizarlos de acuerdo al nuevo domicilio?
+          </span>
+        </div>
+        <div class="form-group col-md-12"></div>
+        <div class="input-group col-md-12">
+          <div class="form-group col-md-6" style="float:;">
+            <button class="pull-center btn btn-default" (click)="onOmitir();">
+              Cancelar
+            </button>
+          </div>
+          <div class="form-group col-md-6">
+            <button style="background-color: #A5000D; color: #fff; border-color: #A5000D;" class="pull-center btn btn-default btn-default-rojo" (click)="ActualizarServicios();">
+              Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>

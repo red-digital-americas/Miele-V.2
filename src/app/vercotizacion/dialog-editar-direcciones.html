@@ -1,0 +1,306 @@
+<form #direccionesnfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="box-body">
+    <!-- Dirección de Envío -->
+    <div class="example-container mat-elevation-z2">
+      <div class="input-group col-xs-12">
+        <div class="box-header with-border">
+          <h3 class="box-title negritas">Confirmar dirección de Envío</h3>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-3 col-sm-6" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput maxlength="5" [textMask]="{mask: maskcp, guide: false}" name="CP_env" id="CP_env" (keydown)="getDireccionPorCP_env(0);" [(ngModel)]="dir_en.cp" placeholder="Código Postal" value="" required>
+              <mat-hint *ngIf="dir_en.cp" align="end">{{dir_en.cp.length}} / 5</mat-hint>
+            </mat-form-field>
+            <div *ngIf="(dir_en.cp == null || dir_en.cp == ''); " class="alert alert-danger">
+              CP Requerido.
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Estado_env" name="Id_Estado_env" [(ngModel)]="dir_en.id_estado" #tipoproducto="ngModel" placeholder="Estado" required>
+                  <mat-option *ngFor="let estado of estados_en" [value]="estado.id">
+                    {{estado.desc_estado}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_en.id_estado == null || dir_en.id_estado ==0); " class="alert alert-danger">
+                Estado Requerido.
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Dele_env" name="Id_Dele_env" [(ngModel)]="dir_en.id_municipio" #tipoproducto="ngModel" placeholder="Delegación" required>
+                  <mat-option *ngFor="let mun of Municipios_Env" [value]="mun.id_municipio">
+                    {{mun.municipio}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_en.id_municipio == null || dir_en.id_municipio == 0); " class="alert alert-danger">
+                Delegación Requerida.
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Localidad" name="Id_Localidad" [(ngModel)]="dir_en.id_localidad" #tipoproducto="ngModel" placeholder="Localidad" required>
+                  <mat-option *ngFor="let local of Localidades_Env" [value]="local.id_localidad">
+                    {{local.localidad}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_en.id_localidad == null || dir_en.id_localidad == 0); " class="alert alert-danger">
+                Delegación Requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-2 col-sm-4" style="">
+            <mat-form-field class="example-full-width" style="">
+              <mat-select id="_prefijo_env" name="_prefijo_env" #_prefijo_env="ngModel" [(ngModel)]="dir_en.id_prefijo_calle" placeholder="Prefijo Calle">
+                <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                  {{prefijo.prefijo}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="">
+            <mat-form-field class="example-full-width" style="">
+              <input matInput #Calle_env="ngModel" (ngModelChange)="validar_prefijos_env(dir_en.calle_numero);" name="Calle_env" id="Calle_env" [(ngModel)]="dir_en.calle_numero" placeholder="Calle" value="" required>
+            </mat-form-field>
+            <div *ngIf="(dir_en.calle_numero == null || dir_en.calle_numero == ''); " class="alert alert-danger">
+              Calle Inst. Requerida.
+            </div>
+            <div *ngIf="!Calle_env_valido" class="alert alert-danger">
+              Capture la calle sin prefijos.
+            </div>
+          </div>
+          <div class="form-group col-md-2 col-sm-2" style="">
+            <mat-form-field class="example-full-width" style="">
+              <input matInput name="Ext_env" id="Ext_env" [(ngModel)]="dir_en.numExt" placeholder="Núm Ext." value="" required>
+            </mat-form-field>
+            <div *ngIf=" (dir_en.numExt == null || dir_en.numExt == ''); " class="alert alert-danger">
+              Núm Ext. Requerido.
+            </div>
+          </div>
+          <div class="form-group col-md-2 col-sm-3" style="">
+            <mat-form-field class="example-full-width" style="">
+              <input matInput name="Int_env" id="Int_env" [(ngModel)]="dir_en.numInt" placeholder="Núm Int." value="">
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="_nombre_env" id="_nombre_env" #_nombre_env="ngModel"
+                     [(ngModel)]="dir_en.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+            </mat-form-field>
+            <div *ngIf="(dir_en.nombrecontacto == null || dir_en.nombrecontacto == ''); " class="alert alert-danger">
+              Contacto Requerido.
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="telefono_env" id="telefono_env" [textMask]="{mask: mask, guide: false}" PhoneValidator
+                     [(ngModel)]="dir_en.telefono" #telefono_env="ngModel" placeholder="Télefono Fijo" value="" required>
+            </mat-form-field>
+            <div *ngIf="telefono_env.errors?.Vacio && telefono_env.touched" class="alert alert-danger">
+              Teléfono Requerido.
+            </div>
+            <div *ngIf="telefono_env.errors?.LongitudMinima && telefono_env.touched" class="alert alert-danger">
+              Formato inválido.
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-4" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="telefono_movil_env" id="telefono_movil_env" [textMask]="{mask: mask, guide: false}" PhoneValidator
+                     [(ngModel)]="dir_en.telefono_movil" #telefono_movil_env="ngModel" placeholder="Télefono Cel." value="" required>
+            </mat-form-field>
+            <div *ngIf="telefono_movil_env.errors?.Vacio && telefono_movil_env.touched" class="alert alert-danger">
+              Celular Requerido.
+            </div>
+            <div *ngIf="telefono_movil_env.errors?.LongitudMinima && telefono_movil_env.touched" class="alert alert-danger">
+              Formato inválido.
+            </div>
+          </div>
+          <div class="form-group col-md-3 col-sm-4" style="">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker1" (dateChange)="asignarFecha_env()" [formControl]="date" name="_Fec_env" id="_Fec_env" placeholder="mm/dd/aaaa Fecha de Envío" required>
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <label *ngIf="!f_envio_valida;" style="color:darkred;">
+              Margen mínimo 120 días.
+            </label>
+            <label *ngIf="!fechas_validas;" style="color:darkred;">
+              La fecha de envío requiere ser previa a la de instalación.
+            </label>
+          </div>
+          <div class="form-group col-md-3 col-sm-6" style="">
+            <button style="padding:5px; background-color: #A5000D; color: #fff; border-color: #A5000D" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="replicarDireccion();"> Copiar en instalación
+              <i class="fa fa-paste" aria-hidden="true" style="font-size: 21px;"></i>
+            </button>
+          </div>
+        </div>
+        <!--<div class="input-group col-xs-12">
+
+        </div>-->
+      </div>
+    </div>
+    <!-- Dirección de Instalación -->
+    <div class="example-container mat-elevation-z2">
+      <div class="input-group col-xs-12">
+        <div class="box-header with-border">
+          <h3 class="box-title negritas">Confirmar dirección de Instalación</h3>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput maxlength="5" [textMask]="{mask: maskcp, guide: false}" name="CP_ins" id="CP_ins" (keydown)="getDireccionPorCP(0);" [(ngModel)]="dir_ins.cp" placeholder="Código Postal" value="" required>
+              <mat-hint *ngIf="dir_ins.cp" align="end">{{dir_ins.cp.length}} / 5</mat-hint>
+            </mat-form-field>
+            <div *ngIf="(dir_ins.cp == null || dir_ins.cp == '')" class="alert alert-danger">
+              CP Requerido.
+            </div>
+          </div>
+          <div class="form-group col-md-3" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Estado_ins" name="Id_Estado_ins" [(ngModel)]="dir_ins.id_estado" #tipoproducto="ngModel" placeholder="Estado" required>
+                  <mat-option *ngFor="let estado of estados_ins" [value]="estado.id">
+                    {{estado.desc_estado}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_ins.id_estado == null || dir_ins.id_estado == 0);" class="alert alert-danger">
+                Estado Requerido.
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-3" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Dele_ins" name="Id_Dele_ins" [(ngModel)]="dir_ins.id_municipio" #tipoproducto="ngModel" placeholder="Delegación" required>
+                  <mat-option *ngFor="let mun of Municipios_Ins" [value]="mun.id_municipio">
+                    {{mun.municipio}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_ins.id_municipio == null || dir_ins.id_municipio == 0)" class="alert alert-danger">
+                Delegación Requerida.
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-3" style="padding-right:0;">
+            <div class="input-append">
+              <mat-form-field class="full-width">
+                <mat-select id="Id_Localidad_ins" name="Id_Localidad_ins" [(ngModel)]="dir_ins.id_localidad" #tipoproducto="ngModel" placeholder="Localidad" required>
+                  <mat-option *ngFor="let local_ins of Localidades_Ins" [value]="local_ins.id_localidad">
+                    {{local_ins.localidad}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="(dir_ins.id_localidad == null || dir_ins.id_localidad == 0)" class="alert alert-danger">
+                Delegación Requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-2" style="">
+            <mat-form-field class="example-full-width" style="width:150px;">
+              <mat-select id="_prefijo_ins" name="_prefijo_ins" #_prefijo_ins="ngModel" [(ngModel)]="dir_ins.id_prefijo_calle" placeholder="Prefijo Calle">
+                <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                  {{prefijo.prefijo}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width" style="width:250px;">
+              <input matInput (ngModelChange)="validar_prefijos(dir_ins.calle_numero);" name="Calle_ins" id="Calle_ins" [(ngModel)]="dir_ins.calle_numero" placeholder="Calle" value="" required>
+            </mat-form-field>
+            <div *ngIf="(dir_ins.calle_numero == null || dir_ins.calle_numero == '')" class="alert alert-danger">
+              Calle Inst. Requerida.
+            </div>
+            <div *ngIf="!Calle_ins_valido" class="alert alert-danger">
+              Capture la calle sin prefijos.
+            </div>
+          </div>
+          <div class="form-group col-md-2" style="">
+            <mat-form-field class="example-full-width" style="width:150px;">
+              <input matInput name="Ext_ins" id="Ext_ins" [(ngModel)]="dir_ins.numExt" placeholder="Núm Ext." value="" required>
+            </mat-form-field>
+            <div *ngIf=" (dir_ins.numExt == null || dir_ins.numExt == '')" class="alert alert-danger">
+              Núm Ext. Requerido.
+            </div>
+          </div>
+          <div class="form-group col-md-2" style="">
+            <mat-form-field class="example-full-width" style="width:150px;">
+              <input matInput name="Int_ins" id="Int_ins" [(ngModel)]="dir_ins.numInt" placeholder="Núm Int." value="">
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="_nombre_ins" id="_nombre_ins" #_nombre_ins="ngModel" [(ngModel)]="dir_ins.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+            </mat-form-field>
+            <div *ngIf="(dir_ins.nombrecontacto == null || dir_ins.nombrecontacto == '')" class="alert alert-danger">
+              Contacto Requerido.
+            </div>
+          </div>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="telefono_ins" id="telefono_ins" [textMask]="{mask: mask, guide: false}" PhoneValidator
+                     [(ngModel)]="dir_ins.telefono" #telefono_ins="ngModel" placeholder="Télefono Fijo" value="" required>
+            </mat-form-field>
+            <div *ngIf="telefono_ins.errors?.Vacio && telefono_ins.touched" class="alert alert-danger">
+              Teléfono Requerido.
+            </div>
+            <div *ngIf="telefono_ins.errors?.LongitudMinima && telefono_ins.touched" class="alert alert-danger">
+              Formato inválido.
+            </div>
+          </div>
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="telefono_movil_ins" id="telefono_movil_ins" [textMask]="{mask: mask, guide: false}" PhoneValidator
+                     [(ngModel)]="dir_ins.telefono_movil" #telefono_movil_ins="ngModel" placeholder="Télefono Cel." value="" required>
+            </mat-form-field>
+            <div *ngIf="telefono_movil_ins.errors?.Vacio && telefono_movil_ins.touched" class="alert alert-danger">
+              Celular Requerido.
+            </div>
+            <div *ngIf="telefono_movil_ins.errors?.LongitudMinima && telefono_movil_ins.touched" class="alert alert-danger">
+              Formato inválido.
+            </div>
+          </div>
+          <div class="form-group col-md-3" style="">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker" (dateChange)="asignarFecha_ins()" [formControl]="date_ins" name="_Fec_ins" id="_Fec_ins" placeholder="mm/dd/aaaa Fecha Instalación">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <label *ngIf="!f_ins_valida;" style="color:darkred;">
+              Margen mínimo 120 días.
+            </label>
+            <label *ngIf="!fechas_validas;" style="color:darkred;">
+              La fecha de envío requiere ser previa a la de instalación.
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div mat-dialog-actions>
+    <button style="float:right; background-color: #A5000D;color: #fff; border-color: #A5000D" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GuardarSolcitar(direccionesnfrm.valid)">
+      Guardar y Sol. Envío
+    </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="onNoClick()">
+      Cancelar
+    </button>
+  </div>
+</form>

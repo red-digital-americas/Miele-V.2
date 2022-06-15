@@ -1,0 +1,196 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form [formGroup]="forma">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Usuario</h3>
+            </div>
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Datos del usuario</h3>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}"matInput name="nombre" id="nombre" #nombre="ngModel" [(ngModel)]="dat_usr.name" placeholder="Nombre " value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}"matInput name="apellidopat" id="apellidopat" #apellidopat="ngModel" [(ngModel)]="dat_usr.paterno" placeholder="Apellido Paterno " value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}"matInput name="apellidomat" id="apellidomat" #apellidomat="ngModel" [(ngModel)]="dat_usr.materno" placeholder="Apellido Materno " value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}"matInput #_email="ngModel" [disabled]="deshabilita" name="_email" id="_email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" [(ngModel)]="dat_usr.email" placeholder="Correo Electrónico" value="" required>
+                      </mat-form-field>
+                      <div *ngIf="(_email.invalid && (_email.dirty || _email.touched)) || (_email == '')" class="alert alert-danger">
+                        <div *ngIf="_email.errors.required ">
+                          Correo  requerido.
+                        </div>
+                        <div *ngIf="!_email.errors.required">
+                          Correo no válido
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Rol" name="Rol"  [ngModelOptions]="{standalone: true}" [(ngModel)]="dat_usr.id_rol" #Rol_="ngModel" placeholder="Rol" (change)="getNiveles(dat_usr.id_rol);">
+                            <mat-option *ngFor="let rol of Roles" [value]="rol.id">
+                              {{rol.rol}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-3" style="">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="nivel" name="nivel" [ngModelOptions]="{standalone: true}"   #nivel="ngModel" [(ngModel)]="dat_usr.nivel" [disabled]="!permisos_niveles" placeholder="Nivel" (change)="dat_usr.nivel" required>
+                            <mat-option *ngFor="let nivel of Niveles" [value]="nivel.nivel">
+                              {{ nivel.nivel}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Canal" name="Canal" matInput name="pass" [ngModelOptions]="{standalone: true}" [(ngModel)]="dat_usr.id_canal" #tipoproducto="ngModel" [disabled]="!permisos_vend" placeholder="Canal" (change)="this.Cuenta = ''; getCat_Cuentas();" required>
+                            <mat-option *ngFor="let canal of canalesCo" [value]="canal.id">
+                              {{canal.canal_es}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Cuenta_" name="Cuenta_" [ngModelOptions]="{standalone: true}" [(ngModel)]="dat_usr.id_cuenta" #Cuenta_="ngModel" placeholder="Cuenta (default)"  [disabled]="!permisos_vend" (change)="getCat_Sucursales();" required>
+                            <mat-option *ngFor="let cuenta of Cuentas" [value]="cuenta.id">
+                              {{cuenta.cuenta_es}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Suc_" name="Suc_"  [ngModelOptions]="{standalone: true}" [(ngModel)]="dat_usr.id_Sucursales" #Suc_="ngModel"[disabled]="!permisos_vend"  placeholder="Sucursal (default)">
+                            <mat-option *ngFor="let suc of Sucursales" [value]="suc.id">
+                              {{suc.sucursal}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <!--<div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}"matInput name="username" id="username" #username="ngModel" [(ngModel)]="dat_usr.username" placeholder="Username " value="" required>
+                      </mat-form-field>
+                    </div>-->
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}" PhoneValidator matInput name="telefono" id="telefono" #telefono="ngModel"
+                               [(ngModel)]="dat_usr.telefono" placeholder="Teléfono" [textMask]="{mask: mask, guide: false}" value="" required>
+                      </mat-form-field>
+                      <div *ngIf="telefono.errors?.Vacio && telefono.touched" class="alert alert-danger">
+                        Teléfono requerido
+                      </div>
+                      <div *ngIf="telefono.errors?.LongitudMinima && telefono.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input [ngModelOptions]="{standalone: true}" matInput PhoneValidator name="telefono_movil" id="telefono_movil" #telefono_movil="ngModel"
+                               [(ngModel)]="dat_usr.telefono_movil" [textMask]="{mask: mask, guide: false}" placeholder="Teléfono móvil" value="" required>
+                      </mat-form-field>
+                      <div *ngIf="telefono_movil.errors?.Vacio && telefono_movil.touched" class="alert alert-danger">
+                        Teléfono requerido
+                      </div>
+                      <div *ngIf="telefono_movil.errors?.LongitudMinima && telefono_movil.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <!--<mat-checkbox id="stat_us" name="stat_us" #stat_us="ngModel" [(ngModel)]="dat_usr.estatus">Habilitado</mat-checkbox>-->
+                      <div style="text-align: center">
+                        <mat-checkbox [ngModelOptions]="{standalone: true}" id="usr_estatus_" name="usr_estatus_" #usr_estatus_="ngModel" [(ngModel)]="dat_usr.estatus">Habilitado</mat-checkbox>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input type="password" class="form-control" formControlName="password" matInput name="pass" [(ngModel)]="dat_usr.password" [ngClass]="verifyPasswords('password', forma)" placeholder="Contraseña" required>
+                        </mat-form-field>
+                        <div *ngIf="!isFieldValid('password', forma)" class="alert alert-danger">
+                          Falta Contraseña
+                        </div>
+                      </div>
+                     
+                   
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input type="password" class="form-control m-input" formControlName="confirmPassword"  matInput name="confirmPassword" [(ngModel)]="confirm_password" [ngClass]="verifyPasswords('confirmPassword', forma)"placeholder="Repetir Contraseña" required>
+                        </mat-form-field>
+
+                        <div *ngIf="!isFieldValid('confirmPassword', forma)" class="alert alert-danger">
+                          Contraseña Inválida 
+                        </div>
+                        <div *ngIf="!passwordsMatch(forma)" class="alert alert-danger">
+                          Las contraseñas no coinciden.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Fin facturas-->
+            <!-- /.box-header -->
+
+            <div class="input-group col-xs-12">
+
+
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotousu(1)">Regresar
+                </button>
+              </span>
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="guardar_editar_usu(forma.valid) " *ngIf="permisos_edicion">Guardar
+                </button>
+              </span>
+            </div>
+
+            <!-- /.box -->
+            <!-- /.col -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+  
+</div>

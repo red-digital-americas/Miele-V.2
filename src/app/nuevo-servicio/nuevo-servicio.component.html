@@ -1,0 +1,437 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <section class="content">
+    <div class="row">
+      <form #cambiarForm="ngForm">
+        <div class="col-md-12">
+          <h2>Nuevo servicio</h2>
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Datos del cliente</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="col-xs-12">
+                <div class="col-xs-12" style="margin-bottom:13px"></div>
+                <div class="form-group col-xs-12 col-md-4">
+                  <label *ngIf="detalle.nombre_comercial !=''">Nombre comercial</label>
+                  <label *ngIf="detalle.nombre !=''">Nombre (s)</label><br />
+                  <span *ngIf="detalle.nombre_comercial !=''">{{detalle.nombre_comercial}}</span>
+                  <span *ngIf="detalle.nombre !=''">{{detalle.nombre}}</span><br /><br />
+                  <label>Email</label><br />
+                  <span>{{detalle.email}}</span><br /><br />
+                  <label>Estado</label><br />
+                  <span>{{detalle.estado}}</span><br /><br />
+                  <label>Teléfono fijo</label><br />
+                  <span>{{detalle.telefono}}</span><br /><br />
+                </div>
+                <div class="form-group col-xs-12 col-md-4">
+                  <label *ngIf="detalle.nombre_comercial !=''">Nombre de contacto</label>
+                  <label *ngIf="detalle.nombre !=''">Apellido paterno</label><br />
+                  <span *ngIf="detalle.nombre_comercial !=''">{{detalle.nombre_contacto}}</span>
+                  <span *ngIf="detalle.nombre !=''">{{detalle.paterno}}</span><br /><br />
+                  <label>Calle y número</label><br />
+                  <span>{{detalle.calle_numero}}</span><br /><br />
+                  <label>Delegación / municipio</label><br />
+                  <span>{{detalle.municipio}}</span><br /><br />
+                  <label>Teléfono celular</label><br />
+                  <span>{{detalle.telefono_movil}}</span><br /><br />
+                </div>
+                <div class="form-group col-xs-12 col-md-4">
+                  <label *ngIf="detalle.nombre !=''">Apellido materno</label><br *ngIf="detalle.nombre !=''" />
+                  <span *ngIf="detalle.nombre !=''">{{detalle.materno}}</span><br *ngIf="detalle.nombre !=''" /><br *ngIf="detalle.nombre !=''" />
+                  <label>CP</label><br />
+                  <span>{{detalle.cp}}</span><br /><br />
+                  <label>Colonia</label><br />
+                  <span>{{detalle.colonia}}</span><br /><br />
+                </div>
+                <div class="col-xs-12">
+                  <label>Referencias</label><br />
+                  <span>{{detalle.referencias}}</span><br /><br />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </form>
+
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Información de solicitud de servicio</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="form-group col-md-4">
+              <label>Tipo de servicio solicitado</label>
+              <select type="text" class="form-control" id="tecnico" name="tecnico" #tecnico="ngModel" [(ngModel)]="tipotecnico" (ngModelChange)="validacion_form($event)" required>
+                <option value="1">Tipo 1</option>
+                <option value="2">Tipo 2</option>
+              </select>
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Solicitado por</label><br />
+              <mat-radio-group>
+                <mat-radio-button value="1">Cliente directo</mat-radio-button><br />
+                <mat-radio-button value="2">Distribuidor autorizado</mat-radio-button>
+              </mat-radio-group>
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Solicitud vía</label><br />
+              <mat-radio-group>
+                <mat-radio-button value="1">Teléfono</mat-radio-button>
+                <mat-radio-button value="2">Web</mat-radio-button><br />
+                <mat-radio-button value="3">Correo</mat-radio-button>
+              </mat-radio-group>
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label></label><br />
+              <mat-radio-group>
+                <mat-radio-button value="1">Activar credito</mat-radio-button>
+              </mat-radio-group>
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Distribuidor autorizado</label><br />
+              <select type="text" class="form-control" id="tecnico" name="tecnico" #tecnico="ngModel" [(ngModel)]="tipotecnico" (ngModelChange)="validacion_form($event)" required>
+                <option value="1">Tipo 1</option>
+                <option value="2">Tipo 2</option>
+              </select>
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Contacto</label><br />
+              <input type="text" class="form-control" id="noalmacen" name="noalmacen" [(ngModel)]="almacen" #noalmacen="ngModel" required (ngModelChange)="validacion_form($event)">
+              <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                   class="alert alert-danger">
+                <div *ngIf="noalmacen.errors.required">
+                  Número de almacen requerido.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.box -->
+      </div>
+
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Agenda</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="col-xs-12">
+              <div class="col-xs-12" style="text-align:left; margin-bottom:10px;">
+                <button type="button" class="pull-center btn btn-default" id="sendEmail">
+                  Agendar cita
+                </button>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Fecha</label>
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                  <input id="email" type="date" class="form-control" name="email" placeholder="dd/mm/aaaa">
+                </div>
+                <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                     class="alert alert-danger">
+                  <div *ngIf="noalmacen.errors.required">
+                    Número de almacen requerido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Técnico</label>
+                <input id="email" type="text" class="form-control" name="email">
+                <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                     class="alert alert-danger">
+                  <div *ngIf="noalmacen.errors.required">
+                    Número de almacen requerido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Hora</label>
+                <select type="text" class="form-control" id="tecnico" name="tecnico" #tecnico="ngModel" [(ngModel)]="tipotecnico" (ngModelChange)="validacion_form($event)" required></select>
+                <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                     class="alert alert-danger">
+                  <div *ngIf="noalmacen.errors.required">
+                    Número de almacen requerido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-12">
+                <label>Actividades a realizar</label>
+                <textarea rows="5" cols="5" class="form-control" id="noalmacen" name="noalmacen" [(ngModel)]="almacen" #noalmacen="ngModel" required (ngModelChange)="validacion_form($event)"></textarea>
+                <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                     class="alert alert-danger">
+                  <div *ngIf="noalmacen.errors.required">
+                    Número de almacen requerido.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.box -->
+      </div>
+
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Pagos</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="col-xs-12" style="padding:0">
+              <mat-tab-group class="demo-tab-group">
+                <mat-tab label="Pago con tarjeta">
+                  <div class="demo-tab-content">
+                    <form #EquiposForm="ngForm">
+                      <div class="col-xs-12">
+                        <div class="form-group col-xs-12 col-md-12">
+                          <div class="col-md-6" style="padding:0;">
+                            <label>Concepto</label><br />
+                            <span>Servicio de reparación</span><br /><br />
+                          </div>
+                          <div class="col-md-6" style="padding:0;">
+                            <label>Cantidad</label><br />
+                            <span style="color:#4B91E2">5,000</span><br /><br />
+                          </div>
+                          <br />
+                          <br />
+                          <br />
+                          <mat-divider></mat-divider>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12">
+                          <label>Número de tarjeta de credito*</label>
+                          <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="equipomodelo" #modelo="ngModel" required>
+                          <div *ngIf="tipoproducto.invalid && (tipoproducto.dirty || tipoproducto.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="tipoproducto.errors.required">
+                              Tipo de producto requerido.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                          <label>Nombre del tarjetahabiente*</label>
+                          <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="equipomodelo" #modelo="ngModel" required>
+                          <div *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="modelo.errors.required">
+                              Modelo requerido.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                          <label>Mes de expiración*</label>
+                          <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="equipomodelo" #modelo="ngModel" required>
+                          <div *ngIf="tipoproducto.invalid && (tipoproducto.dirty || tipoproducto.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="tipoproducto.errors.required">
+                              Tipo de producto requerido.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-6">
+                          <label>Año de expiración*</label>
+                          <select type="text" class="form-control" id="tipoproducto" name="tipoproducto" [(ngModel)]="equipotipo" #tipoproducto="ngModel" required>
+                            <option value="1">2018</option>
+                            <option value="1">2019</option>
+                            <option value="1">2020</option>
+                            <option value="1">2021</option>
+                            <option value="1">2022</option>
+                            <option value="1">2023</option>
+                          </select>
+                          <div *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="modelo.errors.required">
+                              Modelo requerido.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-xs-12 col-md-6">
+                          <label>CVC*</label>
+                          <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="equipomodelo" #modelo="ngModel" required>
+                          <div *ngIf="tipoproducto.invalid && (tipoproducto.dirty || tipoproducto.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="tipoproducto.errors.required">
+                              Tipo de producto requerido.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12">
+                          <mat-checkbox style="padding-right:10px"
+                                        id="actividad"
+                                        name="actividad"
+                                        [(ngModel)]="previsita"
+                                        #actividad="ngModel"
+                                        value="1"
+                                        (change)="check($event, 1)">
+                            He leído y acepto los <span style="color:#A5000D">terminos y condiciones</span>
+                          </mat-checkbox>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12">
+                          <mat-checkbox style="padding-right:10px"
+                                        id="actividad"
+                                        name="actividad"
+                                        [(ngModel)]="previsita"
+                                        #actividad="ngModel"
+                                        value="1"
+                                        (change)="check($event, 1)">
+                            Requiere factura
+                          </mat-checkbox>
+                        </div>
+
+                      </div>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Depósito referenciado">
+                  <div class="demo-tab-content">
+                    <form #EquiposForm="ngForm">
+                      <div class="col-xs-12">
+                        <div class="form-group col-xs-12 col-md-12">
+                          <div class="col-md-6" style="padding:0;">
+                            <label>Concepto</label><br />
+                            <span>Servicio de reparación</span><br /><br />
+                          </div>
+                          <div class="col-md-6" style="padding:0;">
+                            <label>Cantidad</label><br />
+                            <span style="color:#4B91E2">5,000</span><br /><br />
+                          </div>
+                          <br />
+                          <br />
+                          <br />
+                          <mat-divider></mat-divider>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                          <label>Fecha de deposito</label>
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                            <input id="email" type="date" class="form-control" name="email" placeholder="dd/mm/aaaa">
+                          </div>
+                          <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="noalmacen.errors.required">
+                              Número de almacen requerido.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label>Número de operación</label>
+                          <input id="email" type="text" class="form-control" name="email">
+                          <div *ngIf="noalmacen.invalid && (noalmacen.dirty || noalmacen.touched)"
+                               class="alert alert-danger">
+                            <div *ngIf="noalmacen.errors.required">
+                              Número de almacen requerido.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label>Comprobante</label>
+                          <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar..." aria-describedby="basic-addon2">
+                            <span class="input-group-addon" id="basic-addon2">Subir</span>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12">
+                          <mat-checkbox style="padding-right:10px"
+                                        id="actividad"
+                                        name="actividad"
+                                        [(ngModel)]="previsita"
+                                        #actividad="ngModel"
+                                        value="1"
+                                        (change)="check($event, 1)">
+                            He leído y acepto los <span style="color:#A5000D">terminos y condiciones</span>
+                          </mat-checkbox>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-md-12">
+                          <mat-checkbox style="padding-right:10px"
+                                        id="actividad"
+                                        name="actividad"
+                                        [(ngModel)]="previsita"
+                                        #actividad="ngModel"
+                                        value="1"
+                                        (change)="check($event, 1)">
+                            Requiere factura
+                          </mat-checkbox>
+                        </div>
+
+                      </div>
+                    </form>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.box -->
+      </div>
+
+      <div class="col-xs-12 text-center">
+        <button type="submit" (click)="registro($event)" class="pull-center btn btn-default btn-default-rojo" [disabled]="validform">
+          Guardar ticket
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <br class="visible-xs" />
+        <br class="visible-xs" />
+        <button type="button" class="pull-center btn btn-default" id="sendEmail" (click)="registroForm.resetForm({})">
+          Guardar borrador
+        </button>
+      </div>
+      <!-- /.col -->
+    </div>
+  </section>
+  <!-- /.content -->
+</div>

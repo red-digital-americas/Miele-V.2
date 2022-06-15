@@ -1,0 +1,578 @@
+.btn-default {
+  background-color: #EEEDEB;
+  color: #847d70;
+  border-color: #ddd;
+  padding-left: 50px;
+  padding-right: 50px;
+  font-weight: bold;
+}
+
+.btn-default-rojo {
+  background-color: #A5000D;
+  color: #fff;
+  border-color: #A5000D;
+}
+
+  .btn-default-rojo:hover {
+    background-color: #A5000D;
+    color: #fff;
+    border-color: #A5000D;
+  }
+
+.alert-danger-aviso {
+  background-color: #FFDB4B;
+  border-color: #FFDB4B;
+  color: #847d70;
+  padding: 10px 10px 10px 10px;
+  border-radius: 3px;
+}
+.control-sidebar  {
+display: none; 
+}
+.control-sidebar-dark {
+display:none ; 
+}
+.example-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+.customWidthClass {
+  flex: 0 0 50px;
+}
+
+.customWidthClass1 {
+  flex: 0 0 200px;
+}
+
+.centerTextCell {
+  text-align: center;
+}
+
+/*.mat-header-row, .mat-row {
+  display: flex;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 10px;
+}*/
+example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+li{ text-align:left;}
+
+mat-grid-tile {
+  background: white;
+}
+
+
+.example-card {
+  max-width: 400px;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.example-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.mat-button:hover {
+  color : #A5000D ;
+  border-bottom: 4px solid #A5000D ;
+  background:none;
+}
+.mat-mini-fabsee {
+  padding: 5px 0;
+  display: inline-block;
+  line-height: 24px;
+}
+
+.mat-mini-fab .mat-button-wrapper {
+  padding: 4px 0;
+  display: inline-block;
+  line-height: 24px;
+}
+
+
+.mat-card-image {
+
+  width:202px;
+  height:202px;
+  padding-top:10px;
+}
+
+.card-over-image {
+  width: 305px;
+  height: 203px;
+  text-align: center;
+}
+
+.productos_mas_comp {
+  width:305px;
+  height:203px;
+  text-align:center;
+}
+.eyebutton {
+  float: right; padding-top:10px;
+
+}
+.card-prod-mas {
+  padding-top: 12px;
+  padding-bottom:8px;
+}
+.acc_mas_comp {
+  width:240px; height:151px;  text-align:center;
+}
+.img_acc_mas_comp {
+  width:150px; height:150px; padding-top:10px; margin-top: -5px;  margin-left: 15px;
+}
+.consumibles_mas_comp {
+  width:80%; height:151px;  text-align:center;
+}
+.img_consumibles_mas_comp {
+  width: 150px;
+  height: 150px;
+  padding-top: 10px;
+  margin-top: -5px;
+  margin-left: 15px;
+}
+.eyebutton3 {
+  float: right; width:30px; height:30px;
+}
+.art_relacion {
+  width:95px; height:95px;
+}
+.buttonclose {
+  position:absolute; right:0px; top:0px
+}
+.buttonred_div {
+  float:right; padding-left:10px; padding-top:3px;
+}
+.stylebutonred {
+   padding-top:2px;
+   padding-bottom:2px; float:right; padding-right:5px; font-size: 10px; padding-left:5px;
+}
+.imgcentral_detail {
+  height: 100%;
+  width: 90%; 
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  /** .mat-card {
+    padding: 0px;
+  }
+
+.card-over-image {
+    width: 100px;
+    height: 100px;
+    padding-top: 50px;
+
+
+  }*/
+  mat-tab-header {
+    display:none
+  }
+  .mat-tab-header-pagination-controls-enabled {
+    display: none;
+  }
+  .mat-tab-header-pagination {
+    display:none; 
+  }
+  .descp_width {
+    width: 280px;
+  }
+
+  .imgcentral_detail {
+    height: 100%;
+    width: 80%;
+  }
+  .stylebutonred {
+    padding-right: 5px;
+    margin-right:30px;
+    border-right-width: 50px;
+  }
+  p {
+    margin: 0 0 3px;
+  }
+
+  .buttonclose {
+    position: absolute;
+    right: 50px;
+    top: 50px;
+  }
+  .mat-card-content {
+    margin-bottom: 50px;
+  }
+  .eyebutton2 {
+    margin-bottom: 50px;
+  }
+  .mat-card > :first-child {
+    margin-top: 10px;
+  }
+  .eyebutton {
+    float: right;
+    padding-top: 60px;
+  }
+  .mat-button {
+    padding: 7px;
+    font-size: 13px;
+  }
+  .productos_mas_comp {
+    width: 203px;
+    height: 120px;
+    text-align:center;
+  }
+  .card-prod-mas {
+    padding: 0px;
+    margin-bottom: 50px;
+  }
+  .mat-card-image {
+    margin-bottom: 0px;
+    margin-top: 16px;
+    padding-top: 0px;
+    width: 150px;
+    height: 100px;
+  }
+  .art_relacion {
+    width: 60px;
+    height: 70px;
+  }
+    .mat-card-image:first-child {
+       margin-top: 16px; 
+    }
+  .img_acc_mas_comp {
+    margin-top: 50px;
+    width: 40px;
+    height: 40px;
+    padding-top: 10px;
+    margin-left: 15px;
+  }
+  .acc_mas_comp {
+    width: 120px;
+    height: 60px;
+    text-align: center;
+  }
+  .consumibles_mas_comp {
+    width: 80%;
+    height: 151px;
+    text-align: center;
+  }
+  .eyebutton3 {
+    float: right;
+    width: 30px;
+    height: 30px;
+    margin-top: 20px;
+    margin-right: 45px;
+  }
+
+  .img_consumibles_mas_comp {
+    width: 100px;
+    height: 80px;
+    margin-top: -20px;
+    margin-left: 15px;
+  }
+  .consumibles_mas_comp_text {
+    margin-top:-65px;
+  }
+  .detailheight {
+    height: 250px;
+  }
+  #hiddens1 {
+    display:none ; 
+  }
+  #hiddens2 {
+    display:none; 
+  }
+  #hiddens3 {
+    display: none;
+  }
+  #hiddens4 {
+    display: none;
+  }
+  .detailheight {
+    height: 250px;
+    padding-bottom: 100px;
+  }
+
+  .detailair {
+    /*  height: 200px;*/
+    height: 350px;
+  }
+
+  .buttonred_div {
+    float: right;
+    padding-left: 10px;
+    padding-top: 3px;
+    height:30px;
+  }
+  .mat-grid-list {
+    top: 10px;
+  }
+
+  .margen_derecho{
+    padding-right:0px; 
+  }
+  .strong {
+     font-size: 9.5px; 
+  }
+  .accesorieheight {
+  /*height: 270px;
+    width: 255px;*/ 
+  }
+  .overflows {
+    overflow-x: auto;
+  }
+  .cardheight {
+    height: 250px;
+  }
+
+  .contorno {
+    height:180px; 
+  }
+
+  .contorno2 {
+    height:220px; 
+  }
+
+
+  :host ::ng-deep .mat-tab-label {
+    width: 120px;
+    min-width: 120px;
+    padding: 0px;
+    margin-left:5px; 
+  }
+  #impresion {
+    margin-right: 30px;
+  }
+  }
+
+/* Landscape */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation:landscape) {
+  /**  .mat-card {
+    padding: 10px;
+  }*/
+  .contorno2 {
+    height: 223px;
+  }
+  .contorno {
+    height: 230px;
+  }
+
+  .pad {
+    margin-top: 40px;
+  }
+
+  .stylebutonred {
+    padding-right: 5px;
+    margin-right: 20px;
+    border-right-width: 50px;
+  }
+  .cardheight {
+    height: 280px;
+  }
+  .detailheight {
+    height: 250px;
+    padding-bottom: 100px;
+  }
+  .mat-grid-list {
+    top: 10px;
+  }
+  .detailair {
+  /*  height: 200px;*/ 
+    height: 400px; 
+  }
+  .imgcentral_detail {
+    height: 100%;
+    width: 80%;
+  }
+  .buttonclose {
+    position: absolute;
+    right: 50px;
+    top: 0px
+  }
+  p {
+    margin: 0 0 3px;
+  }
+  .landscapecontent {
+    margin-top: 20px;
+  }
+  .eyebutton {
+    float: right;
+    padding-top: 10px;
+    margin-top: 60px;
+  }
+  .art_relacion {
+    width: 70px;
+    height: 70px;
+  }
+
+  .card-prod-mas {
+    padding: 0px;
+    margin-bottom: 0px;
+  }
+  .productos_mas_comp {
+    width: 285px;
+    height: 160px;
+    text-align: center;
+  }
+  .mat-card-image:first-child {
+    margin-top: 0px;
+  }
+  .mat-card > :first-child {
+    margin-top: 35px;
+    margin-right: 10px;
+  }
+  .mat-button {
+    padding: 14px;
+    font-size: 16px;
+  }
+  .mat-card-image {
+    width: 182px;
+     height: 140px; 
+    padding-top: 0px;
+  }
+  .img_acc_mas_comp {
+    margin-top:0px; 
+    width: 80px;
+    height: 80px;
+    
+  }
+
+  .acc_mas_comp {
+    width: 120px;
+    height: 60px;
+    text-align: center;
+  }
+  .consumibles_mas_comp {
+    width: 80%;
+    height: 151px;
+    text-align: center;
+  }
+
+  .img_consumibles_mas_comp {
+    width: 100px;
+    height: 100px;
+    padding-top: 10px;
+    margin-top: -5px;
+    margin-left: 15px;
+  }
+  .consumibles_mas_comp_text {
+    margin-top: -60px;
+  }
+  #hiddens3 {
+    display: block;
+  }
+
+  #hiddens4 {
+    display: block;
+  }
+
+}
+
+
+/* ------ Carousel--------*/
+#carrusel {
+  z-index: 1;
+  width: 100%;
+  height: auto !important;
+  background: #0e0e0e !important;
+  -webkit-box-shadow: -11px 20px 65px -6px rgba(0,0,0,1);
+  -moz-box-shadow: -11px 20px 65px -6px rgba(0,0,0,1);
+  box-shadow: -11px 20px 65px -6px rgba(0,0,0,1);
+}
+
+.carousel-control{
+  color: #A5000D;
+  width: 7%;
+}
+.multi-item-carousel .carousel-inner > .item {
+  transition: 500ms ease-in-out left;
+}
+
+.multi-item-carousel .carousel-inner .active.left {
+  left: -1%;
+}
+
+.multi-item-carousel .carousel-inner .active.right {
+  left: 1%;
+}
+
+.multi-item-carousel .carousel-inner .next {
+  left: 1%;
+}
+
+.multi-item-carousel .carousel-inner .prev {
+  left: -1%;
+}
+
+@media all and (transform-3d), (-webkit-transform-3d) {
+  .multi-item-carousel .carousel-inner > .item {
+    transition: 500ms ease-in-out left;
+    transition: 500ms ease-in-out all;
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+}
+
+.multi-item-carousel .carousel-control.left,
+.multi-item-carousel .carousel-control.right {
+  background-image: none;
+}
+
+.carousel-control.left {
+  margin-left: -1%;
+}
+
+.carousel-control.right {
+  padding-right: 1%;
+  right: 5px;
+  height:50%;
+  margin:auto;
+}
+
+.ion-ios-arrow-right, .ion-ios-arrow-left {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.carousel-cert {
+  left: 0;
+  right: 0;
+  padding-left: 0%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+.img-cert {
+  width: 50%;
+}
+

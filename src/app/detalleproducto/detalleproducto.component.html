@@ -1,0 +1,170 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Detalle del Producto</h3>
+              <div style="float:right;">
+                <button type="submit" class="pull-center btn btn-default btn-default-rojo" onclick="javascript:window.history.back();" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Buscando...' : 'Regresar' }}
+                </button>
+              </div>
+            </div>
+            <div class="input-group col-xs-12">
+              <div id="grapersearch" class="input-group col-xs-12" style="float:right;">
+                <mat-grid-list cols="2" rowHeight="500px;">
+                  <mat-grid-tile style="border: 1px solid #e6e6ff;">
+                    <div class="example-card">
+                      <img style="width:316px; height:316px; " src="{{ProductoSEL[0].cat_imagenes_producto[0].url.replace('.png','.png')}}">
+                    </div>
+                  </mat-grid-tile>
+                  <mat-grid-tile style="border: 1px solid #e6e6ff;">
+                    <div>
+                      <mat-card-content style="text-align:center;">
+                        <div style="border: 0px solid  #e6e6ff; width:100%; text-align:center; padding-bottom:5px;">
+                          <!--<p style="font-size: 23px;">
+                  <strong> {{ ProductoSEL[0].nombre }}</strong><br />
+                </p>-->
+                          <p *ngIf="ProductoSEL[0].nombre.length < 30" style="font-size: 23px;"><strong> {{ ProductoSEL[0].nombre }}</strong> </p>
+                          <p *ngIf="ProductoSEL[0].nombre.length > 29" style="font-size: 17px;"><strong> {{ ProductoSEL[0].nombre }}</strong> </p>
+                          <p style="font-size: 14px;">Mod: {{ ProductoSEL[0].modelo }} - SKU: {{ ProductoSEL[0].sku }}</p>
+                          <p style="font-size: 25px; color:red; font-weight:bold; height:40%;">{{ProductoSEL[0].precio_con_iva | currency}}</p>
+                          <button mat-mini-fab style="" (click)="openSnackBar()" color="warn">
+                          <p style="font-size: 30px;">
+                            <i id="{{ ProductoSEL[0].id }}" class="fa fa-cart-arrow-down" aria-hidden="true" style="font-size: 27px;"></i>
+                          </p></button>
+
+                        </div>
+                        <div style="border: 0px solid  #e6e6ff; ">
+                          <p style="font-size: 14px;  padding-top:10px;"><strong>{{ ProductoSEL[0].descripcion_corta}}</strong></p>
+                          <mat-tab-group style="height:280px; min-width:542px;">
+                            <mat-tab label="Descripción" style="text-align:left;"><div style="font-size: 13px; text-align:left;" [innerHTML]="'<br />'+ProductoSEL[0].descripcion_larga"> </div></mat-tab>
+                            <mat-tab label="Atributos" style="text-align:left;"><div style="font-size: 13px; text-align:left;" [innerHTML]="ProductoSEL[0].atributos.replace('<li><', '<').replace('<ul>', '<br /><ul>')"> </div></mat-tab>
+                          </mat-tab-group>
+                        </div>
+                      </mat-card-content>
+                    </div>
+                  </mat-grid-tile>
+                </mat-grid-list>
+              </div>
+              <div style="float:right;">
+                <a target="_blank" href="{{ProductoSEL[0].url_guia}}" style="float:right; padding-right:7px; padding-left:7px;" type="submit" class="pull-center btn btn-default btn-default-rojo">
+                  Guía Mecánica
+                </a>
+              </div>
+
+              <div style="float:right; padding-right:10px; padding-left:10px">
+                <a target="_blank" href="{{ProductoSEL[0].url_manual}}" style="float:right; padding-right:7px; padding-left:7px;" type="submit" class="pull-center btn btn-default btn-default-rojo">
+                  Manual Técnico
+                </a>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="box-header with-border">
+                <div *ngIf="MostrarProductos; then thenBlock else elseBlock"></div>
+                <ng-template #thenBlock>
+                  <h3 class="box-title negritas">Accesorios más Comprados</h3>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <h3 class="box-title negritas">Accesorios Relacionados</h3>
+                </ng-template>
+              </div>
+              <div class="example-container mat-elevation-z2">
+                <mat-grid-list cols="4" rowHeight="2:2">
+                  <mat-grid-tile *ngFor="let am of AccesoriosMostrar; let i = index">
+                    <mat-card class="example-card" style="padding-top: 12px; padding-bottom:8px; ">
+                      <!--<button mat-mini-fab style="float: right; " (click)="openSnackBar()" color="warn"> <p id="{{ am.id }}l" style="font-size: 30px;">+</p></button>-->
+                      <button mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn" style="float: right; width:30px; height:30px;">
+                        <p id="{{ am.id }}l" style="font-size: 27px; padding:0px; font-size:25px; margin-top: -3px;">
+                          +
+                        </p>
+                      </button>
+                      <br>
+                      <div style="width:228px; height:151px;  text-align:center;">
+                        <img style="width:150px; height:150px; padding-top:10px;      margin-top: -5px;  margin-left: 15px;" mat-card-image src="{{am.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                      </div>
+                      <mat-card-content style="text-align:center;">
+                        <p style="font-size: 11px;">
+                          <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+                          <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+                        </p>
+                        <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+                        <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+                      </mat-card-content>
+                    </mat-card>
+                  </mat-grid-tile>
+                </mat-grid-list>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="box-header with-border">
+                <div *ngIf="MostrarProductos; then thenBlock1 else elseBlock1"></div>
+                <ng-template #thenBlock1>
+                  <h3 class="box-title negritas">Consumibles más Comprados.</h3>
+                </ng-template>
+                <ng-template #elseBlock1>
+                  <h3 class="box-title negritas">Consumibles Relacionados</h3>
+                </ng-template>
+              </div>
+              <div class="example-container mat-elevation-z2">
+                <mat-grid-list cols="4" rowHeight="2:2">
+                  <mat-grid-tile *ngFor="let am of ConsumiblesMostrar; let i = index">
+                    <mat-card class="example-card" style="padding-top: 12px; padding-bottom:8px; ">
+                      <!--<button mat-mini-fab style="float: right; " (click)="openSnackBar()" color="warn"> <p id="{{ am.id }}l" style="font-size: 30px;">+</p></button>-->
+                      <button mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn" style="float: right; width:30px; height:30px;">
+                        <p id="{{ am.id }}l" style="font-size: 27px; padding:0px; font-size:25px; margin-top: -3px;">
+                          +
+                        </p>
+                      </button>
+                      <br>
+                      <div style="width:228px; height:151px;  text-align:center;">
+                        <img style="width:150px; height:150px; padding-top:10px;      margin-top: -5px;  margin-left: 15px;" mat-card-image src="{{am.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                      </div>
+                      <mat-card-content style="text-align:center;">
+                        <p style="font-size: 11px;">
+                          <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+                          <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+                        </p>
+                        <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+                        <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+                      </mat-card-content>
+                    </mat-card>
+                  </mat-grid-tile>
+                </mat-grid-list>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+
+                <div style="width:100%; padding:10px;">
+                  <br />
+                  <div style="float:right;">
+                    <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" onclick="javascript:window.history.back();" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Buscando...' : 'Regresar' }}
+                    </button>
+                  </div>
+                  <div style="float:right;" *ngIf="Validasiguiente.length > 0">
+                    <p style="color:red; font-weight:600;">{{Validasiguiente}} &nbsp;&nbsp;&nbsp;&nbsp;</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box -->
+
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

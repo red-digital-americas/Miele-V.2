@@ -1,0 +1,578 @@
+<div class="content-wrapper">
+    <br class="visible-xs" />
+    <br class="visible-xs" />
+    <form #fomCliente="ngForm">
+      <section class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title negritas">Información general del Cliente</h3>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="box-body">
+
+                <div class="form-group col-md-12">
+                  <label class="float-right text-right" style="    text-align: right; font-size: 1.2em; float: right; border-bottom: dotted 1px #898989; padding: 2px 10px; color: #9d0004; ">
+                    <b>Sucursal: </b>
+                    <span *ngIf="sucursal!=''"> {{sucursal}} </span>
+                    <span *ngIf="sucursal == ''"> No asignada </span>
+                  </label>
+                </div>
+                <div class="form-group col-md-4">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="nombre"
+                           name="nombre"
+                           [(ngModel)]="client.nombre"
+                           #producto_nombre_="ngModel"
+                           placeholder="Nombre" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="paterno"
+                           name="paterno"
+                           [(ngModel)]="client.paterno"
+                           #producto_nombre_="ngModel"
+                           placeholder="Apellido Paterno" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="materno"
+                           name="materno"
+                           [(ngModel)]="client.materno"
+                           #producto_nombre_="ngModel"
+                           placeholder="Apellido Materno" required>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="email"
+                           name="email"
+                           [(ngModel)]="client.email"
+                           #producto_nombre_="ngModel"
+                           placeholder="Email" required>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-3">
+
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="telefono"
+                           name="telefono"
+                           [textMask]="{mask: mask, guide: false}"
+                           [(ngModel)]="client.telefono"
+                           #telefono_cte="ngModel"
+                           placeholder="telefono"
+                           PhoneValidator required>
+                  </mat-form-field>
+                  <div *ngIf="telefono_cte.errors?.Vacio && telefono_cte.touched" class="alert alert-danger">
+                    Teléfono Requerido.
+                  </div>
+                  <div *ngIf="telefono_cte.errors?.LongitudMinima && telefono_cte.touched" class="alert alert-danger">
+                    Formato inválido
+                  </div>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text"
+                           id="telefnoM"
+                           name="telefonoM"
+                           [textMask]="{mask: mask, guide: false}"
+                           [(ngModel)]="client.telefono_movil"
+                           #telefono_movil_cte="ngModel"
+                           placeholder="Teléfono Móvil"
+                           PhoneValidator required>
+                  </mat-form-field>
+                  <div *ngIf="telefono_movil_cte.errors?.Vacio && telefono_movil_cte.touched" class="alert alert-danger">
+                    Celular Requerido.
+                  </div>
+                  <div *ngIf="telefono_movil_cte.errors?.LongitudMinima && telefono_movil_cte.touched" class="alert alert-danger">
+                    Formato inválido
+                  </div>
+                </div>
+
+                <div class="form-group col-md-3" *ngIf="idCanal == 3">
+
+                  <mat-checkbox id="instalacion" name="instalacion"
+                                [(ngModel)]="client.referidopor"
+                                (change)="referir($event)"
+                                #instalacion_="ngModel">
+                    Referido
+                  </mat-checkbox>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">
+                      <ng-container> Dirección de Envio </ng-container>
+                    </h3>
+                  </div>
+                  <br>
+                  <div class="form-group col-md-3">
+                    <mat-form-field class="full-width">
+                      <input matInput maxlength="5"
+                             [textMask]="{mask: maskcp, guide: false}"
+                             name="CP_env" id="CP_env"
+                             [disabled]="permisos.deshabilitar_dir_ins"
+                             #CP_env="ngModel"
+                             [(ngModel)]="dir[0].cp"
+                             (ngModelChange)="getDirByCP($event, 0, true);"
+                             placeholder="Código Postal"
+                             value="" required>
+                      <mat-hint *ngIf="dir[0].cp" align="right">{{dir[0].cp.length}} / 5</mat-hint>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[0].cp == null || dir[0].cp == '') && (CP_env.dirty || CP_env.touched)" class="alert alert-danger">
+                      CP Requerido.
+                    </div>-->
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Estado_env"
+                                    name="Id_Estado_env"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[0].id_estado"
+                                    #estado_env="ngModel"
+                                    placeholder="Estado" required>
+
+                          <mat-option *ngFor="let estado of dir[0].details?.estado" [value]="estado.id">
+                            {{estado.estado}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[0].id_estado == null || dir[0].id_estado ==0) && (estado_env.dirty || estado_env.touched)" class="alert alert-danger">
+                        Estado Requerido.
+                      </div>-->
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Dele_env"
+                                    name="Id_Dele_env"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[0].id_municipio"
+                                    #deleg_env="ngModel"
+                                    placeholder="Delegación" required>
+
+                          <mat-option *ngFor="let mun of  dir[0].details?.municipios" [value]="mun.id_municipio">
+                            {{mun.municipio}}
+                          </mat-option>
+
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[0].id_municipio == null || dir[0].id_municipio ==0) && (deleg_env.dirty || deleg_env.touched)" class="alert alert-danger">
+                        Delegación Requerida.
+                      </div>-->
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Localidad_env"
+                                    name="Id_Localidad_env"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[0].id_localidad"
+                                    #localidad_env="ngModel"
+                                    placeholder="Localidad" required>
+
+                          <mat-option *ngFor="let local_env of dir[0].details?.localidades" [value]="local_env.id_localidad">
+                            {{local_env.localidad}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[0].id_localidad == null || dir[0].id_localidad ==0) && (deleg_env.dirty || deleg_env.touched)" class="alert alert-danger">
+                        Delegación Requerida.
+                      </div>-->
+                    </div>
+                  </div>
+
+
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width" style="">
+                      <mat-select id="_prefijo_env"
+                                  name="_prefijo_env"
+                                  #_prefijo_env="ngModel"
+                                  [disabled]="permisos.deshabilitar_dir_ins"
+                                  [(ngModel)]="dir[0].id_prefijo_calle"
+                                  placeholder="Prefijo Calle">
+
+                        <mat-option *ngFor="let prefijo of prefijosCalle" [value]="prefijo.id">
+                          {{prefijo.prefijo}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[0].id_prefijo_calle == null || dir[0].id_prefijo_calle ==0) && (_prefijo_env.dirty || _prefijo_env.touched)" class="alert alert-danger">
+                      Delegación Requerida.
+                    </div>-->
+                  </div>
+                  <div class="form-group col-md-3" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput (ngModelChange)="validar_prefijos(dir[0].calle);"
+                             name="Calle_env"
+                             id="Calle_env"
+                             [disabled]="permisos.deshabilitar_dir_ins"
+                             #_direccion_env="ngModel"
+                             [(ngModel)]="dir[0].calle"
+                             placeholder="Calle" value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[0].calle == null || dir[0].calle == '') && (_direccion_env.dirty || _direccion_env.touched)" class="alert alert-danger">
+                      Calle Inst. Requerida.
+                    </div>-->
+                    <!--div *ngIf="!Calle_ins_valido" class="alert alert-danger">
+            Capture la calle sin prefijos.
+            </div-->
+                  </div>
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="Ext_env" id="Ext_env" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[0].numExt" #_ext_env="ngModel" placeholder="Núm Ext." value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf=" (dir[0].numExt == null || dir[0].numExt == '') && (_ext_env.dirty || _ext_env.touched)" class="alert alert-danger">
+                      Núm Ext. Requerido.
+                    </div>-->
+                  </div>
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="Int_env" id="Int_env" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[0].numInt" placeholder="Núm Int." value="">
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-3" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="_nombre_env" id="_nombre_env" #_nombre_env="ngModel" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[0].nombre" placeholder="Nombre de Contacto" value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[0].nombrecontacto == null || dir[0].nombrecontacto == '') && (_nombre_env.dirty || _nombre_env.touched)" class="alert alert-danger">
+                      Teléfono Requerido.
+                    </div>-->
+                  </div>
+
+
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="full-width">
+                        <input matInput name="telefono_env_cte" id="telefono_env_cte" PhoneValidator [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                               [(ngModel)]="dir[0].telefono" #telefono_env_cte="ngModel" placeholder="Teléfono Fijo" value="" required>
+                      </mat-form-field>
+                      <div *ngIf="telefono_env_cte.errors?.Vacio && telefono_env_cte.touched" class="alert alert-danger">
+                        Teléfono Requerido.
+                      </div>
+                      <div *ngIf="telefono_env_cte.errors?.LongitudMinima && telefono_env_cte.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="full-width">
+                        <input matInput name="telefono_movil_env" PhoneValidator id="telefono_movil_env" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                               [(ngModel)]="dir[0].telefono_movil" #telefono_movil_env="ngModel" placeholder="Télefono Cel." value="" required>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[0].telefono_movil == null || dir[0].telefono_movil == '')" class="alert alert-danger">
+                        Celular Requerido.
+                      </div>-->
+                      <div *ngIf="telefono_movil_env.errors?.Vacio && telefono_movil_env.touched" class="alert alert-danger">
+                        Celular Requerido.
+                      </div>
+                      <div *ngIf="telefono_movil_env.errors?.LongitudMinima && telefono_movil_env.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <!--<mat-form-field>
+              <input matInput [matDatepicker]="picker" (dateChange)="asignarFecha_ins(i)" [formControl]="date_ins[i]" [disabled]="permisos.deshabilitar_dir_ins" name="_Fec_ins" id="_Fec_ins" placeholder="Fecha Estimada Instalación">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>-->
+                      <!--<div *ngIf="Fec_ins == '' && ValActiva ; " class="alert alert-danger">
+                Fecha Inst. Requerida.
+              </div>-->
+                    </div>
+                    <div class="form-group col-md-3">
+                      <!--<mat-checkbox class="example-margin" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="copiar_dir" (change)="copiarDireccion($event);" [ngModelOptions]="{standalone: true}">copiar en Instalación</mat-checkbox>-->
+                      <!--<button class="btn btn-default btn-default-rojo" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="copiar_dir" (change)="copiarDireccion($event);" [ngModelOptions]="{standalone: true}">Copiar en Instalación</button>-->
+                      <button class="btn btn-default btn-default-rojo" [disabled]="" (click)="copiarDireccion($event);">Copiar en Instalación</button>
+                      <!--<button [disabled]="" class="pull-center btn btn-default btn-default-rojo" (click)="saveChanges();">Guardar</button>-->
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!--Area de dir de instalacion-->
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">
+                      <ng-container> Dirección de Instalacion </ng-container>
+                    </h3>
+                  </div>
+                  <br>
+                  <div class="form-group col-md-3" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput maxlength="5"
+                             [textMask]="{mask: maskcp, guide: false}"
+                             name="CP_ins" id="CP_ins"
+                             [disabled]="permisos.deshabilitar_dir_ins"
+                             [(ngModel)]="dir[1].cp"
+                             #_cp_inst="ngModel"
+                             (ngModelChange)="getDirByCP($event, 1, true);"
+                             placeholder="Código Postal"
+                             value="" required>
+                      <mat-hint *ngIf="dir[1].cp" align="right">{{dir[1].cp.length}} / 5</mat-hint>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[1].cp == null || dir[1].cp == '') && _cp_inst.touched" class="alert alert-danger">
+                      CP Requerido.
+                    </div>-->
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Estado_ins"
+                                    name="Id_Estado_ins"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[1].id_estado"
+                                    #edo_inst="ngModel"
+                                    placeholder="Estado" required>
+
+                          <mat-option *ngFor="let estado of dir[1].details?.estado" [value]="estado.id">
+                            {{estado.estado}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[1].id_estado == null || dir[1].id_estado ==0) && edo_inst.touched" class="alert alert-danger">
+                        Estado Requerido.
+                      </div>-->
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Dele_ins"
+                                    name="Id_Dele_ins"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[1].id_municipio"
+                                    #deleg_ins="ngModel"
+                                    placeholder="Delegación" required>
+
+                          <mat-option *ngFor="let mun of  dir[1].details?.municipios" [value]="mun.id_municipio">
+                            {{mun.municipio}}
+                          </mat-option>
+
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[1].id_municipio == null || dir[1].id_municipio ==0) && deleg_ins.touched" class="alert alert-danger">
+                        Delegación Requerida.
+                      </div>-->
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="Id_Localidad_ins"
+                                    name="Id_Localidad_ins"
+                                    [disabled]="permisos.deshabilitar_dir_ins"
+                                    [(ngModel)]="dir[1].id_localidad"
+                                    #_loc_ins="ngModel"
+                                    placeholder="Localidad" required>
+
+                          <mat-option *ngFor="let local_ins of dir[1].details?.localidades" [value]="local_ins.id_localidad">
+                            {{local_ins.localidad}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[1].id_localidad == null || dir[1].id_localidad ==0) && _loc_ins.touched" class="alert alert-danger">
+                        Delegación Requerida.
+                      </div>-->
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width" style="">
+                      <mat-select id="_prefijo_ins"
+                                  name="_prefijo_ins"
+                                  #_prefijo_ins="ngModel"
+                                  [disabled]="permisos.deshabilitar_dir_ins"
+                                  [(ngModel)]="dir[1].id_prefijo_calle"
+                                  placeholder="Prefijo Calle">
+
+                        <mat-option *ngFor="let prefijo of prefijosCalle" [value]="prefijo.id">
+                          {{prefijo.prefijo}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-3" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput (ngModelChange)="validar_prefijos(dir[1].calle);"
+                             name="Calle_ins"
+                             id="Calle_ins"
+                             [disabled]="permisos.deshabilitar_dir_ins"
+                             #_dir_ins="ngModel"
+                             [(ngModel)]="dir[1].calle"
+                             placeholder="Calle" value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[1].calle == null || dir[1].calle == '') && _dir_ins.touched" class="alert alert-danger">
+                      Calle Inst. Requerida.
+                    </div>-->
+                    <!--div *ngIf="!Calle_ins_valido" class="alert alert-danger">
+            Capture la calle sin prefijos.
+            </div-->
+                  </div>
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="Ext_ins" id="Ext_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[1].numExt" #_ext_ins="ngModel" placeholder="Núm Ext." value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf=" (dir[1].numExt == null || dir[1].numExt == '') &&_ext_ins.touched" class="alert alert-danger">
+                      Núm Ext. Requerido.
+                    </div>-->
+                  </div>
+                  <div class="form-group col-md-2" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="Int_ins" id="Int_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[1].numInt" placeholder="Núm Int." value="">
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-3" style="">
+                    <mat-form-field class="full-width">
+                      <input matInput name="_nombre_ins" id="_nombre_ins" #_nombre_ins="ngModel" #contacto_ins="ngModel" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir[1].nombre" placeholder="Nombre de Contacto" value="" required>
+                    </mat-form-field>
+                    <!--<div *ngIf="(dir[1].nombrecontacto == null || dir[1].nombrecontacto == '') && contacto_ins.touched" class="alert alert-danger">
+                      Teléfono Requerido.
+                    </div>-->
+                  </div>
+
+
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="full-width">
+                        <input matInput name="telefono_ins" id="telefono_ins" PhoneValidator [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                               [(ngModel)]="dir[1].telefono" #telefono_ins="ngModel" placeholder="Télefono Fijo" value="" required>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[1].telefono ==  null || dir[1].telefono == '')" class="alert alert-danger">
+                        Teléfono Requerido.
+                      </div>-->
+                      <div *ngIf="telefono_ins.errors?.Vacio && telefono_ins.touched" class="alert alert-danger">
+                        Teléfono Requerido.
+                      </div>
+                      <div *ngIf="telefono_ins.errors?.LongitudMinima && telefono_ins.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="full-width">
+                        <input matInput name="telefono_movil_ins" id="telefono_movil_ins" PhoneValidator [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                               [(ngModel)]="dir[1].telefono_movil" #telefono_movil_ins="ngModel" placeholder="Télefono Cel." value="" required>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir[1].telefono_movil == null || dir[1].telefono_movil == '')" class="alert alert-danger">
+                        Celular Requerido.
+                      </div>-->
+                      <div *ngIf="telefono_movil_ins.errors?.Vacio && telefono_movil_ins.touched" class="alert alert-danger">
+                        Celular Requerido.
+                      </div>
+                      <div *ngIf="telefono_movil_ins.errors?.LongitudMinima && telefono_movil_ins.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="clientId != 0">
+            <div class="box">
+              <div class="box-body">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Ordenes del Cliente</h3>
+                  </div>
+
+                  <div class="example-container mat-elevation-z2">
+                    <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                      <ng-container *ngFor="let column of displayedColumns; let i=index">
+                        <ng-container matColumnDef="{{column}}">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> {{columNames[column]}} </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <a (click)="editCotizacion(element.id)" style="cursor:pointer; color:inherit">
+
+                              <ng-container *ngIf="column == 'nombre'; else regSLine">
+
+                                {{element.nombre}} {{element.paterno}} {{element.materno}}
+                              </ng-container>
+
+
+
+                              <ng-template #regSLine>
+                                {{element[column]}}
+                              </ng-template>
+
+                            </a>
+                          </mat-cell>
+                        </ng-container>
+                      </ng-container>
+
+
+                      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                    </mat-table>
+
+                    <mat-paginator #paginator
+                                   [pageSize]="10"
+                                   [pageSizeOptions]="[5, 10]">
+                    </mat-paginator>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-12 text-right">
+            <button class="pull-center btn btn-default btn-default-rojo" (click)="goBack();">Regresar</button> &nbsp;&nbsp;&nbsp;&nbsp;
+            <button [disabled]="desa" class="pull-center btn btn-default btn-default-rojo" (click)="saveChanges(fomCliente.valid);">Guardar</button>
+            <br />
+          </div>
+          <!-- End of directions -->
+        </div>
+      </section>
+    </form>
+      
+</div>

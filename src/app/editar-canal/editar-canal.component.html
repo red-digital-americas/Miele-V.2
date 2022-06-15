@@ -1,0 +1,124 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Canales | Cuentas | Sucursales</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+              <span class="input-group-btn " style="padding-bottom:15px;">
+                <button style="float:right; " ng-if="TextoLibre =! ''" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="ToAddProd($event)" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Buscando...' : 'Nueva Entidad' }}
+                </button>
+              </span>
+
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" id="TextoLibre" name="TextoLibre" [(ngModel)]="TextoLibre" #busqueda="ngModel" required placeholder=" Nombre de Canal, Cuenta, Sucursal " class="form-control">
+                  </mat-form-field>
+                </div>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="get_entidades_busqueda()" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Buscando...' : 'Buscar' }}
+                  </button>
+                </span>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default" (click)="verservicioForm.resetForm({});" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Limpiando...' : 'Limpiar' }}
+                  </button>
+                </span>
+              </div>
+              <br />
+
+              <div class="input-group col-xs-12" style="">
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="_tipos" name="_tipos" [(ngModel)]="tipos" #_tipos="ngModel" placeholder="Entidades">
+                        <mat-option *ngFor="let tipo of tipos_entidades" value="{{tipo.id}}">
+                          {{tipo.tipo}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-12" style="padding:0;">
+                <span class="form-group col-md-3">
+                </span>
+              </div>
+            </div>
+            <!-- /.box-header -->
+
+
+            <div class="box-body">
+              <div class="col-xs-12" style="padding:0;">
+                <div class="box-header with-border">
+                  <h3 class="box-title negritas">Entidades</h3>
+                </div>
+              </div>
+              <div class="example-container mat-elevation-z2">
+                <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                  <!-- Position Column -->
+                  <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Indice </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a style="cursor:pointer; color:inherit">{{element.id}}</a>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="tipo">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Tipo </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a style="cursor:pointer; color:inherit">{{element.tipo}}</a>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="canal">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;">Canal </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a style="cursor:pointer; color:inherit">{{element.canal}}</a>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="cuenta">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;">Cuenta </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a style="cursor:pointer; color:inherit">{{element.cuenta}}</a>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="entidad">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a style="cursor:pointer; color:inherit">{{element.entidad}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator #paginator
+                               [pageSize]="10"
+                               [pageSizeOptions]="[5, 10]">
+                </mat-paginator>
+              </div>
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

@@ -1,0 +1,182 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <!-- Inicio: Section -->
+    <section class="content">
+      <div class="row">
+        <!-- Inicio: col -->
+        <div class="col-md-12">
+          <!-- Inicio: Box -->
+          <div class="box">
+            <!-- Inicio: Header -->
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Márgenes Comerciales</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+
+              <!-- Inicio: Input Búsqueda, Botones Buscar y Limpiar -->
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por Sucursal">
+                  </mat-form-field>
+                </div>
+                <!-- Inicio: Botones Buscar y Limpiar -->
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="get_entidades_busqueda()">Buscar
+                  </button>-->
+                </span>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default" (click)="verservicioForm.resetForm({}); limpiafecha(); get_entidades_busqueda(); clearFilters();">Limpiar
+                  </button>
+                </span>
+                <!-- Fin: Botones Buscar y Limpiar -->
+              </div>
+              <!-- Fin: Input Búsqueda, Botones Buscar y Limpiar -->
+              <br />
+
+              <!-- Inicio: Selectores Cuenta, Canal -->
+              <div class="input-group col-xs-12" style="">
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Canal" name="Canal" [(ngModel)]="Canal" #tipoproducto="ngModel" placeholder="Canal" (selectionChange)="selectCanal($event)"  (change)="getCat_Cuentas(); getCat_Sucursales();">
+                        <mat-option *ngFor="let canal of canalesCo" value="{{canal.id}}">
+                          {{canal.canal_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Cuenta" name="Cuenta" [(ngModel)]="Cuenta" #Cuenta_="ngModel" placeholder="Cuenta" (selectionChange)="selectCuenta($event)" (change)="getCat_Cuentas(); getCat_Sucursales(); ">
+                        <mat-option *ngFor="let cuenta of Cuentas" value="{{cuenta.id}}">
+                          {{cuenta.cuenta_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Sucursal" name="Sucursal" [(ngModel)]="sucursalfiltro" #Sucursal_="ngModel" (selectionChange)="selectSucursal($event)" placeholder="Sucursal">
+                        <mat-option *ngFor="let suc of Sucursales" value="{{suc.id}}">
+                          {{suc.sucursal}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-5">
+                  <input matInput id="rangofechas" [(ngModel)]="rangofechas" name="rangofechas" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Rango de Fechas aaaa/mm/dd" />
+                  <mat-icon matSuffix><i class="fa fa-calendar" aria-hidden="true"></i></mat-icon>
+                </div>
+              </div>
+              <!-- Fin: Selectores Cuenta, Canal -->
+
+              <!-- Inicio: Rango de Fechas -->
+
+              <!-- Fin: Rango de Fechas -->
+
+              <div class="col-xs-12" style="padding:0;">
+                <span class="form-group col-md-3">
+                </span>
+              </div>
+            </div>
+            <!-- Fin: Header -->
+
+            <!-- Inicio: Body -->
+            <div class="box-body">
+              <!-- Inicio: col -- Head -->
+              <div class="col-xs-12" style="padding:0;">
+                <div class="box-header with-border">
+                  <h3 class="box-title negritas">Sucursales</h3>
+                </div>
+              </div>
+              <!-- Fin: col -- Head -->
+
+              <!--Inicio: container -- Tabla -->
+              <div class="example-container mat-elevation-z2">
+                <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+
+                  <ng-container matColumnDef="sucursal">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Sucursal  </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-comision/{{element.id}}" style="cursor:pointer; color:inherit">{{element.sucursal}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cuenta">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Cuenta  </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-margenes-comerciales/{{element.id}}" style="cursor:pointer; color:inherit">{{element.cuenta}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="canal">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Canal  </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-margenes-comerciales/{{element.id}}" style="cursor:pointer; color:inherit">{{element.canal}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ventas_totales">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Ventas totales </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-margenes-comerciales/{{element.id}}" style="cursor:pointer; color:inherit">{{ element.ventas_totales | currency}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="comisiones_totales">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Comisiones totales </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-margenes-comerciales/{{element.id}}" style="cursor:pointer; color:inherit">{{element.comisiones_totales | currency}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="comisiones_pendientes">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> Comisiones pendientes </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/detalle-margenes-comerciales/{{element.id}}" style="cursor:pointer; color:inherit">{{element.comisiones_pendientes}}</a>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!--<ng-container matColumnDef="ver">
+  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Ver </mat-header-cell>-->
+                  <!--<button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="get_entidades_busqueda()">-->
+                  <!--<button type="submit" class="pull-center btn btn-default btn-default-rojo">
+      {{ preventAbuse ? 'Buscando...' : 'Detalle' }}
+    </button>
+  </ng-container>-->
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator #paginator
+                               [pageSize]="10"
+                               [pageSizeOptions]="[5, 10]">
+                </mat-paginator>
+
+              </div>
+              <!-- Fin: container -- Tabla -->
+            </div>
+            <!-- Fin: Body -->
+          </div>
+          <!-- Fin: Box -->
+        </div>
+        <!-- Fin: col -->
+      </div>
+    </section>
+    <!-- Fin: Section -->
+  </form>
+</div>
+

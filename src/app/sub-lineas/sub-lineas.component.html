@@ -1,0 +1,198 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Sub Lineas de Productos</h3>
+            <!--<div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>-->
+            <div class="input-gro col-md-12" style="">
+              <div class="form-group col-md-7" style="">
+              </div>
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button style="float:right; " *ngIf="permisos_edicion" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit(1)" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Cargando...' : 'Nueva Sub Linea' }}
+                </button>
+              </span>
+
+            </div>
+            <form #sublineasForm="ngForm">
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por nombre de sublínea o descripción ">
+                  </mat-form-field>
+                </div>
+
+
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default" (click)="sublineasForm.resetForm({});limpiar();" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Limpiando...' : 'Limpiar' }}
+                  </button>
+                </span>
+              </div>
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-4">
+                  <mat-form-field class="full-width">
+
+                    <mat-select [disabled]="false"
+                                (change)="searchProduct();"
+                                placeholder="Linea"
+                                name="line-filter"
+                                id="line-filter"
+                                #line_filter_="ngModel"
+                                [(ngModel)]="filtrosub">
+
+                      <mat-option *ngFor="let line of this.lines" [value]="line.descripcion">
+                        {{ line.descripcion }}
+                      </mat-option>
+                    </mat-select>
+
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </form>
+           
+              <!--<div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+                  <mat-select [disabled]="false"
+                              placeholder="Tipo"
+                              name="tipo"
+                              id="tipo"
+                              #tipo="ngModel"
+                              [(ngModel)]="filters.tipo"
+                              (change)=searchProduct();>
+
+                    <mat-option *ngFor="let type of types; trackBy: index;" [value]="type.id">
+                      {{ types.descripcion }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>-->
+
+             
+
+              <!--<div class="form-group col-md-4" *ngIf="this.subLines.length > 0">
+                <mat-form-field class="full-width">
+
+                  <mat-select [disabled]="false"
+                              placeholder="Sub Linea"
+                              name="subline-filter"
+                              id="subline-filter"
+                              (change)="searchProduct()"
+                              #subline_filter_="ngModel"
+                              [(ngModel)]="filters.subLineID">
+
+                    <mat-option *ngFor="let line of this.subLines; trackBy: index;" [value]="line.id">
+                      {{ line.descripcion }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>-->
+            <br />
+
+            <!-- div class="input-group col-xs-12" style="">
+              <div class="form-group col-md-3" style="padding-right:0;">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="_tipos" name="_tipos" [(ngModel)]="tipos" #_tipos="ngModel" placeholder="Entidades">
+                      <mat-option *ngFor="let tipo of tipos_entidades" value="{{tipo.id}}">
+                        {{tipo.tipo}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div-->
+
+            <div class="col-xs-12" style="padding:0;">
+              <span class="form-group col-md-3">
+              </span>
+            </div>
+          </div>
+          <!-- /.box-header -->
+
+
+          <div class="box-body">
+            <!--<table class="table table-striped sortable">
+              <thead>
+                <tr>
+                  <th>Descripcion</th>
+                  <th>Linea de Producto</th>
+                  <th>Activado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of filtroSublineas  let i = index" (click)="onSelectedItem(usuario.id)">
+                  <td>{{item.descripcion}}</td>
+                  <td>{{item.id_linea_producto}}</td>
+                  <td>{{item.status}}</td>
+                </tr>
+
+
+              </tbody>
+            </table>-->
+
+            <div class="example-container mat-elevation-z2">
+              <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                <ng-container matColumnDef="descripcion">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Descripcion </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.descripcion}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="linea_producto_desc">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Linea </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.linea_producto_desc}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="estatus">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Activo </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.estatus}}</span>
+                  </mat-cell>
+                </ng-container>
+                <!--<ng-container *ngFor="let column of displayedColumns; let i=index">
+                  <ng-container matColumnDef="{{column}}">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> {{columNames[column]}} </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let j = index" style="text-align:center;">
+                      <span>{{element[i].descripcion}}</span>
+                      <span>{{element[i].id_linea_producto}}</span>
+                      <span>{{element[i].estatus}}</span>
+                    </mat-cell>
+                  </ng-container>
+                </ng-container>-->
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+              </mat-table>
+
+              <mat-paginator #paginator
+                             [pageSize]="10"
+                             [pageSizeOptions]="[5, 10]">
+              </mat-paginator>
+            </div>
+          </div>
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+
+</div>

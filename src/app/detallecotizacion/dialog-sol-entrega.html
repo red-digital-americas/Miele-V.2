@@ -1,0 +1,29 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<div style="text-align:center;">
+  <h1 mat-dialog-title>Solicitar Entrega</h1>
+  <div mat-dialog-content>
+    <div class="box-body">
+      <div class="example-container mat-elevation-z2">
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-12" style="">
+            <label>
+              Si la orden de compra no esta generada, esta solicitud la Generará. Las direcciones de Instalación/Entrega han sido corroboradas ?
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box-body">
+    <div mat-dialog-actions>
+      <button [mat-dialog-close]="0" style="float:left;" class="pull-center btn btn-default" (click)="NoSolEntClick()">
+        Editar Direcciones
+      </button>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button [mat-dialog-close]="data.id" style="background-color: #A5000D; color: #fff; border-color: #A5000D; float:right;" class="pull-center btn btn-default btn-default-rojo" (click)="SolEntregaRefClick()">
+        Solicitar Entrega
+        <i class="fa fa-truck" aria-hidden="true" style="font-size: 21px;"></i>
+      </button>
+    </div>
+  </div>
+  </div>

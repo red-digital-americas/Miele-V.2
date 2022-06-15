@@ -1,0 +1,180 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Productos</h3>
+
+            <div class="input-gro col-md-12" style="">
+              <div class="form-group col-md-7" style="">
+              </div>
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button style="float:right; " *ngIf="permisos_edicion" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit()">Nuevo Producto
+                </button>
+              </span>
+
+            </div>
+            <form #productosForm="ngForm">
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por Nombre , Descripción o Sku ">
+                  </mat-form-field>
+                </div>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="searchProduct()">Buscar
+                  </button>
+                </span>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default" (click)="productosForm.resetForm({}); get_entidades_busqueda(); clearFilters();">Limpiar
+                  </button>
+                </span>
+              </div>
+            </form>
+            <div class="input-group col-xs-12">
+              <div class="form-group col-md-3">
+                <mat-form-field class="full-width">
+                  <mat-select [disabled]="false"
+                              placeholder="Tipo"
+                              name="tipo"
+                              id="tipo"
+                              #tipo="ngModel"
+                              [(ngModel)]="filters.tipo"
+                              (change)="searchProduct()">
+
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                      {{ type.descripcion }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-3">
+                <mat-form-field class="full-width">
+
+                  <mat-select [disabled]="false"
+                              (change)="searchProduct(); getSubLines(filters.lineID)"
+                              placeholder="Linea"
+                              name="line-filter"
+                              id="line-filter"
+                              #line_filter_="ngModel"
+                              [(ngModel)]="filters.lineID">
+
+                    <mat-option *ngFor="let line of this.lines" [value]="line.id">
+                      {{ line.descripcion }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-3">
+                <mat-form-field class="full-width">
+
+                  <mat-select [disabled]="false"
+                              placeholder="Sub Linea"
+                              name="subline-filter"
+                              id="subline-filter"
+                              (change)="searchProduct()"
+                              #subline_filter_="ngModel"
+                              [(ngModel)]="filters.subLineID">
+
+                    <mat-option *ngFor="let line of this.subLines" [value]="line.id">
+                      {{ line.descripcion }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>
+            </div>
+            <br />
+
+
+
+            <div class="col-xs-12" style="padding:0;">
+              <span class="form-group col-md-3">
+              </span>
+            </div>
+          </div>
+          <!-- /.box-header -->
+
+
+          <div class="box-body">
+            <div class="example-container mat-elevation-z2">
+              <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                <ng-container *ngFor="let column of displayedColumns; let i=index">
+                  <ng-container matColumnDef="{{column}}">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> {{columNames[column]}} </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                      <a routerLink="/edit-productos/{{element.id}}" style="cursor:pointer; color:inherit">
+                        <span *ngIf="column == 'precio_con_iva'">
+                          {{element[column] | currency}}
+                        </span>
+
+                        <span *ngIf="column == 'tipo' && element[column] ">
+                          <ng-container>
+                            {{types[element[column] - 1]?.descripcion}}
+                          </ng-container>
+                        </span>
+
+                        <span *ngIf="column == 'linea' && element[column] ">
+                          <ng-container *ngIf="element[column].id; else regline">
+                            {{element[column].descripcion}}
+                          </ng-container>
+
+                          <ng-template #regline>
+                            {{element[column]}}
+                          </ng-template>
+                        </span>
+
+                        <span *ngIf="column == 'sublinea' && element[column] ">
+                          <ng-container *ngIf="element[column].id; else regSLine">
+                            {{element[column].descripcion}}
+                          </ng-container>
+
+                          <ng-template #regSLine>
+                            {{element[column]}}
+                          </ng-template>
+                        </span>
+
+                        <span *ngIf="column != 'tipo' &&
+                                           column != 'precio_con_iva' &&
+                                           column != 'linea' &&
+                                           column != 'sublinea'
+                                           " #regColumn>
+                          {{element[column]}}
+                        </span>
+
+
+                      </a>
+                    </mat-cell>
+                  </ng-container>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+              </mat-table>
+
+              <mat-paginator #paginator
+                             [pageSize]="10"
+                             [pageSizeOptions]="[5, 10]">
+              </mat-paginator>
+            </div>
+          </div>
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+
+</div>

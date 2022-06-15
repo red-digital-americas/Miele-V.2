@@ -1,0 +1,78 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #cuentaform="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Cuenta</h3>
+
+              <div class="input-group col-xs-12" style="">
+                <div class="form-group col-md-3" style="">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Canal" name="Canal" [(ngModel)]="cuentaObj.id_Canal" #canal_="ngModel" [disabled]="cuentaObj.id > 0 || !permisos_edicion" placeholder="Canal" required>
+                        <mat-option *ngFor="let canal of canalesCo" [value]="canal.id">
+                          {{canal.canal_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput #_nombre="ngModel" name="_nombre" id="_nombre" [(ngModel)]="cuentaObj.cuenta_es" placeholder="Nombre Cuenta" value="" required>
+                  </mat-form-field>
+                </div>
+                <div class="col-xs-12" style="padding:0;">
+                  <span class="form-group col-md-3">
+                  </span>
+                </div>
+
+                <div class="col-xs-12">
+                  <h5>Formas de Pago</h5>
+                  <div class="col-xs-12">
+                    <div class="form-group col-md-2" style="padding:10px 10px 10px 10px;">
+                      <mat-checkbox id="_1" name="_chk_ant" #_chk_ant_="ngModel" [(ngModel)]="chk_ant"> Anticipo 50%</mat-checkbox>
+                    </div>
+                    <div class="form-group col-md-2" style="padding:10px 10px 10px 10px;">
+                      <mat-checkbox id="_2" name="_chk_cred" #_chk_cred_="ngModel" [(ngModel)]="chk_cred">Crédito 100%</mat-checkbox>
+                    </div>
+                    <div class="form-group col-md-2" style="padding:10px 10px 10px 10px;">
+                      <mat-checkbox id="_3" name="_chk_con" #_chk_con_="ngModel" [(ngModel)]="chk_con">Contado</mat-checkbox>
+                    </div>
+                    <div class="form-group col-md-2" style="padding:10px 10px 10px 10px;">
+                      <mat-checkbox id="_4" name="_chk_ms" #_chk_ms_="ngModel" [(ngModel)]="chk_ms">Crédito 100% con Ticket</mat-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-group col-xs-12">
+              <div class="form-group col-md-12" style="">
+              </div>
+              <span class="input-group-btn" style="padding:0px 5px 0px 20px; float:left;">
+                <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit(1);">Cancelar
+                </button>
+              </span>
+              <span class="input-group-btn" style="padding:0px 20px 0px 5px; float:right;">
+                <button *ngIf="permisos_edicion" style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GuardarEditarCuenta(cuentaform.valid);">Guardar
+                </button>
+              </span>
+              <br />
+              <br /><br />
+              <br />
+            </div>
+
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

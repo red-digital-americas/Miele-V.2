@@ -1,0 +1,56 @@
+
+  <form #promocionForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12"> 
+          
+          <h3>Nueva Sublinea</h3><br>
+
+          <mat-form-field class="full-width">
+
+            <mat-select [disabled]="false" 
+                        placeholder="Linea" 
+                        name="sublinea" 
+                        id="sublinea" 
+                        #promocion_id_tipos_herencia_promo_="ngModel" 
+                        [(ngModel)]="newProductLine.lineaID" required>
+              
+              <mat-option *ngFor="let line of this.lines " [value]="line.id">
+                {{ line.descripcion }}
+              </mat-option>
+            </mat-select>
+          
+          </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <input matInput type="text" 
+                  id="linea_name" 
+                  name="linea_name" 
+                  [(ngModel)]="newProductLine.descripcion" 
+                  #linea_nombre="ngModel" 
+                  placeholder="Nombre de la Sublinea" required>          
+          </mat-form-field>
+
+  
+          
+                
+               
+
+          <div>
+            <button class="pull-center btn btn-default" (click)="onNoClick();">Cancelar</button> 
+            <button [disabled]="newProductLine.descripcion == '' || newProductLine.lineaID == 0 " 
+                    [class.btn-default-rojo] = "newProductLine.descripcion != '' && newProductLine.lineaID != 0" 
+                    class="pull-right btn btn-default " 
+                    (click)="addLine();"> Añadir Sub Linea</button> 
+          </div>
+          
+        </div>
+        
+      </div>
+
+      <div class="succes-overlay" *ngIf = "status == 'sent'">
+        <h3>Sublinea Añadida con éxito</h3>
+      </div>
+    </section>      
+  </form>
+

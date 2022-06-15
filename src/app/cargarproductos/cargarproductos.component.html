@@ -1,0 +1,474 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+
+            <!--Menu completamente dinamico, el problema es que no se podia obtener el valor
+                seleccionado de los niveles 2 hacia abajo, solo se puede configurar mediante rutas
+            <mat-toolbar class="menu-bar mat-elevation-z1" style="background-color:white; padding:10px">
+              <span *ngFor="let item of menu_productos; let i = index">
+                <button mat-button [matMenuTriggerFor]="menu.childMenu">{{item.displayName}}</button>
+                <app-menu-item #menu [items]="item.children" (valueMenu)="selectedItem($event)">
+                </app-menu-item>
+
+              </span>
+            </mat-toolbar>-->
+            <div class="box-header with-border">
+
+              <h3 class="box-title negritas" style="font-size: 23px;">Carga de Productos &nbsp; <i style="font-size: 35px;" class="fa fa-tags" aria-hidden="true"></i></h3>
+              <br /><br>
+              <mat-toolbar class="menu-bar mat-elevation-z1" style="background-color:white; padding:10px">
+                <span *ngFor="let superlinea of menu_productos; let i = index">
+                  <button mat-button [matMenuTriggerFor]="nivel1">{{superlinea.displayName}}</button>
+                  <!--<app-menu-item #menu [items]="item.children" (valueMenu)="selectedItem($event)">
+      </app-menu-item>-->
+                  <mat-menu #nivel1 [overlapTrigger]="false">
+                    <span *ngFor="let linea of superlinea.children">
+                      <span *ngIf="linea.children && linea.children.length > 0">
+                        <button style="font-size:14px;" mat-menu-item [matMenuTriggerFor]="nivel2" (click)="selectedItem(1, linea.idNivel)">{{linea.displayName}}</button>
+                        <mat-menu #nivel2 [overlapTrigger]="false">
+                          <span *ngFor="let sublinea of linea.children">
+                            <!--<button style="font-size:13px;" mat-menu-item (click)="selectedItem(2, sublinea.idNivel)">{{sublinea.displayName}}</button>-->
+                            <!--Menu de linea-sublinea-producto-->
+                            <span *ngIf="sublinea.children && sublinea.children.length > 0">
+                              <button style="font-size:14px;" mat-menu-item [matMenuTriggerFor]="nivel3" (click)="selectedItem(2, sublinea.idNivel)">{{sublinea.displayName}}</button>
+                              <mat-menu #nivel3 [overlapTrigger]="false">
+                                <span *ngFor="let producto of sublinea.children">
+                                  <button style="font-size:11px;" mat-menu-item (click)="selectedItem(3, producto.idNivel)">{{producto.displayName}}</button>
+                                </span>
+                              </mat-menu>
+                            </span>
+                            <span *ngIf="!sublinea.children || sublinea.children.length === 0">
+                              <button style="font-size:15px;" mat-menu-item (click)="selectedItem(2, sublinea.idNivel)">{{sublinea.displayName}}</button>
+                            </span>
+                          </span>
+                        </mat-menu>
+                      </span>
+                      <span *ngIf="!linea.children || linea.children.length === 0">
+                        <button style="font-size:14px;" mat-menu-item (click)="selectedItem(1, linea.idNivel)">{{linea.displayName}}</button>
+                      </span>
+                    </span>
+                  </mat-menu>
+                </span>
+              </mat-toolbar>
+
+              <br /><br />
+              <div style="float:right;" *ngIf="Validasiguiente.length > 0">
+                <p style="color:red; font-weight:600;">{{Validasiguiente}} &nbsp;&nbsp;&nbsp;&nbsp;</p>
+              </div>
+              <div class="input-group col-xs-12" style="padding-top:0px;">
+                <div id="grapersearch" class="input-group col-xs-12 " style="float:left;">
+                  <mat-form-field class="example-full-width">
+                    <input style="font-size:13px;" matInput [matAutocomplete]="auto" name="TextoLibre" id="TextoLibre" [(ngModel)]="TextoLibre" [formControl]="myControl" placeholder="Buscar por: Nombre de producto, Modelo, SKU, Línea ó SubLínea.">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.nombre" style="font-size:13px;">
+                        {{ option.nombre }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <span class="input-group-btn " style="padding-bottom:15px;">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="preventAbuse = true; CallCargarResultados()" [disabled]="preventAbuse" style="padding-left: 17px; padding-right: 17px;">
+                      {{ preventAbuse ? 'Buscando...' : 'Buscar' }}
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </span>
+                  <span *ngIf="isNew" class="input-group-btn " style="padding-bottom:15px; padding-left:10px;">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="ToCreate()" [disabled]="preventAbuse || NoProdCarrito<=0" style="float:right; padding-left: 20px; padding-right: 20px;" type="submit">
+                      {{ preventAbuse ? 'Cargando...' : 'Finalizar' }} &nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                  <span *ngIf="!isNew" class="input-group-btn " style="padding-bottom:15px; padding-left:10px;">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" onclick="javascript:window.history.back();" [disabled]="preventAbuse" style="float:right; padding-left: 20px; padding-right: 20px;" type="submit">
+                      {{ preventAbuse ? 'Cargando...' : 'Regresar' }} &nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+                <div *ngIf="resultado.length > 0">
+                  <p style="color:red; font-weight:600;">{{resultado}}</p>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="Mostrardetalle" id="grapersearch" class="input-group col-xs-12 detailheight" style="float:right;">
+
+              <mat-grid-list cols="3" rowHeight="7:1">
+                <mat-grid-tile class="detailair" rowspan="7" style="border: 1px solid #e6e6ff; padding:0px;">
+                  <div id="prueba_" style="width:100%; height:100%;">
+
+                    <h4 style=" margin-bottom: 8px; margin-top:5px; padding-left:8px;"> Productos Relacionados: </h4>
+                    <div *ngFor="let am of ProdRelacionados; let i = index" style="height:30%; width:100%;  padding:0px; border-color:cyan; border:thin; padding: 5px;">
+                      <div style="height:100%; width: 30%; float:left;">
+                        <img class="art_relacion" src="{{am.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                      </div>
+                      <div style="height:100%; width: 70%; float:left;">
+
+                        <div style="float:right;">
+                          <i id="{{ am.id }}" (click)="preventAbuse = true; Mostrar_ProdSel(am)" class="fa fa-eye" aria-hidden="true" style="font-size: 21px; color:#A5000D; padding-right:3px; cursor: pointer;"></i>
+                        </div>
+                        <div style="float:left; ">
+
+                          <p  class="strong" style="padding-top:0px; margin: 0px; ">
+                            <strong *ngIf="am.nombre.length < 31" style="padding: 0px; margin:0px;">{{am.nombre}}</strong>
+                            <strong *ngIf="am.nombre.length > 30" style="padding: 0px; ">{{am.nombre.substring(0,30)}}...</strong>
+                          </p>
+                          <p style="font-size: 16px; color:red; font-weight:bold; padding:0px; ">{{am.precio_con_iva | currency}}</p>
+                          <p style="font-size: 10px; padding:0px; ">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                          <p id="hiddens1" style="font-size: 10px;" *ngIf="am.descripcion_corta.length < 46"> {{am.descripcion_corta}}</p>
+                          <p id="hiddens2" style="font-size: 10px;" *ngIf="am.descripcion_corta.length > 45"> {{am.descripcion_corta.substring(0,45)}}...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-grid-tile>
+                <mat-grid-tile rowspan="6" class="detailair" style="min-height:100%; padding:5px; box-shadow:none;" >
+                  <div class="example-full-width imgcentral_detail"  >
+                    <img style="display:block; max-height:100%; max-width:100%;" src="{{bigImgsrc}}" onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                  </div>
+                  <!--<div class="row">
+          <div class="form-group col-xs-2">
+            <div class="col-2" *ngFor="let imagen of ProductoSEL[0].cat_imagenes_producto" style="min-height:100%; box">
+              <img class="sortable" (click)="selImage(imagen.url)" [ngStyle]="{'border': imagen.url == bigImgsrc ? '3px solid red' : 'none'}"
+                   width="80" height="60" src="{{imagen.url}}" />
+            </div>
+          </div>
+        </div>-->
+
+                </mat-grid-tile>
+                <mat-grid-tile  rowspan="7"  class="detailair" style="border: 0px solid #e6e6ff;">
+                  <mat-card class="example-card" style="min-height:100%; padding:5px; box-shadow:none;">
+                    <mat-card-content style="text-align:center;">
+
+                      <button mat-mini-fab color="grey" class="buttonclose"  [disabled]="preventAbuse" (click)="Mostrar_Inicio()">
+                        <p style="font-size: 24px;"><i class="fa fa-remove" aria-hidden="true" style="font-size: 24px; color:#A5000D"></i></p>
+                      </button>
+                      <div style=" width:100%;">
+                        <p class="strong" *ngIf="ProductoSEL[0].nombre.length < 30"><strong> {{ ProductoSEL[0].nombre }}</strong> </p>
+                        <p class="strong" *ngIf="ProductoSEL[0].nombre.length > 29" style="font-size:smaller;"><strong> {{ ProductoSEL[0].nombre }}</strong> </p>
+                        <p style="font-size: 9px;">Mod: {{ ProductoSEL[0].modelo }} - SKU: {{ ProductoSEL[0].sku }}</p>
+                      </div>
+                      <div style="text-align:center;">
+                        <p style="font-size: 16px; color:red; font-weight:bold;">{{ProductoSEL[0].precio_con_iva | currency}}</p>
+                      </div>
+                      <button mat-mini-fab style="" (click)="openSnackBar(ProductoSEL[0].id, 1)" color="warn" [disabled]="preventAbuse">
+                        <p style="font-size: 30px;"><i id="{{ ProductoSEL[0].id }}" class="fa fa-cart-arrow-down" aria-hidden="true" style="font-size: 21px;"></i></p>
+                      </button>
+                      <div style="overflow-y:auto;" class="descp_width">
+                        <p class="strong"style="font-size: 10px;  padding-top:8px; margin-bottom:0px;"><strong>{{ ProductoSEL[0].descripcion_corta.substring(0,70)}}</strong></p>
+                        <mat-tab-group style="height:190px; max-width:362px; ">
+                          <mat-tab label="Descripción" style="text-align:left; height: 5px;">
+                            <div style="font-size: 11px; text-align:left;" [innerHTML]="ProductoSEL[0].descripcion_larga.substring(0,520)"></div>
+                          </mat-tab>
+                          <mat-tab label="Atributos" style="text-align:left; height: 5px;">
+                            <div style="font-size: 10px; text-align:left;" [innerHTML]="ProductoSEL[0].atributos.replace('<li><', '<').replace('<ul>', '<br /><ul>')"> </div>
+                          </mat-tab>
+                        </mat-tab-group>
+                      </div>
+                      <div *ngIf="ProductoSEL[0].url_impresion" class="buttonred_div" >
+                        <a  target="_blank" href="{{ProductoSEL[0].url_impresion}}"  id="impresion"  type="submit" class="btn-default btn-default-rojo stylebutonred">
+                          Impresión
+                        </a>
+                      </div>
+
+                      <div *ngIf="ProductoSEL[0].url_guia" class="buttonred_div" >
+                        <a target="_blank" href="{{ProductoSEL[0].url_guia}}" type="submit" class="btn-default btn-default-rojo stylebutonred">
+                          Guía Mecánica
+                        </a>
+                      </div>
+                      <div *ngIf="ProductoSEL[0].url_manual" class="buttonred_div" >
+                        <a target="_blank" href="{{ProductoSEL[0].url_manual}}"  type="submit" class="btn-default btn-default-rojo stylebutonred">
+                          Manual
+                        </a>
+                      </div>
+                    </mat-card-content>
+                  </mat-card>
+                </mat-grid-tile>
+                <mat-grid-tile style="overflow-x:auto;">
+                  <div *ngFor="let imagen of ProductoSEL[0].cat_imagenes_producto">
+                    <img class="sortable" (click)="selImage(imagen.url)" [style.padding.px]="3"
+                         [ngStyle]="{'border': imagen.url == bigImgsrc ? '3px solid #A5000D' : 'none'}"
+                         width="50" height="40" src="{{imagen.url}}" />
+                  </div>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <div class="box-body">
+              <div class="col-xs-12" style="padding:0;">
+                <div class="box-header with-border" *ngIf="MostrarProductos">
+                  <h3 class="box-title negritas">{{letreroProductos}}</h3>
+
+                </div>
+
+              </div>
+              <!-- GRIDUNO BASE -->
+              <div class="box-body" *ngFor="let item1 of lista_car_base; let j = index">
+                <div class="example-container mat-elevation-z2" *ngIf="MostrarProductos">
+                  <div style="text-align:center; font-size:18px; font-weight:bold; color:#A5000D;"> {{item1.car_base}} </div>
+                  <mat-grid-list cols="3" rowHeight="2:2">
+                    <mat-grid-tile *ngFor="let pm of item1.productos; let i = index">
+                      <mat-card class="example-card mat-card card-prod-mas cardheight" >
+                        <div id="eyebutton" class="eyebutton" >
+                          <button mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(pm)" color="warn">
+                            <p id="{{ pm.id }}l" style="font-size: 30px;">
+                              <i class="fa fa-eye" aria-hidden="true" style="font-size: 25px;"></i>
+                            </p>
+                          </button>
+                        </div>
+                        <br><br>
+                        <div  id ="PRIMERGRID" class="productos_mas_comp" >
+                          <img  class="mat-card-image" mat-card-image src="{{pm.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                        </div>
+                        <mat-card-content  class="strong" style="text-align:center;">
+                          <p>
+                            <strong *ngIf="pm.nombre.length < 31">{{pm.nombre}}</strong>
+                            <strong *ngIf="pm.nombre.length > 30">{{pm.nombre.substring(0,30)}}...</strong>
+                          </p>
+                          <p style="font-size: 9px;">Mod: {{ pm.modelo }} - SKU: {{ pm.sku }}</p>
+                          <p style="font-size: 9px;" *ngIf="pm.descripcion_corta.length < 61"> {{pm.descripcion_corta}}</p>
+                          <p style="font-size: 9px;" *ngIf="pm.descripcion_corta.length > 60"> {{pm.descripcion_corta.substring(0,60)}}...</p>
+                          <p style="font-size: 12px; color:red; font-weight:bold;"> {{pm.precio_con_iva | currency}}</p>
+                        </mat-card-content>
+                      </mat-card>
+                    </mat-grid-tile>
+                  </mat-grid-list>
+                </div>
+              </div>
+              
+            </div>
+            <div class="box-body">
+              <div class="box-header with-border">
+                <div *ngIf="MostrarProductos; then thenBlock else elseBlock"></div>
+                <ng-template #thenBlock>
+                  <h3 class="box-title negritas">Accesorios más Comprados</h3>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <h3 class="box-title negritas">Accesorios Relacionados</h3>
+                </ng-template>
+              </div>
+              <div class="example-container mat-elevation-z2 contorno">
+                <div class="row carousel-cert">
+                  <div class="carousel slide multi-item-carousel col-xs-12" id="AccesoriosCarousel">
+                    <div class="carousel-inner">
+                      <div class="item col-xs-12" [class.active]="i==0" *ngFor="let accs of AccesoriosCarrusel; let i = index">
+                        <div class="col-xs-3" *ngFor="let am of accs.SubAccesorios; let j = index">
+                          <div class="col-xs-12">
+                            <button class="eyebutton2" *ngIf="MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn" style="float: right; width:30px; height:30px;">
+                              <p id="{{ am.id }}l" style="padding:0px; font-size:25px; margin-top: -6px;">
+                                <i class="fa fa-eye" aria-hidden="true" style="font-size: 23px;"></i>
+                              </p>
+                            </button>
+                            <button *ngIf="!MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="openSnackBar(am.id, 1)" color="warn" style="float: right; width:30px; height:30px;">
+                              <p style="padding:0px; font-size:25px; margin-top: -6px;">
+                                <i id="{{ am.id }}" class="fa fa-cart-arrow-down" style="font-size: 21px;"></i>
+                              </p>
+                            </button>
+                            <br>
+                            <div class="acc_mas_comp text-center">
+                              <img mat-card-image src="{{am.cat_imagenes_producto[0].url}}" class="img_acc_mas_comp" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                            </div>
+                          </div>
+                          <div class="col-xs-12">
+                            <mat-card-content class="landscapecontent" style="text-align:center;">
+                              <p class="strong" style="font-size: 11px;">
+                                <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+                                <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+                              </p>
+                              <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                              <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+                              <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+                              <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+                            </mat-card-content>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#AccesoriosCarousel" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
+                    <a class="right carousel-control" href="#AccesoriosCarousel" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+                  </div>
+
+                </div>
+
+                <!--<div class="form-group col-md-12 overflows" style="padding-left:0px">
+    <div class="form-group col-md-12" style="overflow-x:auto; padding-right:0; float:left; min-height:280px;">
+      <div [style.width]='withTarjeta * AccesoriosMostrar.length +"px"' style="float:left; height:100%;" *ngIf="AccesoriosMostrar.length > 0 ">
+        <div class="accesorieheight" *ngFor="let am of AccesoriosMostrar; let i = index" style="float:left; box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); margin:5px;">
+          <button class="eyebutton2" *ngIf="MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn" style="float: right; width:30px; height:30px;">
+            <p id="{{ am.id }}l" style="padding:0px; font-size:25px; margin-top: -6px;">
+              <i class="fa fa-eye" aria-hidden="true" style="font-size: 23px;"></i>
+            </p>
+          </button>
+          <button *ngIf="!MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="openSnackBar(am.id, 1)" color="warn" style="float: right; width:30px; height:30px;">
+            <p style="padding:0px; font-size:25px; margin-top: -6px;">
+              <i id="{{ am.id }}" class="fa fa-cart-arrow-down" style="font-size: 21px;"></i>
+            </p>
+          </button>
+          <br>
+          <div class="acc_mas_comp">
+            <img class="img_acc_mas_comp" mat-card-image src="{{am.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+          </div>
+          <mat-card-content class="landscapecontent" style="text-align:center;">
+            <p class="strong" style="font-size: 11px;">
+              <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+              <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+            </p>
+            <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+            <p id="hiddens4" style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+            <p id="hiddens3" style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+            <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+          </mat-card-content>
+
+        </div>
+      </div>
+    </div>
+  </div>-->
+                <!--<mat-grid-list cols="4" rowHeight="2:2">
+    <mat-grid-tile  *ngFor="let am of AccesoriosMostrar; let i = index">
+      <mat-card class="example-card accesorieheight" style="padding-top: 12px; padding-bottom:8px; ">
+        <button class="eyebutton2" *ngIf="MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn" style="float: right; width:30px; height:30px;">
+          <p id="{{ am.id }}l" style="padding:0px; font-size:25px; margin-top: -6px;">
+            <i class="fa fa-eye" aria-hidden="true" style="font-size: 23px;"></i>
+          </p>
+        </button>
+        <button *ngIf="!MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="openSnackBar(am.id, 1)" color="warn" style="float: right; width:30px; height:30px;">
+          <p style="padding:0px; font-size:25px; margin-top: -6px;">
+            <i id="{{ am.id }}" class="fa fa-cart-arrow-down" style="font-size: 21px;"></i>
+          </p>
+        </button>
+        <br>
+        <div class="acc_mas_comp" >
+          <img class="img_acc_mas_comp"  mat-card-image src="{{am.cat_imagenes_producto[0].url}}" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+        </div>
+        <mat-card-content class="landscapecontent" style="text-align:center;">
+          <p  class="strong" style="font-size: 11px;">
+            <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+            <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+          </p>
+          <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+          <p  id="hiddens4" style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+          <p  id="hiddens3" style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+          <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>-->
+
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="box-header with-border">
+                <div *ngIf="MostrarProductos; then thenBlock1 else elseBlock1"></div>
+                <ng-template #thenBlock1>
+                  <h3 class="box-title negritas pad">Consumibles más Comprados.</h3>
+                </ng-template>
+                <ng-template #elseBlock1>
+                  <h3 class="box-title negritas">Consumibles Relacionados</h3>
+                </ng-template>
+
+              </div>
+              <div class="example-container mat-elevation-z2 contorno2">
+                <div class="row carousel-cert">
+                  <div class="carousel slide multi-item-carousel col-xs-12" id="theCarousel">
+                    <div class="carousel-inner">
+                      <div class="item col-xs-12" [class.active]="i==0" *ngFor="let cons of ConsumiblesCarrusel; let i = index">
+                        <div class="col-xs-3" *ngFor="let am of cons.Subconsumibles; let j = index">
+                          <!--<img src="{{res.cat_imagenes_producto[0].url}}" class="img-responsive img-cert">-->
+                          <div class="col-xs-12">
+                            <button class="eyebutton3" *ngIf="MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn">
+                              <p id="{{ am.id }}l" style="font-size: 27px; padding:0px; font-size:25px; margin-top: -6px;">
+                                <i class="fa fa-eye" aria-hidden="true" style="font-size: 23px;"></i>
+                              </p>
+                            </button>
+                            <button class="eyebutton3" *ngIf="!MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="openSnackBar(am.id, 1)" color="warn" style="float: right; width:30px; height:30px;">
+                              <p style="padding:0px; font-size:25px; margin-top: -6px;">
+                                <i id="{{ am.id }}" class="fa fa-cart-arrow-down" style="font-size: 21px;"></i>
+                              </p>
+                            </button>
+                            <br>
+                            <div class="acc_mas_comp text-center">
+                              <img mat-card-image src="{{am.cat_imagenes_producto[0].url}}" class="img_acc_mas_comp" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                            </div>
+                          </div>
+                          <div class="col-xs-12">
+                            <mat-card-content class="landscapecontent" style="text-align:center;">
+                              <p class="strong" style="font-size: 11px;">
+                                <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+                                <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+                              </p>
+                              <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                              <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+                              <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+                              <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+                            </mat-card-content>
+                          </div>
+                          </div>
+                      </div>
+                      
+                    </div>
+                    <a class="left carousel-control" href="#theCarousel" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
+                    <a class="right carousel-control" href="#theCarousel" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+                  </div>
+
+                </div>
+                <!--<script src='https://static.codepen.io/assets/common/stopExecutionOnTimeout-de7e2ef6bfefd24b79a3f68b414b87b8db5b08439cac3f1012092b2290c719cd.js'></script>
+                <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js'></script>
+                <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>-->
+
+                <!--<mat-grid-list cols="4" rowHeight="2:2">
+                  <mat-grid-tile *ngFor="let am of ConsumiblesMostrar; let i = index">
+                    <mat-card class="example-card" style="padding-top: 12px; padding-bottom:8px; ">
+                      
+                      <button class="eyebutton3" *ngIf="MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="preventAbuse = true; Mostrar_ProdSel(am)" color="warn">
+                        <p id="{{ am.id }}l" style="font-size: 27px; padding:0px; font-size:25px; margin-top: -6px;">
+                          <i class="fa fa-eye" aria-hidden="true" style="font-size: 23px;"></i>
+                        </p>
+                      </button>
+                      <button class="eyebutton3" *ngIf="!MostrarProductos" mat-mini-fab [disabled]="preventAbuse" (click)="openSnackBar(am.id, 1)" color="warn" style="float: right; width:30px; height:30px;">
+                        <p style="padding:0px; font-size:25px; margin-top: -6px;">
+                          <i id="{{ am.id }}" class="fa fa-cart-arrow-down" style="font-size: 21px;"></i>
+                          i>
+                        </p>
+                      </button>
+                      <br>
+                      <div class="consumibles_mas_comp">
+                        <img mat-card-image src="{{am.cat_imagenes_producto[0].url}}" class="img_consumibles_mas_comp" alt="Cargando..." onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                      </div>
+                      <mat-card-content class="consumibles_mas_comp_text" style="text-align:center;">
+                        <p class="strong" style="font-size: 11px;">
+                          <strong *ngIf="am.nombre.length < 28">{{am.nombre}}</strong>
+                          <strong *ngIf="am.nombre.length > 27">{{am.nombre.substring(0,28)}}...</strong>
+                        </p>
+                        <p style="font-size: 9px;">Mod: {{ am.modelo }} - SKU: {{ am.sku }}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length < 51"> {{am.descripcion_corta}}</p>
+                        <p style="font-size: 9px;" *ngIf="am.descripcion_corta.length > 50"> {{am.descripcion_corta.substring(0,50)}}...</p>
+                        <p style="font-size: 12px; color:red; font-weight:bold;"> {{am.precio_con_iva | currency}}</p>
+                      </mat-card-content>
+                    </mat-card>
+                  </mat-grid-tile>
+                </mat-grid-list>-->
+              </div>
+            </div>
+            <div style="width:100%; padding:10px;">
+              <br />
+              <div style="float:right;">
+                <button *ngIf="isNew" style="float:right; padding-left:20px; padding-right:20px;" type="submit"
+                        class="pull-center btn btn-default btn-default-rojo" (click)="ToCreate()" [disabled]="preventAbuse || NoProdCarrito<=0">
+                  {{ preventAbuse ? 'Cargando...' : 'Finalizar' }} &nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                </button>
+                <button *ngIf="!isNew" style="float:right; padding-left:20px; padding-right:20px;" type="submit" class="pull-center btn btn-default btn-default-rojo" onclick="javascript:window.history.back();" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Cargando...' : 'Regresar' }} &nbsp; &nbsp;<i class="fa fa-list-alt" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div style="float:right;" *ngIf="Validasiguiente.length > 0">
+                <p style="color:red; font-weight:600;">{{Validasiguiente}} &nbsp;&nbsp;&nbsp;&nbsp;</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+

@@ -1,0 +1,55 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+src.rar
+/src.rar
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
+/.vs/config/applicationhost.config
+/.vs/Miele_Partners/v15/.suo
+/.vs/Front/v15/.suo
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+/s
+/.vs/slnx.sqlite-journal
+/node_modules_2.rar
+/.vs/Miele_Partners2/v15/.suo
+/src/app.rar
+/.vs/Miele_Partners/v16

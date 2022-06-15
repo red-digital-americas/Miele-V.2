@@ -1,0 +1,181 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #formusu="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!--Inicio: Header -->
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Margenes Comerciales</h3>
+            </div>
+            <!-- Fin: Header -->
+            <!-- Inicio: Body -- Card Principal -->
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Datos de la sucursal</h3>
+                  </div>
+
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-xs-6" style="">
+                      <p>Sucursal:    <label>{{ nombre_sucursal }}</label></p>
+                   
+                    </div>
+
+                    <!--<div class="input-group col-xs-12">-->
+                    <!-- Inicio: Rango de Fechas -->
+                    <div class="form-group col-xs-3">
+                      <input matInput id="rangofechas" [(ngModel)]="rangofechas" name="rangofechas" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Rango de Fechas aaaa/mm/dd" />
+                      <mat-icon matSuffix><i class="fa fa-calendar" aria-hidden="true"></i></mat-icon>
+                    </div>
+                    <!-- Fin: Rango de Fechas -->
+
+                    <div class="form-group col-xs-3" style="">
+                      <span class="input-group-btn">
+                        <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="porpagar()">Mostrar
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Inicio: Body -- Card Secundario -->
+                  <div class="box-body">
+                    <!-- Inicio: col -- Head -->
+                    <div class="col-xs-12" style="padding:0;">
+                      <div class="box-header with-border">
+                        <h3 class="box-title negritas">Comisiones</h3>
+                      </div>
+                    </div>
+                    <!-- Fin: col -- Head -->
+                    <!--Inicio: container -- Tabla -->
+                    <div class="example-container mat-elevation-z2">
+                      <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="id">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> # Orden/Cotización </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.id}}
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="referido">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Referido </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.referido}}
+                            <a href="" style="cursor:pointer; color:inherit" target="_blanck"></a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="ibs">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> IBS </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.ibs}}
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="f_generacion">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Fecha generación </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.f_generacion}}
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="venta_cotizacion">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Venta sucursal  </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.venta_cotizacion | currency}}
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="comision_cotizacion">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Comisión sucursal  </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            {{element.comision_cotizacion | currency}}
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pagado">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'centerTextCell'"> Pagado </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'centerTextCell'">
+                           
+                            <label *ngIf="element.pagado !='boton:Pagar'" style="font-size:xx-small; color:#228B22; cursor: pointer;">fecha pago: {{element.f_generacion}} </label>
+                            <img *ngIf="element.pagado =='boton:Pagar'  && permisos_edicion" _ngcontent-c2="" class="img-responsive"   (click)="pagar_comision(element.id , element.estatus )" src="/front/miele_partners/assets/img/pagarbutton.jpg" style="cursor: pointer; padding:0 0px;">
+                          </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                      </mat-table>
+
+                      <mat-paginator #paginator
+                                     [pageSize]="10"
+                                     [pageSizeOptions]="[5, 10]">
+                      </mat-paginator>
+                    </div>
+                    <!--Fin: container -- Tabla -->
+                  </div>
+                  <!-- Fin: Body -- Card Secundario -->
+
+
+
+                  <!-- Inicio: Body -- Card Secundario 2 -->
+                  <div class="box-body">
+                    <!-- Inicio: col -- Head -->
+                    <div class="col-xs-12" style="padding:0;">
+                      <div class="box-header with-border">
+                        <h3 class="box-title negritas">Resumen</h3>
+                      </div>
+                    </div>
+                    <!-- Fin: col -- Head -->
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-xs-4" style="">
+                        <label>Ventas Totales</label>
+                        <br />
+                        <label>{{ vtotales | currency }}</label>
+                      </div>
+                      <div class="form-group col-xs-4" style="">
+                        <label>Comisiones Totales</label>
+                        <br />
+                        <label>{{ ctotales | currency }}</label>
+                      </div>
+                      <div class="form-group col-xs-4" style="">
+                        <label>Comisiones Pagadas</label>
+                        <br />
+                        <label>{{ comisionpagada | currency }}</label>
+                      </div>
+                      <div class="form-group col-xs-4" style="">
+                        <label>Comisiones por  Pagar </label>
+                        <br />
+                        <label>{{ cpendientes | currency }}</label>
+                      </div>
+                    </div>
+                    <!-- Fin: Body -- Card Secundario 2
+
+                          VENTAS TOTALES: $517,340.00
+  COMISIONES TOTALES: $6,689.74
+  TOTAL COMISIONES PAGADAS : $824.48
+  TOTAL COMISIONES POR PAGAR: $5,865.26-->
+
+                  </div>
+                 </div>
+              </div>
+            </div>
+            <!-- Fin: Body -- Card Principal -->
+            <!-- Fin facturas-->
+            <!-- /.box-header -->
+
+            <div class="input-group col-xs-12">
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotousu(1)">Cancelar
+                </button>
+              </span>
+            </div>
+            <!-- /.box -->
+            <!-- /.col -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

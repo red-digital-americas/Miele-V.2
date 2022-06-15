@@ -1,0 +1,26 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<form #ibsfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="col-md-12" style="text-align:center">
+    <h3 style="height:20px">{{data.titulo}} </h3>
+    <div class="box-body" style="height:100px">
+      <div class="input-group col-xs-12">
+        <span>
+          {{data.mensaje}}
+        </span>
+
+      </div>
+
+    </div>
+    <div class="form-group col-md-12 justify-content-between" style="text-align:left">
+      <div class="btn-group" style="padding-right:15px;">
+        <button [mat-dialog-close]="0" style="" class="pull-center btn btn-default" (click)="onOmitir()">
+          Cancelar &nbsp; <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button style="float:right; background-color: #A5000D; color: #fff; border-color: #A5000D;" class="pull-center btn btn-default" (click)="LimpiarCarrito();">
+        Confirmar &nbsp; <i class="fa fa-check-circle" aria-hidden="true"></i>
+      </button>
+    </div>
+
+  </div>
+</form>

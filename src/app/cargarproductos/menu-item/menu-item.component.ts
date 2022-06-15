@@ -1,0 +1,27 @@
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { NavItem } from '../nav-item';
+
+
+@Component({
+  selector: 'app-menu-item',
+  templateUrl: './menu-item.component.html',
+  styleUrls: ['./menu-item.component.css']
+})
+export class MenuItemComponent implements OnInit {
+  @Input() items: NavItem[];
+  @ViewChild('childMenu') public childMenu;
+  @Output() valueMenu = new EventEmitter<any>();
+
+  constructor(public router: Router) { }
+
+  ngOnInit() {
+  }
+
+
+  selItemMenu(objeto: any) {
+    //console.log(objeto);
+    this.valueMenu.emit(objeto);
+    //console.log(this.valueMenu);
+  }
+}

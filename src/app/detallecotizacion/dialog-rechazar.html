@@ -1,0 +1,41 @@
+
+<form #rechazarfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div style="text-align:center;">
+    <h1 mat-dialog-title>Confimar Rechazo</h1>
+    <div mat-dialog-content>
+      <!--<p>Orden de Venta IBS</p>-->
+      <div class="box-body">
+        <div class="example-container mat-elevation-z2">
+          <div class="input-group col-xs-12">
+            <div class="form-group col-md-12" style="">
+              <label style="font-weight:normal;">
+                Esta acción bloquea el avance de la cotización y permite al personal de la sucursal corregirla para continuar con su proceso.
+              </label>
+            </div>
+          </div>
+          <div class="input-group col-xs-12">
+            <!--<div class="form-group col-md-12" style="">
+              <label>
+                Describa el motivo del Rechazo de la Cotización/Orden {{data.numero}}:
+              </label>
+            </div>-->
+            <div class="form-group col-md-12" style="">
+              <mat-form-field class="full-width">
+                <textarea matInput type="motivo_rechazo" name="motivo_rechazo" id="motivo_rechazo" [(ngModel)]="data.motivo_rechazo" placeholder="Describa el motivo del Rechazo de la Cotización/Orden {{data.numero}}" style="" required [ngModelOptions]="{standalone: true}"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-body">
+      <button [mat-dialog-close]="data.id" style="background-color: #A5000D; color: #fff; border-color: #A5000D; float:right;" [disabled]="!data.motivo_rechazo" class="pull-center btn btn-default btn-default-rojo" (click)="RechazarDialogClick(rechazarfrm.valid)">
+        Confirmar
+      </button>
+      &nbsp;&nbsp;&nbsp;
+      <button style=" float:left;" class="pull-center btn btn-default" (click)="onNoClick()">
+        Salir
+      </button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,143 @@
+.btn-default {
+  background-color: #EEEDEB;
+  color: #847d70;
+  border-color: #ddd;
+  padding-left: 50px;
+  padding-right: 50px;
+  font-weight: bold;
+}
+
+.btn-default-rojo {
+  background-color: #A5000D;
+  color: #fff;
+  border-color: #A5000D;
+}
+
+  .btn-default-rojo:hover {
+    background-color: #A5000D;
+    color: #fff;
+    border-color: #A5000D;
+  }
+
+.alert-danger-aviso {
+  background-color: #FFDB4B;
+  border-color: #FFDB4B;
+  color: #847d70;
+  padding: 10px 10px 10px 10px;
+  border-radius: 3px;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+.customWidthClass {
+  flex: 0 0 50px;
+  font-size: smaller;
+}
+
+.customWidthClass1 {
+  flex: 0 0 200px;
+  font-size: smaller;
+}
+
+.centerTextCell {
+  text-align: center;
+  font-size: smaller;
+}
+
+.area-photo {
+  position: relative;
+  margin-right: 10px
+}
+
+.buttonclose {
+  position: absolute;
+  right:0
+  
+}
+/*.mat-header-row, .mat-row {
+  display: flex;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 10px;
+}*/
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.imageGalery{
+  margin-bottom: 10px;
+}
+.imageGalery ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.imageGalery .image-container{
+  float: left;
+}
+
+.imageGalery .image-product{
+  width:190px;
+  margin-right: 10px;
+}
+
+.upload-image-form{
+  padding-top: 10px;
+}
+
+
+.upload-image-form input{
+  margin-right: 10px;
+  height: 37px;
+}
+
+.moneyInput{
+  text-align: left!Important;
+}
+
+.prod-enlace{
+     
+
+
+}
+.prod-enlace .link{
+  float: left;
+  width: 90%;
+  border-bottom: solid #949494 1px;
+  padding: 7px;
+}
+
+.prod-enlace .link a{
+    color: #a70000;
+    font-weight: bold;
+}
+
+.prod-enlace .link a:hover{
+  color:#847d6f;
+}
+
+.prod-enlace button{
+  float: left;
+  width: 10%;
+  padding-left: 0;
+  padding-right: 0;
+
+}

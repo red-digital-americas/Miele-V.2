@@ -1,0 +1,57 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<form #ibsfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div style="text-align:center;">
+    <h1 mat-dialog-title>Capturar IBS</h1>
+    <!--<div mat-dialog-content>-->
+    <div class="box-body">
+      <div class="example-container mat-elevation-z2">
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-12" style="">
+            <label>
+              Al capturar el número de IBS la cotización cambiara a estatus Orden de Compra Pendiente.
+            </label>
+            <div class="form-group col-md-3" style="">
+              <mat-form-field class="full-width">
+                <input maxlength="5" minlength="5" type="number" matInput name="_ibs" id="_ibs" #_ibs="ngModel" [(ngModel)]="data.ibs" placeholder="IBS" value="" required>
+              </mat-form-field>
+            </div>
+            <label>
+              Direcciones de correo para envío de Documentación (Guías Mecánicas y Manual):
+            </label>
+
+            <mat-form-field class="full-width">
+              <input matInput name="emailibs" id="emailibs" [disabled]="!data.ibs" placeholder="Correos" [formControl]="emaild1_ibs">
+              <mat-error *ngIf="emaild1_ibs.invalid">Formato incorrecto</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="col-md-6">
+              <input matInput name="emailibs" id="emailibs" [disabled]="!data.ibs" placeholder="Correo Alternativo 1" value="" [formControl]="emaild2_ibs">
+              <mat-error *ngIf="emaild2_ibs.invalid">Formato incorrecto</mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-md-6">
+              <input matInput name="emailibs" id="emailibs" [disabled]="!data.ibs" placeholder="Correo alternativo 2" value="" [formControl]="emaild3_ibs">
+              <mat-error *ngIf="emaild3_ibs.invalid">Formato incorrecto</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-body">
+      <div mat-dialog-actions>
+        <div style="float:left;">
+          <button [mat-dialog-close]="0" class="pull-center btn btn-default" (click)="NoIBSClick()">
+            Cancelar
+          </button>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div style="float:right;">
+          <button style="background-color: #A5000D; color: #fff; border-color: #A5000D; float:right;" class="pull-center btn btn-default btn-default-rojo" (click)="IBSRefClick(ibsfrm.valid);">
+            Guardar IBS
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--</div>-->
+</form>

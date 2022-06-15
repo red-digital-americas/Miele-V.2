@@ -1,0 +1,967 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #cotizacionfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <div class="box-body">
+                <label style="float:left; font-weight:600;  font-size:22px;">#<strong>{{cotizacion.Numero}}</strong></label>
+                <label style="float:left; font-size:22px;">&nbsp;{{CotizaEstatusDesc}}</label>
+                <!--<div  class="form-group col-md-12" style="padding-left:0px; ">-->
+                <label *ngIf="cotizacion.entrega_sol" style="color:forestgreen; font-size:22px;">
+                  &nbsp;- Entrega Solicitada
+                  <i class="fa fa-truck" aria-hidden="true" style="font-size: 21px;"></i>
+                </label>
+                <!--</div>-->
+                <label *ngIf="this.cotizacion.rechazada" style=" color:red; float:left; font-size:22px;">&nbsp; - RECHAZADA</label>
+                <label *ngIf="cotizacion.cancelada" style="float:left; font-size:22px; color:#A5000D">&nbsp; - CANCELADA</label>
+                <div *ngIf="this.cotizacion.Estatus > 2" style="float:right;">
+                  <label style="float:right; font-size:large; " *ngIf="cotizacion.ibs != '' && cotizacion.ibs != null; else hayIBS">
+                    <strong>Número de Orden de Venta Miele: {{cotizacion.ibs}}</strong>
+                  </label>
+                  <label style="float:right; font-size:large; " *ngIf="(cotizacion.ibs == '' || cotizacion.ibs == null) && !permisos.mostrar_boton_IBS ">
+                    <strong>IBS: Pendiente por generar en Miele</strong>
+                  </label>
+                </div>
+                <div style=" padding-left:50px; float:right;" *ngIf="(cotizacion.ibs == '' || cotizacion.ibs == null) && permisos.mostrar_boton_IBS">
+                  <button [disabled]="preventAbuse" style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="openIBSDialog();">
+                    {{ preventAbuse ? 'Cargando...' : 'Capturar IBS' }}
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="!cotizacion.cancelada" style="float:right;  padding-top:7px;">
+                <button id="1l" mat-mini-fab style="" color="warn">
+                  <i class="fa fa-money" aria-hidden="true"></i>
+                </button>
+              </div>
+              <h4 *ngIf="!cotizacion.cancelada" class="box-header" style="float:right; color:#A5000D; padding-bottom:0px;">
+                <span *ngIf="cotizacion.Estatus <3">Posible</span> comisión {{ comision_vendedor | currency}}
+              </h4>
+              <div class="box-body">
+                <div class="">
+                  <div style="width:100%; padding:0px;">
+                    <div *ngIf="cotizacion.Estatus > 2" style="padding-bottom:10px;">
+                      <label style="font-weight:400;  font-size:14px;"><strong>Cambio a Orden de compra generada: </strong>{{cambio_ord_comp_generada | date:'MM/dd/yyyy'}}</label>
+                    </div>
+                    <div style="padding-right:0px; padding-left:20px; float:left;">
+                      <button style="" type="submit" [disabled]="permisos.deshabilitar_btn_cancelar || preventAbuse" class="pull-center btn btn-default btn-default-rojo" (click)="cancelar()" *ngIf="!cotizacion.cancelada">
+                        {{ preventAbuse ? 'Cargando...' : 'Cancelar' }}
+                        <i class="fa fa-ban" style="font-size: 21px;"></i>
+                      </button>
+                    </div>
+                    <div style="padding-right:0px; padding-left:20px; float:left;" *ngIf="permisos.mostrar_btn_rechazar">
+                      <button [disabled]="preventAbuse" style="" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="bloqueo_desbloqueo()">
+                        <span *ngIf="cotizacion.rechazada">Desbloquear <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="font-size: 21px;"></i></span>
+                        <span *ngIf="!cotizacion.rechazada">Rechazar   <i class="fa fa-arrow-circle-o-left" aria-hidden="true" style="font-size: 21px;"></i> </span>
+                      </button>
+                    </div>
+                    <div style="padding-right:0px; padding-left:20px; float:left;" *ngIf="permisos.mostrar_boton_duplicar">
+                      <button [disabled]="preventAbuse" style="" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="getCat_vendedores();">
+                        {{ preventAbuse ? 'Cargando...' : 'Duplicar' }}
+                        <i class="fa fa-clone" aria-hidden="true" style="font-size: 21px;"></i>
+                      </button>
+                    </div>
+                    <div style="padding-right:0px; padding-left:20px; float:right;">
+                      <button [disabled]="preventAbuse" style="" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="enviar_cotizacion();">
+                        {{ preventAbuse ? 'Cargando...' : 'Enviar' }}
+                        <i class="fa fa-envelope" aria-hidden="true" style="font-size: 21px;"></i>
+                      </button>
+                    </div>
+                    <div style="padding-right:0px; padding-left:20px; float:right;">
+                      <button [disabled]="preventAbuse" style="" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="imprimir_prefact();">
+                        {{ preventAbuse ? 'Cargando...' : 'Imprimir' }}
+                        <i class="fa fa-print" aria-hidden="true" style="font-size: 21px;"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="box-body" *ngIf="cotizacion.cancelada">
+                    <div class="col-xs-12" style="padding:0;">
+                      <div class="box-header with-border">
+                        <h4 class="box-header" style="float:left; color:#A5000D; padding-bottom:15px;">
+                          <strong>Detalle de la cancelación :</strong>&nbsp;&nbsp;{{cotizacion.coment_cancel}}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="box-body" *ngIf="cotizacion.rechazada">
+                    <div class="col-xs-12" style="padding:0;">
+                      <div class="box-header with-border" style="vertical-align:top;">
+                        <h4 class="box-header" style="float:left; color:#A5000D; padding-bottom:15px;">
+                          <strong>Detalle del rechazo :</strong>
+                        </h4>
+                        <br />
+                        <p style="text-align:justify;">{{cotizacion.motivo_rechazo}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Productos</h3>
+                      <button style="float:right" type="button" class="pull-center btn btn-default btn-default-rojo" (click)="openCPialog()" [disabled]="permisos.deshabilitar_agregar_prod || preventAbuse">
+                        {{ preventAbuse ? 'Cargando...' : 'Agregar Servicios' }} &nbsp; &nbsp; <i class="fa fa-search-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="form-group col-md-12" style="padding-left:0px;">
+                      <mat-table #table [dataSource]="dataSource" style="padding-left:0px; max-height: 100%;">
+                        <ng-container matColumnDef="imagen" style="padding: 0 0px;">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass1'"> Producto </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass1'">
+                            <img *ngIf="element.cat_imagenes_producto[0].url" _ngcontent-c2="" class="img-responsive" src="{{element.cat_imagenes_producto[0].url}}" style="padding:0 0px;" onerror="this.src='/front/miele_partners/assets/img/preloader.gif'">
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="sku">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> SKU   </mat-header-cell>
+                          <mat-cell style="" *matCellDef="let element" [ngClass]="'customWidthClass0'"> {{element.sku}} </mat-cell>
+                        </ng-container>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="modelo">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Modelo </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.modelo}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="nombre">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass2'"> Nombre </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass2'"> {{element.nombre}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="desccorta">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass2'"> Descripción </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass2'"> {{element.descripcion_corta}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="cantidad">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Cantidad </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">
+                            <input *ngIf="element.id_sublinea != 113" min="1" max="99" class="form-control" type="number" id="cant_{{element.id}}" name="cant_{{element.id}}" (blur)="set_productos($event, row, i);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;" pattern="" [disabled]="element.agregado_automaticamente || element.es_regalo  || element.id == 388 || permisos.deshabilitar_agregar_prod">
+                            <div *ngIf=" !element.agregado_automaticamente && !element.es_regalo && element.id != 388 && !permisos.deshabilitar_agregar_prod">
+                              <span *ngIf="element.id_sublinea == 113" style="font-size:12px;">3 Horas</span>
+                              <img id="del_{{element.id}}" name="del_{{element.id}}" src="..\assets\img\trash.png" style="cursor: pointer; width:17px; height:21px;" (click)="del_productos($event, row, i);">
+                            </div>
+                            <div *ngIf="element.id_sublinea == 113 && muestra_btn_addHP" (click)="AgregarHE(element.id)"><a style="text-decoration: underline; color:#A5000D; cursor: pointer;"><br /><i class="fa fa-plus-square" aria-hidden="true"></i> Horas Extra</a></div>
+
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_precio_lista">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Precio Unitario </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.importe_precio_lista | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_total_bruto">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe Lista  </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"> {{element.importe_total_bruto | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="descuento">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Descuento </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">{{element.descuento * element.cantidad | currency}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importetotal">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe Cliente </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">
+                            <strong *ngIf="!element.es_regalo">{{element.importetotal | currency}}</strong>
+                            <!--<img *ngIf="element.es_regalo" _ngcontent-c2="" class="img-responsive" src="/front/miele_partners/assets/img/regalo.png" style="width:30px; height:30px;">-->
+                            <i *ngIf="element.es_regalo" class="fa fa-gift" aria-hidden="true" style="font-size: 26px; color:#A5000D; text-align:center"></i>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="margen_cc">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Margen CC </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'">-{{element.margen_cc}}%</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="importe_condiciones_com">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass0'"> Importe CC </mat-header-cell>
+                          <mat-cell *matCellDef="let element" style="" [ngClass]="'customWidthClass0'"><strong>{{element.importe_condiciones_com | currency}}</strong></mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns" style="padding-left:0px;"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                      </mat-table>
+                      <br />
+                      <div class="form-group col-md-12" style="padding-left:0px;">
+                        <div class="form-group col-md-6" style="overflow:auto; padding-right:0; float:left; min-height:240px;">
+                          <label>Promociones aplicadas:</label>
+                          <br />
+                          <div [style.width]='180 * Promociones_disponibles.length +"px"' style="float:left; height:100%;" *ngIf="Promociones_disponibles.length > 0 ">
+                            <div *ngFor="let pm of Promociones_disponibles; let i = index" style="float:left; box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); height:187px; width:160px;margin-top:5px; margin-right:5px; padding:4px;">
+                              <div style="border-bottom: 1px solid red; padding-bottom:10px;">
+                                <p style="font-weight:bolder; font-size:12px; "><strong>{{pm.nombre}}</strong></p>
+                                <mat-checkbox *ngIf="cotizacion.Estatus < 3" style="font-size:11px;" name="_requiere_fact" [disabled]="(rol_user != 1 && rol_user != 10004) || permisos.deshabilitar_editar_promociones || preventAbuse || pm.beneficio_obligatorio" color="warn" [checked]="pm.aplicada" (click)="(rol_user == 1 || rol_user == 10004) && !permisos.deshabilitar_editar_promociones && !preventAbuse && !pm.beneficio_obligatorio ? agregar_quitar_promocion(pm.id, pm.aplicada) : false">Aplicar</mat-checkbox>
+                                <span *ngIf="cotizacion.Estatus > 2 && pm.aplicada"><br /><i class="icon ion-ios-checkbox"></i> Aplicada</span>
+                                <span *ngIf="cotizacion.Estatus > 2 && !pm.aplicada"><br /><i class="icon ion-md-square-outline"></i> Aplicada</span>
+                                <p style="font-size: 10px;">
+                                  Vigencia hasta (mm/dd/aaaa):<br />
+                                  <label *ngIf="pm.vigencia_indefinida" style="font-size: 9px;">Indefinido</label>
+                                  <label *ngIf="!pm.vigencia_indefinida" style="font-size: 9px;">{{pm.fin}}</label>
+                                </p>
+                                <p style="padding-top:3px;">
+                                  <strong>
+                                    <span *ngIf="pm.beneficio_obligatorio" style="font-size:9px; color:red; float:left; padding-bottom:3px;"> Obligatoria </span>
+                                    <span *ngIf="!pm.beneficio_obligatorio" style="font-size:9px; float:left; padding-bottom:3px;"> Opcional </span>
+                                  </strong>
+                                </p>
+                              </div>
+                              <div style="padding-top:5px; max-width: 150px;">
+                                <p style="font-size: 9px; font-weight:600;">Beneficio: {{pm.beneficios}}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-6" style="border:none;">
+                          <div style="text-align:right; float:right; padding-left:5px; padding-right:0px;" *ngIf="permisos.mostrar_condiciones_comerciales">
+                            <strong>DETALLE COND. COMERCIALES</strong><br />
+                            <strong>IMPORTE TOTAL: </strong> {{importe_condiciones_com + iva_condiciones_com | currency}}<br />
+                            -----------------------------------------------<br />
+                            <strong>Importe sin Iva: </strong> {{importe_precio_lista | currency}}<br />
+                            <strong>Desc. Comercial: </strong>{{descuento_acumulado_cond_com | currency}}<br />
+                            <strong>Sub Total: </strong> {{importe_precio_lista - descuento_acumulado_cond_com | currency}}<br />
+                            <strong>Iva: </strong> {{iva_condiciones_com | currency}}<br />
+                            ------------------------------------------------<br />
+                            <strong>IMPORTE TOTAL: {{importe_condiciones_com + iva_condiciones_com| currency}}</strong><br />
+                          </div>
+                          <div style="text-align:right; float:right;">
+                            <strong>DETALLE DEL IMPORTE</strong><br />
+                            <strong>IMPORTE TOTAL: </strong> {{importe_promociones + iva_promociones | currency}}<br />
+                            ------------------------------------------------<br />
+                            <strong>Importe sin Iva: </strong> {{importe_precio_lista | currency}}<br />
+                            <strong>Descuentos sin Iva: </strong>{{descuento_acumulado | currency}}<br />
+                            <strong>Sub Total: </strong> {{importe_precio_lista - descuento_acumulado | currency}}<br />
+                            <strong>Iva: </strong> {{iva_promociones | currency}}<br />
+                            ------------------------------------------------<br />
+                            <strong>IMPORTE TOTAL: {{importe_promociones + iva_promociones | currency}}</strong><br />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-12" style="padding-left:0px;">
+                      <div style="padding-right:0px; padding-left:20px; float:left;">
+                        <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="AgregarProd()" [disabled]="permisos.deshabilitar_agregar_prod || preventAbuse">
+                          {{ preventAbuse ? 'Cargando...' : 'Agregar Productos' }}
+                        </button>
+                      </div>
+                      <div style="padding-right:10px; padding-left:40px; float:left;" *ngIf="muestra_dropTarjeta">
+                        <mat-form-field class="example-full-width">
+                          <mat-select id="cat_tarjetas_" name="cat_tarjetas_" #cat_tarjetas_="ngModel" [(ngModel)]="cotizacion.id_tarjeta" placeholder="Forma de pago"
+                                      [disabled]="permisos.deshabilitar_editar_promociones || preventAbuse">
+                            <mat-option *ngFor="let tarjeta of lista_tarjetas" [value]="tarjeta.id">
+                              {{tarjeta.nombre}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group col-xs-12" *ngIf="permisos.mostrar_boton_edit_basicos">
+                <div style=" padding-left:30px; float:left;">
+                  <button style="float:left;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="HabilitaEdiBasico();" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Cargando...' : 'Editar Cliente' }}
+                  </button>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Datos del cliente</h3>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="nombre" id="nombre" [(ngModel)]="Clientes.nombre" placeholder="Nombre(s)" value="" [disabled]="permisos.deshabilitar_cliente" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="paterno" id="paterno" [(ngModel)]="Clientes.paterno" placeholder="A. Paterno" [disabled]="permisos.deshabilitar_cliente" value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="materno" id="materno" [(ngModel)]="Clientes.materno" placeholder="A. Materno" value="" [disabled]="permisos.deshabilitar_cliente" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="email" id="email" [(ngModel)]="Clientes.email" [disabled]="permisos.deshabilitar_cliente" placeholder="Correo" value="">
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="telefono" id="telefono" [textMask]="{mask: mask, guide: false}" PhoneValidator [(ngModel)]="Clientes.telefono" #telefono="ngModel"
+                               [disabled]="permisos.deshabilitar_cliente" placeholder="Teléfono Fijo" value="" required>
+                      </mat-form-field>
+                      <div *ngIf="telefono.errors?.LongitudMinima && telefono.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="telefono_movil_cte" id="telefono_movil_cte" [textMask]="{mask: mask, guide: false}" PhoneValidator [(ngModel)]="Clientes.telefono_movil" #telefono_movil_cte="ngModel"
+                               [disabled]="permisos.deshabilitar_cliente" placeholder="Teléfono Cel." value="" required>
+                      </mat-form-field>
+                      <div *ngIf="telefono_movil_cte.errors?.LongitudMinima && telefono_movil_cte.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <mat-checkbox *ngIf="permisos.mostrar_chkfact" requiered id="_requiere_fact" name="_requiere_fact" #_requiere_fact="ngModel" [(ngModel)]="cotizacion.requiere_fact" [disabled]="permisos.deshabilitar_cliente">Requiere Factura</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body" *ngIf="permisos.mostrar_fact">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Datos de Facturación</h3>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_RFC_fact" id="_RFC_fact" #_RFC_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.rfc" placeholder="RFC" value="" [required]="cotizacion.requiere_fact ? 'required' : null">
+                        </mat-form-field>
+                        <div *ngIf="(_RFC_fact.invalid && (_RFC_fact.dirty || _RFC_fact.touched)) || ((FsicalesCliente.rfc == '' || FsicalesCliente.rfc == null) && ValActiva  && cotizacion.requiere_fact)" class="alert alert-danger">
+                          <div>
+                            RFC Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_nombre_fact" id="_nombre_fact" #_nombre_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.nombre_fact" placeholder="Nombre Comercial" value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_RS_fact" id="_RS_fact" #_RS_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.razon_social" placeholder="Nombre o Razón Social" value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_email_fact="ngModel" name="_email_fact" id="_email_fact" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="Correo Electrónico" value="">
+                        </mat-form-field>
+                        <div *ngIf="_email_fact.invalid &&  (_email_fact.dirty || _email_fact.touched)" class="alert alert-danger">
+                          Correo no válido
+
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput maxlength="5" name="_CP_fact" id="_CP_fact" #_CP_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.cp" placeholder="CP" value="">
+                          <mat-hint align="end" *ngIf="FsicalesCliente.cp">{{FsicalesCliente.cp.length }} / 5</mat-hint>
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="_Id_Estado_fact" (change)="getCat_municipios_fac();" #_Id_Estado_fact="ngModel" name="_Id_Estado_fact" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.id_estado" placeholder="Estado">
+                              <mat-option *ngFor="let estado of estados ; trackBy: index;" [value]="estado.id">
+                                {{estado.desc_estado}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="_Id_Dele_fact" name="_Id_Dele_fact" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.id_municipio" #_Id_Dele_fact="ngModel" placeholder="Delegación">
+                              <mat-option *ngFor="let mun of Municipios_fac; trackBy: index;" [value]="mun.id">
+                                {{mun.municipio}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_Colonia_fact" #_Colonia_fact="ngModel" id="_Colonia_fact" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.colonia" placeholder="Colonia" value="">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width" style="">
+                          <mat-select id="_prefijo_fact" name="_prefijo_fact" #_prefijo_env="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.id_prefijo_calle" placeholder="Prefijo Calle">
+                            <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                              {{prefijo.prefijo}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_Calle_fact" (ngModelChange)="validar_prefijos_fact(FsicalesCliente.calle_numero);" id="_Calle_fact" #_Calle_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.calle_numero" placeholder="Calle" value="">
+                        </mat-form-field>
+                        <div *ngIf="!Calle_fact_vaido" class="alert alert-danger">
+                          Capture la calle sin prefijos.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_Ext_fact" id="_Ext_fact" #_Ext_fact="ngModel" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.ext_fact" placeholder="Núm Ext." value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_Int_fact" id="_Int_fact" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.int_fact" placeholder="Núm. int." value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_telefono_fact" id="_telefono_fact" #_telefono_fact="ngModel" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_fact" [(ngModel)]="FsicalesCliente.telefono_fact" placeholder="Télefono" value="">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group col-xs-12" *ngIf="permisos.mostrar_boton_edit_detalles">
+                <div style=" padding-left:30px; float:left;">
+                  <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="HabilitaEdiDetalles();" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Cargando...' : 'Editar Direcciones' }}
+                  </button>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Dirección de Envío</h3>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput maxlength="5" CPValidator [textMask]="{mask: maskcp, guide: false}" name="CP_env" id="CP_env" #CP_env="ngModel"
+                                 (input)="ActualizaDirCP_env($event);" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.cp" placeholder="Código Postal" value="" required>
+                          <mat-hint *ngIf="dir_en.cp" align="end">{{dir_en.cp.length}} / 5</mat-hint>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_en.cp == null || dir_en.cp == '')  && ValActiva ; " class="alert alert-danger">
+                          CP Requerido.
+                        </div>-->
+                        <div *ngIf="CP_env.errors?.Vacio && (CP_env.touched || ValActiva)" class="alert alert-danger">
+                          CP Requerido.
+                        </div>
+                        <div *ngIf="CP_env.errors?.LongitudMinima && (CP_env.touched || ValActiva)" class="alert alert-danger">
+                          Código postal Invalido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Estado_env" name="Id_Estado_env" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.id_estado" #Id_Estado_env="ngModel" placeholder="Estado" required>
+                              <mat-option *ngFor="let estado of estados_en" [value]="estado.id">
+                                {{estado.desc_estado}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <div *ngIf="(dir_en.id_estado == null || dir_en.id_estado == 0) && ValActiva ; " class="alert alert-danger">
+                            Estado Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Dele_env" name="Id_Dele_env" DropDownValidator [disabled]="permisos.deshabilitar_dir_env"
+                                        [(ngModel)]="dir_en.id_municipio" #Id_Dele_env="ngModel" placeholder="Delegación" required>
+                              <mat-option *ngFor="let mun of Municipios_Env" [value]="mun.id_municipio">
+                                {{mun.municipio}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <!--<div *ngIf="(dir_en.id_municipio == null || dir_en.id_municipio =='0') && ValActiva ; " class="alert alert-danger">
+                            Delegación Requerida.
+                          </div>-->
+                          <div class="alert alert-danger" *ngIf="Id_Dele_env.errors?.defaultSelected && (Id_Dele_env.touched || ValActiva)">
+                            Selecciona una Delegación.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Localidad_env" name="Id_Localidad_env" DropDownValidator [disabled]="permisos.deshabilitar_dir_env"
+                                        [(ngModel)]="dir_en.id_localidad" #Id_Localidad_env="ngModel" placeholder="Localidad" required>
+                              <mat-option *ngFor="let local of Localidades_Env" [value]="local.id_localidad">
+                                {{local.localidad}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <!--<div *ngIf="(dir_en.id_localidad == null || dir_en.id_localidad =='0') && ValActiva ; " class="alert alert-danger">
+                            Localidad Requerida.
+                          </div>-->
+                          <div class="alert alert-danger" *ngIf="Id_Localidad_env.errors?.defaultSelected && (Id_Localidad_env.touched || ValActiva)">
+                            Selecciona una localidad.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width" style="">
+                          <mat-select id="_prefijo_env" name="_prefijo_env" #_prefijo_env="ngModel" [(ngModel)]="dir_en.id_prefijo_calle" placeholder="Prefijo Calle" [disabled]="permisos.deshabilitar_dir_env" required>
+                            <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                              {{prefijo.prefijo}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <div *ngIf="(dir_en.id_prefijo_calle == null || dir_en.id_prefijo_calle == 0)  && ValActiva ; " class="alert alert-danger">
+                          Prefijo requerido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #Calle_env="ngModel" (ngModelChange)="validar_prefijos_env(dir_en.calle_numero);" name="Calle_env" id="Calle_env" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.calle_numero" placeholder="Calle" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_en.calle_numero == null || dir_en.calle_numero == '') && ValActiva ; " class="alert alert-danger">
+                          Calle Inst. Requerida.
+                        </div>
+                        <div *ngIf="!Calle_env_valido" class="alert alert-danger">
+                          Capture la calle sin prefijos.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Ext_env" id="Ext_env" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.numExt" placeholder="Núm Ext." value="" required>
+                        </mat-form-field>
+                        <div *ngIf=" (dir_en.numExt == null || dir_en.numExt == '') && ValActiva ; " class="alert alert-danger">
+                          Núm Ext. Requerido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Int_env" id="Int_env" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.numInt" placeholder="Núm Int." value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_nombre_env" id="_nombre_env" #_nombre_env="ngModel" [disabled]="permisos.deshabilitar_dir_env" [(ngModel)]="dir_en.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_en.nombrecontacto == null || dir_en.nombrecontacto == '') && ValActiva ; " class="alert alert-danger">
+                          Contacto Requerido.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_env" PhoneValidator id="telefono_env" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_env"
+                                 [(ngModel)]="dir_en.telefono" #telefono_env="ngModel" placeholder="Télefono Fijo" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="telefono_env.errors?.Vacio && telefono_env.touched" class="alert alert-danger">
+                          Teléfono Requerido.
+                        </div>
+                        <div *ngIf="telefono_env.errors?.LongitudMinima && telefono_env.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_movil_env" PhoneValidator id="telefono_movil_env" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_env"
+                                 [(ngModel)]="dir_en.telefono_movil" #telefono_movil_env="ngModel" placeholder="Télefono Cel." value="" required>
+                        </mat-form-field>
+                        <div *ngIf="telefono_movil_env.errors?.Vacio && telefono_movil_env.touched" class="alert alert-danger">
+                          Celular Requerido.
+                        </div>
+                        <div *ngIf="telefono_movil_env.errors?.LongitudMinima && telefono_movil_env.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field>
+                          <input matInput [matDatepicker]="picker1" (dateChange)="asignarFecha_env()" [formControl]="date" [disabled]="permisos.deshabilitar_dir_env" name="_Fec_env" id="_Fec_env" placeholder="Fecha de Envío mm/dd/aaaa" required>
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+                        <div *ngIf="!fechas_validas" class="alert alert-danger">La fecha de envío requiere ser previa a la de instalación.</div>
+                        <div *ngIf="!f_envio_valida" class="alert alert-danger">Margen mínimo 120 días.</div>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <button style="padding:5px;" type="submit" [disabled]="permisos.deshabilitar_dir_ins || preventAbuse" class="pull-center btn btn-default btn-default-rojo" (click)="replicarDireccion()">
+                          {{ preventAbuse ? 'Cargando...' : 'Copiar en instalación' }}
+                          <i class="fa fa-paste" aria-hidden="true" style="font-size: 21px;"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Dirección de Instalación</h3>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput maxlength="5" CPValidator [textMask]="{mask: maskcp, guide: false}" name="CP_ins" id="CP_ins" #CP_ins="ngModel"
+                                 (input)="ActualizaDirCP($event);" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.cp" placeholder="Código Postal" value="" required>
+                          <mat-hint *ngIf="dir_ins.cp" align="end">{{dir_ins.cp.length}} / 5</mat-hint>
+                        </mat-form-field> 
+                        <!--<div *ngIf="(dir_ins.cp == null || dir_ins.cp == '')  && ValActiva ; " class="alert alert-danger">
+                          CP Requerido.
+                        </div>-->
+                        <div *ngIf="CP_ins.errors?.Vacio && (CP_ins.touched || ValActiva)" class="alert alert-danger">
+                          CP Requerido.
+                        </div>
+                        <div *ngIf="CP_ins.errors?.LongitudMinima && (CP_ins.touched || ValActiva)" class="alert alert-danger">
+                          Código postal Invalido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Estado_ins" name="Id_Estado_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.id_estado" #Id_Estado_ins="ngModel" placeholder="Estado" required>
+                              <mat-option *ngFor="let estado of estados_ins" [value]="estado.id">
+                                {{estado.desc_estado}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <div *ngIf="(dir_ins.id_estado == null || dir_ins.id_estado == 0) && ValActiva ; " class="alert alert-danger">
+                            Estado Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Dele_ins" name="Id_Dele_ins" DropDownValidator [disabled]="permisos.deshabilitar_dir_ins"
+                                        [(ngModel)]="dir_ins.id_municipio" #Id_Dele_ins="ngModel" placeholder="Delegación" required>
+                              <mat-option *ngFor="let mun of Municipios_Ins" [value]="mun.id_municipio">
+                                {{mun.municipio}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <!--<div *ngIf="(dir_ins.id_municipio == null || dir_ins.id_municipio =='0') && ValActiva ; " class="alert alert-danger">
+                            Delegación Requerida.
+                          </div>-->
+                          <div class="alert alert-danger" *ngIf="Id_Dele_ins.errors?.defaultSelected && (Id_Dele_ins.touched || ValActiva)">
+                            Selecciona una Delegación.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Localidad_ins" name="Id_Localidad_ins" DropDownValidator [disabled]="permisos.deshabilitar_dir_ins"
+                                        [(ngModel)]="dir_ins.id_localidad" #Id_Localidad_ins="ngModel" placeholder="Localidad" required>
+                              <mat-option *ngFor="let local_ins of Localidades_Ins" [value]="local_ins.id_localidad">
+                                {{local_ins.localidad}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <!--<div *ngIf="(dir_ins.id_localidad == null || dir_ins.id_localidad =='0') && ValActiva ; " class="alert alert-danger">
+                            Localidad Requerida.
+                          </div>-->
+                          <div class="alert alert-danger" *ngIf="Id_Localidad_ins.errors?.defaultSelected && (Id_Localidad_ins.touched || ValActiva)">
+                            Selecciona una localidad.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width" style="">
+                          <mat-select id="_prefijo_ins" name="_prefijo_ins" #_prefijo_ins="ngModel" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.id_prefijo_calle" placeholder="Prefijo Calle" required>
+                            <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                              {{prefijo.prefijo}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.id_prefijo_calle == null || dir_ins.id_prefijo_calle == 0)  && ValActiva ; " class="alert alert-danger">
+                          Prefijo requerido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput (ngModelChange)="validar_prefijos(dir_ins.calle_numero);" name="Calle_ins" id="Calle_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.calle_numero" placeholder="Calle" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.calle_numero == null || dir_ins.calle_numero == '') && ValActiva ; " class="alert alert-danger">
+                          Calle Inst. Requerida.
+                        </div>
+                        <div *ngIf="!Calle_ins_valido" class="alert alert-danger">
+                          Capture la calle sin prefijos.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Ext_ins" id="Ext_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.numExt" placeholder="Núm Ext." value="" required>
+                        </mat-form-field>
+                        <div *ngIf=" (dir_ins.numExt == null || dir_ins.numExt == '') && ValActiva ; " class="alert alert-danger">
+                          Núm Ext. Requerido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Int_ins" id="Int_ins" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.numInt" placeholder="Núm Int." value="">
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_nombre_ins" id="_nombre_ins" #_nombre_ins="ngModel" [disabled]="permisos.deshabilitar_dir_ins" [(ngModel)]="dir_ins.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.nombrecontacto == null || dir_ins.nombrecontacto == '') && ValActiva ; " class="alert alert-danger">
+                          Contacto Requerido.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_ins" PhoneValidator id="telefono_ins" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                                 [(ngModel)]="dir_ins.telefono" #telefono_ins="ngModel" placeholder="Télefono Fijo" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="telefono_ins.errors?.Vacio && telefono_ins.touched" class="alert alert-danger">
+                          Teléfono Requerido.
+                        </div>
+                        <div *ngIf="telefono_ins.errors?.LongitudMinima && telefono_ins.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_movil_ins" PhoneValidator id="telefono_movil_ins" [textMask]="{mask: mask, guide: false}" [disabled]="permisos.deshabilitar_dir_ins"
+                                 [(ngModel)]="dir_ins.telefono_movil" #telefono_movil_ins="ngModel" placeholder="Télefono Cel." value="" required>
+                        </mat-form-field>
+                        <div *ngIf="telefono_movil_ins.errors?.Vacio && telefono_movil_ins.touched" class="alert alert-danger">
+                          Celular Requerido.
+                        </div>
+                        <div *ngIf="telefono_movil_ins.errors?.LongitudMinima && telefono_movil_ins.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field>
+                          <input matInput [matDatepicker]="picker" (dateChange)="asignarFecha_ins()" [formControl]="date_ins" [disabled]="permisos.deshabilitar_dir_ins" name="_Fec_ins" id="_Fec_ins" placeholder="F. Instalación mm/dd/aaaa" required>
+                          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <div *ngIf="!fechas_validas" class="alert alert-danger">La fecha de envío requiere ser previa a la de instalación.</div>
+                        <div *ngIf="!f_ins_valida" class="alert alert-danger">Margen mínimo 120 días.</div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body" *ngIf="permisos.mostrar_referencia">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Referencia</h3>
+                    </div>
+                    <div class="form-group col-md-6" style="padding-right:0;" *ngIf="Clientes.referidopor != 0 && Clientes.referidopor != '0' && Clientes.referidopor != null">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select [disabled]="permisos.deshabilitar_referencia" placeholder="Vendedor" name="IdVende_ref" id="IdVende_ref" #IdVende_ref="ngModel" [(ngModel)]="Clientes.referidopor" required>
+                            <mat-option *ngFor="let vendedor of Vendedores; trackBy: index;" [value]="vendedor.id">
+                              {{ vendedor.nombrecompleto}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input *ngIf="Clientes.referidopor != 0 && Clientes.referidopor != '0' && Clientes.referidopor != null " matInput name="venci" id="venci" [disabled]="true" placeholder="Vencimiento: " value="{{ Clientes.vigencia_ref | date:'dd'}}/{{ Clientes.vigencia_ref | date:'MM'}}/{{ Clientes.vigencia_ref | date:'y'}}" required>
+                        <input *ngIf="Clientes.referidopor == 0 || Clientes.referidopor == '0' || Clientes.referidopor == null " matInput name="venci" id="venci" [disabled]="true" placeholder="Vencimiento: " value="Cliente no fue referido" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Información del Vendedor</h3>
+                    </div>
+                    <div class="form-group col-md-6" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select [disabled]="permisos.deshabilitar_vendedor" placeholder="Vendedores" name="IdVende_" id="IdVende_" #IdVende_="ngModel" [(ngModel)]="cotizacion.Id_Vendedor" required>
+                            <mat-option *ngFor="let vendedor of Vendedores;" [value]="vendedor.id">
+                              {{ vendedor.nombrecompleto }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-9" style="">
+                      <mat-form-field class="example-full-width">
+                        <textarea matInput name="ObservacionesV" id="ObservacionesV" [(ngModel)]="cotizacion.Observaciones" placeholder="Observaciones" value="" [disabled]="permisos.deshabilitar_vendedor"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body" *ngIf="permisos.mostrar_subir_archivos">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Forma de Pago / Terminos y Condiciones</h3>
+                    </div>
+                    <div class="form-group col-md-5" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="_Id_tipo_pago" (change)="Validar_comprobantes_obligatorios();" name="_Id_tipo_pago" #_Id_tipo_pago="ngModel" [disabled]="permisos.deshabilitar_formas_pago" [(ngModel)]="cotizacion.id_formapago" placeholder="Forma de Pago" required>
+                            <mat-option *ngFor="let forma of Formas_Pago" [value]="forma.id">
+                              {{forma.formaPago}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf=" cotizacion.id_formapago < 1 && ValActiva && permisos.mostrar_subir_archivos " class="alert alert-danger">
+                        Seleccione una forma de pago.
+                      </div>
+                    </div>
+                    <div class="form-group col-md-2" style="padding-right:0;">
+                      <div class="input-append">
+                        <br />
+                        <mat-checkbox *ngIf="permisos.mostrar_acepto_terminos" requiered id="_cotizacion.acepto_terminos_condiciones" name="_cotizacion.acepto_terminos_condiciones" #_cotizacion.acepto_terminos_condiciones="ngModel" [(ngModel)]="cotizacion.acepto_terminos_condiciones" [disabled]="permisos.deshabilitar_acepto_terminos">Acepto <a href="#" style="color:red; text-decoration: underline;">Términos y Condiciones</a></mat-checkbox>
+                      </div>
+                      <div *ngIf=" !cotizacion.acepto_terminos_condiciones && ValActiva && permisos.mostrar_acepto_terminos " class="alert alert-danger">
+                        Requiere aceptar condiciones.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body" *ngIf="permisos.mostrar_subir_archivos && cotizacion.id_formapago > 0">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Comprobantes</h3>
+                    </div>
+                    <h5 style="padding-left:10px; font-weight:700;" *ngIf="permisos.mostrarBtnComp">
+                      Agregar nuevo comprobante (.jpg .jpge .png .pdf):
+                    </h5>
+                    <div class="form-group col-md-3" style="padding-right:0;" *ngIf="permisos.mostrarBtnComp">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="_tipos_comp" name="_tipos_comp" #_tipos_comp="ngModel" [(ngModel)]="tipo_comp" placeholder="Tipo de Comprobante" [disabled]="permisos.deshabilitar_botones_upload">
+                            <mat-option *ngFor="let tp of tipos_comp" [value]="tp.id">
+                              {{tp.tipo_pago}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div *ngIf="permisos.mostrarBtnComp && tipo_comp > 0">
+                      <div class="form-group col-md-4" style="padding-right:0;" *ngIf="permisos.mostrarBtnComp">
+                        <div class="input-append">
+                          <input class="pull-center btn btn-default btn-default" style="float:left; padding-left: 0px; padding-right: 5px;" #fileInput type="file" [disabled]="permisos.deshabilitar_botones_upload" />
+                        </div>
+                      </div>
+                      <div class="form-group col-md-5" style="padding-right:0;" *ngIf="permisos.mostrarBtnComp">
+                        <div class="input-append">
+                          <button id="btncomp" name="btncomp" style="float:left;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="addFile()" [disabled]="permisos.deshabilitar_botones_upload || preventAbuse">
+                            Subir Comprobante
+                            <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <br /><br /><br /><br />
+                    <h5 style="padding-left:10px; font-weight:700;" *ngIf="permisos.mostrarBtnOrden">
+                      Agregar nueva orden (.jpg .jpge .png .pdf):
+                    </h5>
+                    <div class="form-group col-md-3" style="padding-right:0;" *ngIf="permisos.mostrarBtnOrden">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="orden_f" id="orden_f" [disabled]="true" placeholder="" value="Orden Firmada">
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="permisos.mostrarBtnOrden">
+                      <div class="form-group col-md-4" style="padding-right:0;">
+                        <div class="input-append">
+                          <input id="file_orden_i" class="pull-center btn btn-default btn-default" style="float:left; padding-left: 0px; padding-right: 5px;" #fileInput1 type="file" />
+                        </div>
+                      </div>
+                      <div class="form-group col-md-5" style="padding-right:0;">
+                        <div class="input-append">
+                          <button id="btnorden" name="btnorden" style="float:left;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="addFile()" [disabled]="preventAbuse">
+                            Subir Orden Firmada
+                            <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-10" style="padding-left:0px;" *ngIf="permisos.mostrar_lista_comp">
+                    <h5 style="padding-left:10px;">
+                      Comprobantes registrados ({{dataSourceImg.data.length}}) :
+                    </h5>
+                    <mat-table #table [dataSource]="dataSourceImg" style="padding-left:14px;">
+                      <ng-container matColumnDef="id_foto">
+                        <mat-header-cell *matHeaderCellDef> Documentos </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="">
+                          <a target="_blank" href="{{element.id_foto}}" style="color:red; text-decoration: underline;">
+                            <span *ngIf="element.tipo_docto == 1">Comprobante de Pago</span>
+                            <span *ngIf="element.tipo_docto == 2">Orden de Compra</span>
+                            {{element.id}}
+                            <i class="fa fa-file-image-o" style="color:red; font-size:medium;" aria-hidden="true"></i>
+                          </a>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="tipo_comp">
+                        <mat-header-cell *matHeaderCellDef> Descripción </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="">
+                          {{element.tipo_comp}}
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="fecha_subida">
+                        <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp; Fecha de Subida </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="">
+                          {{element.fecha_subida}}
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="usuario">
+                        <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp;&nbsp; Usuario </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="">
+                          {{element.usuario}}
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumns1" style="padding-left:0px;"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumns1;"></mat-row>
+                    </mat-table>
+                  </div>
+                  <div class="form-group col-md-12" style="padding-left:0px; padding-left:15px;">
+                    <div *ngIf="cotizacion.entrega_sol; else btnSolEntrega" class="form-group col-md-12" style="padding-left:0px; ">
+                      <label style="color:forestgreen; font-size:large;">Entrega Solicitada   <i class="fa fa-truck" aria-hidden="true" style="font-size: 21px;"></i></label>
+                    </div>
+                    <ng-template #btnSolEntrega>
+                      <button *ngIf="permisos.mostrar_sol_entrega && cotizacion.acepto_terminos_condiciones" style="float:left; background-color:forestgreen; border-color:forestgreen;" type="submit" class="pull-center btn btn-default btn-default btn-default-rojo" (click)="openSolEntregaDialog(cotizacion.Id)" [disabled]="permisos.deshabilitar_sol_entrega || preventAbuse">
+                        Solicitar Entrega
+                        <i class="fa fa-truck" aria-hidden="true" style="font-size: 21px;"></i>
+                      </button>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="example-container">
+                <div style="width:100%; padding:10px;">
+                  <div style=" padding-left:50px; float:right;" *ngIf="!permisos.deshablitar_btn_guardar_gral">
+                    <button [disabled]="permisos.deshablitar_btn_guardar_gral || preventAbuse" style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GuardarDetallesCotizacion(cotizacionfrm.valid)">
+                      {{ preventAbuse ? 'Cargando...' : permisos.texto_btn_guardar_gral }}
+                    </button>
+                  </div>
+                  <div style="padding-right:0px; padding-left:20px; float:right;">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

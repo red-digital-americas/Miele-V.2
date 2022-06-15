@@ -1,0 +1,764 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #promocionForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Información general Promoción</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="col-md-12">
+                <div class="form-group col-md-6">
+                  <mat-form-field class="full-width">
+                    <input matInput type="text" id="promocion_nombre" name="promocion_nombre" [(ngModel)]="promocion.nombre" #promocion_nombre_="ngModel" placeholder="Nombre de promoción" required>
+                  </mat-form-field>
+                </div>
+                <div class="form-group col-md-3 col-xs-6" style="">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" (dateChange)="asignarFecha_inicio();" [formControl]="date_ini" [disabled]="false" name="_date_ini" id="_date_ini" placeholder="Fecha Inicio" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                  <label *ngIf="!f_inicio_valida;" style="color:darkred;">
+                    Fecha menor a la actual
+                  </label>
+                </div>
+                <div class="form-group col-md-3 col-xs-6" style="">
+                  <!--<mat-form-field class="full-width">
+              <input matInput type="time" (change)="asignarFecha_inicio();" name="_hora" id="_hora" [(ngModel)]="hora" placeholder="Hora" value="00:00" [disabled]="false" required style="font-size:x-small">
+            </mat-form-field>-->
+                  <mat-form-field class="full-width" style="width:40px;">
+                    <input matInput type="number" id="horas_ini" style="text-align:center;" name="horas_ini" (change)="asignarHrIni()" min="0" max="23" placeholder="Hrs" [(ngModel)]="hr_ini" required />
+                  </mat-form-field>
+                  <strong style="font-size:24px; color: #A5000D;">:</strong>
+                  <mat-form-field class="full-width" style="width:40px;">
+                    <input matInput type="number" id="mins_ini" style="text-align:center;" name="mins_ini" (change)="asignarHrIni()" min="0" max="59" [(ngModel)]="min_ini" placeholder="Mins" />
+                  </mat-form-field>
+                </div>
+                <!--<div class="form-group col-md-2" style="">
+            <mat-form-field class="full-width" style="width:40px;">
+              <input matInput type="number" id="horas_ini" name="hora_ini" (change)="asignarHrIni()" min="0" max="23" placeholder="Hrs" [(ngModel)]="hr_ini" required />
+            </mat-form-field>
+            <strong style="font-size:24px; color: #A5000D;">:</strong>
+            <mat-form-field class="full-width" style="width:40px;">
+              <input matInput type="number" id="mins_ini" name="mins_ini" (change)="asignarHrIni()" min="0" max="59" [(ngModel)]="min_ini" placeholder="Mins" />
+            </mat-form-field>
+          </div>-->
+              </div>
+              <div class="col-xs-12">
+                <h5>Entidades Participantes</h5>
+                <div class="col-md-6">
+                  <mat-form-field class="full-width">
+                    <mat-chip-list #chipList_ep>
+                      <mat-chip *ngFor="let ent_part of entidades_chips"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="remove(ent_part)">
+                        {{ent_part}}
+                        <mat-icon matChipRemove *ngIf="removable"><i class="fa fa-times" aria-hidden="true"></i></mat-icon>
+                      </mat-chip>
+                      <input placeholder="Canales, Cuentas, Sucursales"
+                             #ent_partInput__
+                             [formControl]="EntidadesPartCtrl"
+                             [matAutocomplete]="auto"
+                             [matChipInputFor]="chipList_ep"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                             [matChipInputAddOnBlur]="addOnBlur"
+                             (matChipInputTokenEnd)="add($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                      <mat-option *ngFor="let ent_part of filteredEntidadesPart | async" [value]="ent_part.descripcion">
+                        {{ent_part.descripcion}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="form-group col-md-3 col-xs-6" style="">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker1" (dateChange)="asignarFecha_fin()" [formControl]="date_fin" [disabled]="promocion.vigencia_indefinida" name="_date_fin" id="_date_fin" placeholder="Fecha Finalizacion" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                  <label *ngIf="!f_fin_valida && !promocion.vigencia_indefinida" style="color:darkred;">
+                    Fecha menor a la actual
+                  </label>
+                </div>
+                <div class="form-group col-md-3 col-xs-6" style="">
+                  <!--<mat-form-field class="full-width" style="width:40px">
+              <input matInput type="time" name="_horafin" (change)="asignarFecha_fin()" id="_horafin" [(ngModel)]="horafin" placeholder="Hora" value="" [disabled]="promocion.vigencia_indefinida" required style="font-size:x-small;">
+            </mat-form-field>-->
+                  <mat-form-field class="full-width" style="width:40px;">
+                    <input matInput type="number" id="horas_fin" name="horas_fin" (change)="asignarHrFin()" [disabled]="promocion.vigencia_indefinida"
+                           min="0" max="23" placeholder="Hrs" [(ngModel)]="hr_fin" style="text-align:center;" required />
+                  </mat-form-field>
+                  <strong style="font-size:24px; color: #A5000D;">:</strong>
+                  <mat-form-field class="full-width" style="width:40px;">
+                    <input matInput type="number" id="mins_fin" name="mins_fin" (change)="asignarHrFin()" [disabled]="promocion.vigencia_indefinida"
+                           min="0" max="59" [(ngModel)]="min_fin" placeholder="Mins" style="text-align:center;" required />
+                  </mat-form-field>
+                  <mat-checkbox style="padding-left:20px;" id="promocion_vigencia_indefinida" (change)="change_check_indefinido();" name="promocion_vigencia_indefinida" #promocion_vigencia_indefinida_="ngModel" [(ngModel)]="promocion.vigencia_indefinida" [disabled]="false">Indefinida</mat-checkbox>
+                </div>
+                <!--<div class="form-group col-md-1" style="padding-right:0;">
+
+          </div>-->
+              </div>
+              <div class="col-xs-12">
+                <h5>Entidades Excluidas</h5>
+                <div class="col-md-6">
+                  <mat-form-field class="full-width">
+                    <mat-chip-list #chipList_e>
+                      <mat-chip *ngFor="let ent_part of entidades_chips_e"
+                                [selectable]="selectable_e"
+                                [removable]="removable_e"
+                                (removed)="remove_e(ent_part)">
+                        {{ent_part}}
+                        <mat-icon matChipRemove *ngIf="removable_e"><i class="fa fa-times" aria-hidden="true"></i></mat-icon>
+                      </mat-chip>
+                      <input placeholder="Canales, Cuentas, Sucursales"
+                             #ent_partInput_e
+                             [formControl]="EntidadesPartCtrl_e"
+                             [matAutocomplete]="auto_e"
+                             [matChipInputFor]="chipList_e"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes_e"
+                             [matChipInputAddOnBlur]="addOnBlur_e"
+                             (matChipInputTokenEnd)="add_e($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto_e="matAutocomplete" (optionSelected)="selected_e($event)">
+                      <mat-option *ngFor="let ent_part of filteredEntidadesPart_e | async" [value]="ent_part.descripcion">
+                        {{ent_part.descripcion}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <!--<mat-divider></mat-divider>-->
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <h5>Productos Excluidos</h5>
+                <div class="col-md-6">
+                  <mat-form-field class="full-width">
+                    <mat-chip-list #chipList_p>
+                      <mat-chip *ngFor="let ent_part of entidades_chips_p"
+                                [selectable]="selectable_p"
+                                [removable]="removable_p"
+                                (removed)="remove_p(ent_part)">
+                        {{ent_part}}
+                        <mat-icon matChipRemove *ngIf="removable_p"><i class="fa fa-times" aria-hidden="true"></i></mat-icon>
+                      </mat-chip>
+                      <input placeholder="Línea, Sublínea, Producto"
+                             #ent_partInput_p
+                             [formControl]="EntidadesPartCtrl_p"
+                             [matAutocomplete]="auto_p"
+                             [matChipInputFor]="chipList_p"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes_p"
+                             [matChipInputAddOnBlur]="addOnBlur_p"
+                             (matChipInputTokenEnd)="add_p($event)" />
+                    </mat-chip-list>
+                    <mat-autocomplete #auto_p="matAutocomplete" (optionSelected)="selected_p($event)">
+                      <mat-option *ngFor="let ent_part of filteredEntidadesPart_p | async" [value]="ent_part.descripcion">
+                        {{ ent_part.descripcion }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="form-group col-md-6" style="padding-right:0;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Reglas de la promoción</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="col-xs-12">
+                <div class="form-group col-md-4">
+                  <mat-form-field class="full-width">
+                    <mat-select [disabled]="false" (change)="condicion_change();" placeholder="Condición" name="promocion_id_cat_tipo_condicion" id="promocion_id_cat_tipo_condicion" #promocion_id_cat_tipo_condicion_="ngModel" [(ngModel)]="promocion.id_cat_tipo_condicion" required>
+                      <mat-option *ngFor="let condicion of this.catalogos_promo[1];" [value]="condicion.id">
+                        {{ condicion.descripcion}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="form-group" *ngIf="promocion.id_cat_tipo_condicion == 1 || promocion.id_cat_tipo_condicion == 3">
+                    <mat-form-field class="full-width" style="max-width:120px;">
+                      <input matInput type="number" min="0" max="100000000" id="promocion_monto_inferior_condicion" name="promocion_monto_inferior_condicion" [(ngModel)]="promocion.monto_inferior_condicion" #promocion_monto_inferior_condicion="ngModel" placeholder="Monto Inferior">
+                      <span matPrefix>$&nbsp;</span>
+                      <!--<span matSuffix>.00</span>-->
+                    </mat-form-field>
+                    <label *ngIf="promocion.id_cat_tipo_condicion == 1 || promocion.id_cat_tipo_condicion == 3">Monto Inferior (sin IVA)</label>
+                  </div>
+                  <div class="form-group" *ngIf="promocion.id_cat_tipo_condicion == 1 || promocion.id_cat_tipo_condicion == 3">
+                    <mat-form-field class="full-width" style="max-width:120px;">
+                      <input matInput type="number" min="0" max="100000000" id="monto_condicion_" name="monto_condicion_"
+                             [(ngModel)]="promocion.monto_condicion" #monto_condicion_="ngModel" ConfirmRangelValidator="promocion_monto_inferior_condicion" required placeholder="Monto Superior">
+                      <span matPrefix>$&nbsp;</span>
+                      <!--<span matSuffix>.00</span>-->
+                    </mat-form-field>
+                    <label *ngIf="promocion.id_cat_tipo_condicion == 1 || promocion.id_cat_tipo_condicion == 3">Monto superior (sin IVA)</label>
+                    <div *ngIf="monto_condicion_.errors?.esMayor && monto_condicion_.touched" class="alert alert-danger">
+                      Valor inválido
+                    </div>
+                  </div>
+
+                </div>
+                <div class="form-group col-md-4" *ngIf="promocion.id_cat_tipo_condicion > 1">
+                  <div class="input-append">
+                    <mat-form-field class="full-width">
+                      <mat-select [disabled]="false" (change)="herencia_change();" placeholder="Herencia" name="promocion_id_tipos_herencia_promo" id="promocion_id_tipos_herencia_promo" #promocion_id_tipos_herencia_promo_="ngModel" [(ngModel)]="promocion.id_tipos_herencia_promo" required>
+                        <mat-option *ngFor="let herencia of this.catalogos_promo[0];" [value]="herencia.id">
+                          {{ herencia.tipo}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-4">
+                  <mat-checkbox requiered id="promocion_incluir_desc_adic" name="promocion_incluir_desc_adic" #promocion_incluir_desc_adic_="ngModel" [(ngModel)]="promocion.incluir_desc_adic" [disabled]="false">Compatible con otras promociones</mat-checkbox>
+                </div>
+                <div class="col-xs-12" *ngIf="promocion.incluir_desc_adic">
+                  <h5>Promociones Vigentes</h5>
+                  <div class="col-xs-12">
+                    <div class="example-container mat-elevation-z2">
+                      <mat-table #table [dataSource]="datasource_pc">
+                        <mat-header-row *matHeaderRowDef="displayedColumns_pc"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns_pc;" style="min-height:17px;"></mat-row>
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="id">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Compatible </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <mat-checkbox id="1_{{element.id}}" [checked]="element.compatible" (change)="selected_promomo_com(element.id);"></mat-checkbox>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="nombre">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Promocion </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <a style="cursor:pointer; color:inherit;   font-size: 11px;">{{element.nombre}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="fecha_hora_inicio">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;"> Fecha inicio </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;  font-size: 11px;">
+                            <a style="cursor:pointer; color:inherit">{{element.fecha_hora_inicio}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="fecha_hora_fin">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center;">Fecha fin </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;  font-size: 11px;">
+                            <a style="cursor:pointer; color:inherit">{{element.fecha_hora_fin}}</a>
+                          </mat-cell>
+                        </ng-container>
+                      </mat-table>
+                      <mat-paginator #paginator_pc [pageSize]="5" [pageSizeOptions]="[5, 10]"> </mat-paginator>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12" *ngIf="promocion.id_cat_tipo_condicion == 2 || promocion.id_cat_tipo_condicion == 3">
+                <h5>Productos Participantes</h5>
+                <div class="form-group col-md-12">
+                  <mat-form-field class="full-width">
+                    <input style="font-size:13px;" matInput [matAutocomplete]="auto_pp" name="_TextoLibre" id="_TextoLibre" [(ngModel)]="TextoLibre" [formControl]="myControl" placeholder="Buscar por: Nombre de producto, Línea ó SubLínea.">
+                  </mat-form-field>
+                  <mat-autocomplete #auto_pp="matAutocomplete" (optionSelected)="selected_prod_part($event)">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.descripcion" style="font-size:13px;">
+                      {{ option.descripcion }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="col-xs-12" *ngIf="promocion.id_cat_tipo_condicion == 2 || promocion.id_cat_tipo_condicion == 3">
+                <div class="example-container mat-elevation-z2">
+                  <mat-table #table [dataSource]="dataSource_part">
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="tipo">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Tipo. </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a style="cursor:pointer; color:inherit">{{element.tipo}}</a>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="descripcion">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre. </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a style="cursor:pointer; color:inherit; font-size:smaller">{{element.descripcion}}</a>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="cantidad">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Cantidad </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <!--<a style="cursor:pointer; color:inherit">{{element.cantidad}}</a>-->
+                        <p align="center">
+                          <input matInput id="cant_{{element.id_producto}}_{{element.tipo}}" class="form-control" type="number" min="0" max="23" (blur)="cantidad_prod_part(element, i , this.value);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                        </p>
+                        <!--<p align="center" *ngIf="element.tipo != 'Producto'">
+                    <input [disabled]="true" class="form-control" id="cant_{{element.id_producto}}_{{element.tipo}}" type="number" (blur)="cantidad_prod_part(element, i , this.value);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                  </p>-->
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="acciones">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;">Acciones </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a style="cursor:pointer; color:inherit" (click)="remove_prod_part($event, element, i)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                      </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                  </mat-table>
+                  <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10]"> </mat-paginator>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <mat-divider></mat-divider> <!--<i class="fa fa-times" aria-hidden="true"></i>-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Beneficios</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="col-xs-12">
+                <div class="form-group col-md-2 col-sm-4" style="padding:10px 10px 10px 10px;">
+                  <mat-checkbox id="_1" (change)="click_beneficio_desc();" name="_chk_desc" #chk_desc_="ngModel" [(ngModel)]="chk_desc">Descuento</mat-checkbox>
+                </div>
+                <div class="form-group col-md-2 col-sm-4" style="padding:10px 10px 10px 10px;">
+                  <mat-checkbox id="_2" (change)="click_beneficio_reg();" name="_chk_rega" #chk_rega_="ngModel" [(ngModel)]="chk_reg">Regalo</mat-checkbox>
+                </div>
+                <div class="form-group col-md-2 col-sm-4" style="padding:10px 10px 10px 10px;">
+                  <mat-checkbox id="_3" (change)="click_beneficio_msi();" name="_chk_msi" #chk_msi_="ngModel" [(ngModel)]="chk_msi">Meses sin intereses</mat-checkbox>
+                </div>
+              </div>
+              <div class="col-md-12" *ngIf="chk_desc || chk_reg">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="col-xs-12">
+                <div class="form-group col-md-6 col-xs-9" *ngIf="chk_desc">
+                  <div class="col-xs-12">
+                    <Label style="float:left;">Descuento</Label>
+                  </div>
+                  <div class="col-xs-12">
+                    <div class="col-md-6 col-xs-8">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select (change)="asignar_tipo_desc();" placeholder="Tipo descuento" name="_tipo_descuento" id="_tipo_descuento" #tipo_descuento_="ngModel" [(ngModel)]="tipo_descuento" required>
+                            <mat-option *ngFor="let tipo_descuento of tipos_descuento; trackBy: index;" [value]="tipo_descuento.id">
+                              {{ tipo_descuento.desc}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3 col-xs-4">
+                      <mat-form-field class="full-width">
+                        <input matInput placeholder="Cantidad" name="monto_descuento_" id="monto_descuento_" #_monto_descuento_="ngModel" type="number" min="0" max="100000000" [(ngModel)]="monto_descuento" (change)="asignar_montos_desc();" class="example-right-align">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-6" *ngIf="chk_msi">
+                  <Label style="float:left;">MSI</Label>
+                  <div class="form-group col-md-12">
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="asignar_tipo_msi()" placeholder="Opciones de MSI" name="_tipo_msi" id="_tipo_msi" #tipo_msi_="ngModel" [(ngModel)]="tipo_msi" required>
+                          <mat-option *ngFor="let op_msi of this.catalogos_promo[2]; trackBy: index;" [value]="op_msi.id">
+                            {{ op_msi.descripcion}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" *ngIf="chk_reg">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="col-xs-12" *ngIf="chk_reg">
+                <label style="padding:10px;">Productos a regalar</label>
+                <div class="form-group col-md-12">
+                  <mat-form-field class="full-width">
+                    <input matInput style="font-size:13px;" [matAutocomplete]="auto_reg" name="_TextoLibre_reg" id="_TextoLibre_reg" [(ngModel)]="TextoLibre_reg" [formControl]="myControl_reg" placeholder="Buscar por: Nombre de producto, Modelo, SKU">
+                  </mat-form-field>
+                  <mat-autocomplete #auto_reg="matAutocomplete" (optionSelected)="selected_prod_reg($event)">
+                    <mat-option *ngFor="let option of filteredOptions_reg | async" [value]="option.descripcion" style="font-size:13px;">
+                      {{ option.descripcion }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+              </div>
+              <div class="col-xs-12" *ngIf="chk_reg">
+                <div class="example-container mat-elevation-z2">
+                  <div class="example-container mat-elevation-z2">
+                    <mat-table #table [dataSource]="dataSource_reg">
+                      <!-- Position Column -->
+                      <ng-container matColumnDef="tipo">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> Tipo. </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit">{{element.tipo}}</a>
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="descripcion">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre. </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit">{{element.descripcion}}</a>
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Weight Column -->
+                      <ng-container matColumnDef="cantidad">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> Cantidad </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit">{{element.cantidad}}</a>
+                          <!--<p align="center" *ngIf="element.tipo == 'Producto'">
+                      <input [disabled]="false" class="form-control" id="cant_{{element.id_producto}}_{{element.tipo}}" type="number" (blur)="cantidad_prod_part(element, i , this.value);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                    </p>
+                    <p align="center" *ngIf="element.tipo != 'Producto'">
+                      <input [disabled]="true" class="form-control" id="cant_{{element.id_producto}}_{{element.tipo}}" type="number" (blur)="cantidad_prod_part(element, i , this.value);" value="{{element.cantidad}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                    </p>-->
+                        </mat-cell>
+                      </ng-container>
+                      <!-- Weight Column -->
+                      <ng-container matColumnDef="acciones">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;">Acciones </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit" (click)="remove_prod_reg($event, element, i)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+                    <mat-paginator #paginator_reg [pageSize]="5" [pageSizeOptions]="[5, 10]"> </mat-paginator>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <br />
+                <mat-divider></mat-divider>
+                <br />
+              </div>
+              <div class="col-xs-12">
+                <div class="form-group col-md-4">
+                  <mat-checkbox id="_beneficio_obligatorio" name="_beneficio_obligatorio" #beneficio_obligatorio_="ngModel" [(ngModel)]="promocion.beneficio_obligatorio">Promoción Obligatoria</mat-checkbox>
+                </div>
+                <div class="form-group col-md-8" *ngIf="promocion.beneficio_obligatorio">
+                  <h5>Entidades para las que es obligatoria</h5><br />
+                  <mat-form-field class="full-width">
+                    <mat-chip-list #chipList_o>
+                      <mat-chip *ngFor="let ent_part of entidades_chips_o"
+                                [selectable]="selectable_o"
+                                [removable]="removable_o"
+                                (removed)="remove_o(ent_part)">
+                        {{ent_part}}
+                        <mat-icon matChipRemove *ngIf="removable_o"><i class="fa fa-times" aria-hidden="true"></i></mat-icon>
+                      </mat-chip>
+                      <input placeholder="Canales, Cuentas, Sucursales"
+                             #ent_obligaInput
+                             [formControl]="EntidadesPartCtrl_o"
+                             [matAutocomplete]="auto_o"
+                             [matChipInputFor]="chipList_o"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes_o"
+                             [matChipInputAddOnBlur]="addOnBlur_o"
+                             (matChipInputTokenEnd)="add_o($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto_o="matAutocomplete" (optionSelected)="selected_o($event)">
+                      <mat-option *ngFor="let ent_part of filteredEntidadesPart_o | async" [value]="ent_part.descripcion">
+                        {{ ent_part.descripcion }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <mat-divider></mat-divider>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" *ngIf="promocion.id_cat_tipo_condicion > 0 && this.promocion.entidades_participantes.length > 0">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Condiciones comerciales relacionadas</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="col-md-12" style="padding-bottom:20px">
+                <div>
+                  <!--<button class="pull-center btn btn-default btn-default-rojo" (click)="consultar_condiconesc_comerciales();">Editar Condiciones Comerciales</button>-->
+                  <!--<mat-checkbox (change)="consultar_condiconesc_comerciales();" id="editar_cc_" name="editar_cc_" #_editar_cc_="ngModel" [checked]="editar_cc" [(ngModel)]="_editar_cc">Condiciones comerciales Verificadas</mat-checkbox>-->
+                  <div style="float:right; padding-left:10px;">
+                    <button class="pull-center btn btn-default-rojo" (click)="consultar_condiconesc_comerciales();" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Cargando...' : 'Config. Condiciones Comerciales' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12" *ngIf="editar_cc">
+                <div class="form-group col-sm-12 mat-elevation-z2" style="padding-top:20px" *ngIf="editar_cc">
+                  <div class="col-sm-9" style="padding-right:0px;">
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_cc();" placeholder="Filtrar por Canal" name="_canal_filtro" id="_canal_filtro" #_canal_filtro="ngModel" [(ngModel)]="canal_filtro" required>
+                          <mat-option *ngFor="let canal of canales_aplicables; trackBy: index;" [value]="canal.id">
+                            {{ canal.canal}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_cc();" placeholder="Filtrar por Sucursal" name="_sucursal_filtro" id="_sucursal_filtro" #_sucursal_filtro="ngModel" [(ngModel)]="sucursal_filtro" required>
+                          <mat-option *ngFor="let sucursal of sucursales_aplicables; trackBy: index;" [value]="sucursal.id">
+                            {{ sucursal.sucursal}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_cc();" placeholder="Filtrar por Línea" name="_lineas_filtro" id="_lineas_filtro" #_lineas_filtro="ngModel" [(ngModel)]="_linea_filtro" required>
+                          <mat-option *ngFor="let linea of lineas_aplicables; trackBy: index;" [value]="linea.id">
+                            {{ linea.descripcion }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_cc();" placeholder="Filtrar por SubLínea" name="_sublinea_filtro" id="_sublinea_filtro" #_sublinea_filtro_="ngModel" [(ngModel)]="_sublinea_filtro" required>
+                          <mat-option *ngFor="let sublinea of sublineas_aplicables; trackBy: index;" [value]="sublinea.id">
+                            {{ sublinea.descripcion }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" style="padding-left:0px; padding-right:0px">
+                    <mat-form-field class="full-width col-sm-8">
+                      <input matInput type="number" id="_margen_adic_gral" name="_margen_adic_gral" [(ngModel)]="margen_adic_gral" #_margen_adic_gral="ngModel" placeholder="% General">
+                      <span matSuffix>&nbsp;%</span>
+                    </mat-form-field>
+                    <div class="form-group col-sm-4" style="padding-left:0px; padding-right:0px">
+                      <div style="float:left; padding-left:0px;">
+                        <button class="pull-center btn btn-default-rojo" (click)="aplicar_margen_gral();">Aplicar</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="example-container mat-elevation-z2 col-md-12">
+                    <div class="example-container mat-elevation-z2">
+                      <mat-table #table [dataSource]="dataSource_suc_part">
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="sucursal">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:35%"> Sucursal. </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <a style="cursor:pointer; color:inherit">{{element.sucursal}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="sublinea">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:35%"> Sublínea </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center; font-size:smaller;">
+                            <a style="cursor:pointer; color:inherit">{{element.sublinea}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns_suc_part"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns_suc_part;" style="min-height:20px;"></mat-row>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="margen_original">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:15%">Margen Normal</mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <a style="cursor:pointer; color:inherit">{{element.margen_original}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="margen_adicional">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:15%">Icremento/Decremento</mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <p align="center">
+                              <input [disabled]="false" class="form-control" id="ccs_{{element.id}}" type="number" (blur)="set_nuevo_margen($event, row, i);" value="{{element.margen_adicional}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                            </p>
+                          </mat-cell>
+                        </ng-container>
+                      </mat-table>
+                      <!--<mat-paginator #paginator_reg [pageSize]="5" [pageSizeOptions]="[5, 10]"> </mat-paginator>-->
+                    </div>
+                    <br />
+                    <div>
+                      <div style="float:left; width: 300px; padding-left:15px;">
+                        <mat-checkbox id="aplica_cc_" name="aplica_cc_" #aplica_cc_="ngModel" [(ngModel)]="promocion.aplica_cc">Aplicar condiciones comerciales</mat-checkbox>
+                      </div>
+                      <div style="float:right; width: 300px; padding-left:15px;">
+                        <mat-checkbox id="cc_validadas_" name="cc_validadas_" #cc_validadas_="ngModel" [(ngModel)]="cc_validadas">Confirmar condiciones comerciales</mat-checkbox>
+                      </div>
+                      <br />
+                    </div>
+                  </div>
+                  <!--<button mat-raised-button class="example-delete-tab-button" [disabled]="tabs.length === 1" (click)="removeTab(index)">
+              Delete Tab
+            </button>-->
+                  <!--</mat-tab>
+            </mat-tab-group>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--comisiones vendedores-->
+        <!--<div class="col-md-12" *ngIf="promocion.id_cat_tipo_condicion > 0 && this.promocion.entidades_participantes.length > 0">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Configuracion de comisiones</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="col-md-12" style="padding-bottom:20px">
+                <div>
+                  <div style="float:right; padding-left:10px;">
+                    <button class="pull-center btn btn-default-rojo" (click)="consultar_comisiones();" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Cargando...' : 'Config. comisiones' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12" *ngIf="editar_comisiones">
+                <div class="form-group col-sm-12 mat-elevation-z2" style="padding-top:20px" *ngIf="editar_comisiones">
+                  <div class="col-sm-9" style="padding-right:0px;">
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_comisiones();" placeholder="Filtrar por Canal" name="_canal2_filtro" id="_canal2_filtro" #_canal2_filtro="ngModel" [(ngModel)]="canal_filtro" required>
+                          <mat-option *ngFor="let canal of canales_aplicables; trackBy: index;" [value]="canal.id">
+                            {{ canal.canal}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_comisiones();" placeholder="Filtrar por Sucursal" name="_sucursal2_filtro" id="_sucursal2_filtro" #_sucursal2_filtro="ngModel" [(ngModel)]="sucursal_filtro" required>
+                          <mat-option *ngFor="let sucursal of sucursales_aplicables; trackBy: index;" [value]="sucursal.id">
+                            {{ sucursal.sucursal}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_comisiones();" placeholder="Filtrar por Línea" name="_lineas2_filtro" id="_lineas2_filtro" #_lineas2_filtro="ngModel" [(ngModel)]="_linea_filtro" required>
+                          <mat-option *ngFor="let linea of lineas_aplicables; trackBy: index;" [value]="linea.id">
+                            {{ linea.descripcion }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6">
+                      <mat-form-field class="full-width">
+                        <mat-select [disabled]="false" (change)="filtrar_comisiones();" placeholder="Filtrar por SubLínea" name="_sublinea2_filtro" id="_sublinea2_filtro" #_sublinea2_filtro_="ngModel" [(ngModel)]="_sublinea_filtro" required>
+                          <mat-option *ngFor="let sublinea of sublineas_aplicables; trackBy: index;" [value]="sublinea.id">
+                            {{ sublinea.descripcion }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" style="padding-left:0px; padding-right:0px">
+                    <mat-form-field class="full-width col-sm-8">
+                      <input matInput type="number" id="_margen_adic_gral" name="_margen_adic_gral" [(ngModel)]="margen_adic_gral" #_margen_adic_gral="ngModel" placeholder="% General">
+                      <span matSuffix>&nbsp;%</span>
+                    </mat-form-field>
+                    <div class="form-group col-sm-4" style="padding-left:0px; padding-right:0px">
+                      <div style="float:left; padding-left:0px;">
+                        <button class="pull-center btn btn-default-rojo" (click)="aplicar_margen_gral();">Aplicar</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="example-container mat-elevation-z2 col-md-12">
+                    <div class="example-container mat-elevation-z2">
+                      <mat-table #table [dataSource]="dataSource_comisiones">
+                        <ng-container matColumnDef="sucursal">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:35%"> Sucursal. </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <a style="cursor:pointer; color:inherit">{{element.sucursal}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="sublinea">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:35%"> Sublínea </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center; font-size:smaller;">
+                            <a style="cursor:pointer; color:inherit">{{element.sublinea}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns_comisiones"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns_comisiones;" style="min-height:20px;"></mat-row>
+                        <ng-container matColumnDef="margen">
+                          <mat-header-cell *matHeaderCellDef style="text-align:center; width:15%">Icremento/Decremento</mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                            <p align="center">
+                              <input [disabled]="false" class="form-control" id="ccs_{{element.id}}" type="number" (blur)="set_nuevo_margen($event, row, i);" value="{{element.margen}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                            </p>
+                          </mat-cell>
+                        </ng-container>
+                      </mat-table>
+                    </div>
+                    <br />
+                    <div>
+                      <div style="float:left; width: 300px; padding-left:15px;">
+                        <mat-checkbox id="aplica_cc_" name="aplica_cc_" #aplica_cc_="ngModel" [(ngModel)]="promocion.aplica_cc">Aplicar condiciones comerciales</mat-checkbox>
+                      </div>
+                      <div style="float:right; width: 300px; padding-left:15px;">
+                        <mat-checkbox id="cc_validadas_" name="cc_validadas_" #cc_validadas_="ngModel" [(ngModel)]="cc_validadas">Confirmar condiciones comerciales</mat-checkbox>
+                      </div>
+                      <br />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>-->
+        <div style="float:left; padding-left:10px;">
+          <button class="pull-center btn btn-default-rojo" (click)="regresar();">Regresar</button>
+        </div>
+        <div style="float:right; padding-right:10px;">
+          <button [disabled]="!cc_validadas" class="pull-center btn btn-default btn-default-rojo" (click)="crear_editar_promocion(promocionForm.valid);">Guardar</button>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>

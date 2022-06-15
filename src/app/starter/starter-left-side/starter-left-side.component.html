@@ -1,0 +1,101 @@
+
+<aside class="main-sidebar">
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar" style="width:100%; height:100%;">
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu">
+      <li class="text-center hidden-xs" style="padding:0 !important;">
+        <header class="main-header">
+          <a class="logo text-center">
+            <span class="logo-lg" style="color:#000; font-size:x-large; letter-spacing: 2px;">BIENVENIDO</span>
+          </a>
+        </header>
+      </li>
+      <li style="padding:0 !important;">
+        <br />
+        <br />
+        <br />
+      </li>
+      <li *ngIf="permisos_menu.mostrar_Home">
+        <a routerLink="/main" style="font-size:large; letter-spacing: 1px;">
+          <i class="fa fa-home"></i> <span>Home</span>
+        </a>
+      </li>
+      <li class="treeview" *ngIf="permisos_menu.mostrar_Cotizaciones">
+        <a href="#" style="font-size:large; letter-spacing: 1px;">
+          <i class="fa fa-file-text-o"></i>
+          <span>Gestión Comercial</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" *ngIf="permisos_menu.mostrar_Cotizaciones">
+          <li *ngIf="permisos_menu.mostrar_Gestion_Comercial" style="padding-left:5px;"><a routerLink="/buscadorcotizaciones"><i class="fa fa-circle-o"></i>Gestión Comercial</a></li>
+          <li *ngIf="permisos_menu.mostrar_Nueva_Cotizacion" style="padding-left:5px;"><a routerLink="/cargarproductos/0"><i class="fa fa-circle-o"></i>Nueva Cotización</a></li>
+          <!--<li *ngIf="permisos_menu.mostrar_Carrito_de_Compras" style="padding-left:5px;"><a href="/carshop"><i class="fa fa-circle-o"></i>Carrito</a></li>-->
+          <li *ngIf="permisos_menu.mostrar_Clientes" style="padding-left:5px;"><a routerLink="/clientes"><i class="fa fa-circle-o"></i>Clientes</a></li>
+          <li *ngIf="permisos_menu.mostrar_comisiones_vendedor" style="padding-left:5px;"><a routerLink="/comisiones-vendedor"><i class="fa fa-circle-o"></i>Comisiones</a></li>
+          <li *ngIf="permisos_menu.mostrar_comisiones_cuentas" style="padding-left:5px;"><a routerLink="/margenes-comerciales"><i class="fa fa-circle-o"></i>Margenes comerciales</a></li>
+        </ul>
+      </li>
+      <li *ngIf="permisos_menu.mostrar_Administracion" class="treeview">
+        <a href="#" style="font-size:large;">
+          <i class="fa fa-cog"></i>
+          <span>Administración</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" *ngIf="permisos_menu.mostrar_Administracion">
+          <li *ngIf="permisos_menu.mostrar_Promociones" style="padding-left:5px;"><a routerLink="/promociones"><i class="fa fa-circle-o"></i>Promociones</a></li>
+          <li *ngIf="permisos_menu.mostrar_Promociones" style="padding-left:5px;"><a routerLink="/buscarcomisiones"><i class="fa fa-circle-o"></i>Config Comisiones</a></li>
+          <li *ngIf="permisos_menu.mostrar_Productos" style="padding-left:5px;"><a routerLink="/productos"><i class="fa fa-circle-o"></i>Productos</a></li>
+          <li *ngIf="permisos_menu.mostrar_sublineas" style="padding-left:5px;"><a routerLink="/sublineas"><i class="fa fa-circle-o"></i>Sublineas</a></li>
+          <!--<li *ngIf="permisos_menu.mostrar_editar_banner" style="padding-left:5px;"><a routerLink="/banner"><i class="fa fa-circle-o"></i>Editar Banner</a></li>-->
+        </ul>
+      </li>
+      <li class="treeview" *ngIf="permisos_menu.mostrar_cuentas">
+        <a href="#" style="font-size:large;">
+          <i class="fa fa-users"></i>
+          <span>Cuentas</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" *ngIf="permisos_menu.mostrar_cuentas">
+          <li *ngIf="permisos_menu.mostrar_Usuarios" style="padding-left:5px;"><a routerLink="/usuarios"><i class="fa fa-circle-o"></i>Usuarios</a></li>
+          <li *ngIf="permisos_menu.mostrar_Cuentas" style="padding-left:5px;"><a routerLink="/cuentas"><i class="fa fa-circle-o"></i>Cuentas</a></li>
+          <li *ngIf="permisos_menu.mostrar_sucursales" style="padding-left:5px;"><a routerLink="/sucursales"><i class="fa fa-circle-o"></i>Sucursales</a></li>
+        </ul>
+      </li>
+      <li class="treeview" *ngIf="permisos_menu.mostrar_Reportes">
+        <a href="#" style="font-size:large; letter-spacing: 1px;">
+          <i class="fa fa-line-chart"></i>
+          <span>Reportes</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" *ngIf="permisos_menu.mostrar_Reportes"></ul>
+      </li>
+      <li class="treeview">
+        <a href="#" style="font-size:large; letter-spacing: 1px;">
+          <i class="fa fa-play"></i>
+          <span>Capacitacion</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v1.webm" target="_blank"><i class="fa fa-circle-o"></i>Nueva Cotizacion</a></li>
+          <li *ngIf="permisos_menu.mostrar_Promociones" style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v2.webm" target="_blank"><i class="fa fa-circle-o"></i>Vista Administrador</a></li>
+          <li style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v3.webm" target="_blank"><i class="fa fa-circle-o"></i>Comprobantes de pago</a></li>
+          <li style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v4.webm" target="_blank"><i class="fa fa-circle-o"></i>Solicitar envío</a></li>
+          <li style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v5.webm" target="_blank"><i class="fa fa-circle-o"></i>Capturar IBS</a></li>
+          <li style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v7.webm" target="_blank"><i class="fa fa-circle-o"></i>Agregar/Editar Producto</a></li>
+          <li *ngIf="permisos_menu.mostrar_Promociones" style="padding-left:5px;"><a href="https://api.mieleservice.com.mx/capacitacion/v6.webm" target="_blank"><i class="fa fa-circle-o"></i>Librerar / Rechazar Orden</a></li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</aside>

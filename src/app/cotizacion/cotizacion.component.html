@@ -1,0 +1,441 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #cotizacionfrm="ngForm" (keydown.enter)="$event.preventDefault()">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-header negritas" style="float:left;">Cotización</h3>
+              <!--<h4 class="box-header" style="float:right; color:#A5000D; padding-bottom:0px;">
+                  !Posible Venta Generá Comisiones por $ 525.00¡
+                </h4>
+                <div style="float:right;  padding-top:7px;">
+                  <button id="1l" mat-mini-fab style="" color="warn">
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                  </button>
+                </div>-->
+
+              <br />
+              <div class="box-tools pull-right">
+                <!--<button type="button" class="btn btn-box-tool" data-widget="collapse">
+      <i class="fa fa-minus"></i>
+    </button>-->
+              </div>
+            </div>
+            <div class="box-body" *ngIf="Id_Canal == 2">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Búsqueda por dirección de instalación.</h3>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field class="full-width">
+                      <input matInput type="text" id="busqueda" name="busqueda" [(ngModel)]="text_busqueda" #busqueda="ngModel" placeholder="Buscar por: Nombre, Email, Dirección">
+                    </mat-form-field>
+                  </div>
+                  <div class="input-group-btn col-md-2">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="buscar()" [disabled]="preventAbuse" style="margin-right:5px;">
+                      {{ preventAbuse ? 'Buscando...' : 'Buscar' }}
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="valid"
+                     class="alert alert-danger col-md-8">
+                  <div>
+                    Escribe un parametro de busqueda.
+                  </div>
+                </div>
+                <div class="col-xs-12" style="padding:0;">
+                  <div class="example-container mat-elevation-z2">
+                    <div class="input-group col-xs-12" *ngIf="ver">
+                      <div class="box-header with-border">
+                        <span class="negritas" style="font-size:15px;">Clientes: </span>
+                      </div>
+                      <mat-table #table [dataSource]="dataSource" style="">
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="nombre" style="">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass150'"> Nombre </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass150'">
+                            <a style="cursor:pointer; color:inherit; " (click)="set_productos($event, element, i)">{{element.nombre}}</a>
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="referidopor">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass150'">Cuenta - Sucursal.</mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass150'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.referidopor}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="vigencia">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass70'"> Vigencia Ref.</mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass70'">
+                            <a style="cursor:pointer; color:inherit; " (click)="set_productos($event, element, i)">&nbsp;&nbsp;{{element.vigencia}}</a>
+                          </mat-cell>
+                        </ng-container>
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="email">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass150'"> Email </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass150'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.email}}</a>
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- Symbol Column -->
+                        <ng-container matColumnDef="telefono" >
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass100'"> Teléfono </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index"[ngClass]="'customWidthClass100'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.telefono}}</a>
+                          </mat-cell>
+                        </ng-container>
+
+                        <!-- Symbol Column -->
+                        <ng-container matColumnDef="celular">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass100'"> Celular </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass100'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.telefono_movil}}</a>
+                          </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fecha">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass70'"> Fecha de alta </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass70'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.fecha_alta}}</a>
+                          </mat-cell>
+                        </ng-container>
+
+                        <!--<ng-container matColumnDef="direccion">
+                          <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass200'"> Dirección </mat-header-cell>
+                          <mat-cell *matCellDef="let element; let i = index" [ngClass]="'customWidthClass200'">
+                            <a style="cursor:pointer; color:inherit; "  (click)="set_productos($event, element, i)">{{element.direccion}}</a>
+                          </mat-cell>
+                        </ng-container>-->
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                      </mat-table>
+
+                      <mat-paginator #paginator
+                                     [pageSize]="5"
+                                     [pageSizeOptions]="[5, 10]">
+                      </mat-paginator>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!ver">
+                  <span style="color:#A5000D"> {{mensaje}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Datos del cliente</h3>
+                  </div>
+                  <span class="" style="float:right;" *ngIf="id_find_cliente > 0">
+                    <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="limpiarcliente()" [disabled]="preventAbuse" style="margin-right:5px; padding-right:15px; padding-left:15px;">
+                      {{ preventAbuse ? 'Buscando...' : 'Deshacer' }}
+                    </button>
+                  </span>
+                  <div class="input-group col-md-12">
+                    <div class="input-group col-md-12">
+                      <br *ngIf="ver" />
+                      <br *ngIf="ver" />
+                      <div class="form-group col-md-3  col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_nombre="ngModel"[disabled]="deshabilita"  name="_nombre" id="_nombre" [(ngModel)]="nombre" placeholder="Nombre(s)" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(_nombre.invalid && (_nombre.dirty || _nombre.touched)) || (nombre == '' && ValActiva == '1')" class="alert alert-danger">
+                          <div *ngIf="_nombre.errors.required ">
+                            Nombre  requerido.
+                          </div>
+                          <div *ngIf="!_nombre.errors.required">
+                            Nombre  Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_paterno="ngModel" name="_paterno"[disabled]="deshabilita"  id="_paterno" [(ngModel)]="paterno" placeholder="A. Paterno" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(_paterno.invalid && (_paterno.dirty || _paterno.touched)) || (paterno == '' && ValActiva == '1')" class="alert alert-danger">
+                          <div *ngIf="_paterno.errors.required ">
+                            A. Paterno requerido.
+                          </div>
+                          <div *ngIf="!_paterno.errors.required">
+                            A. Paterno Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_materno="ngModel" [disabled]="deshabilita" name="_materno" id="_materno" [(ngModel)]="materno" placeholder="A. Materno" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(_materno.invalid && (_materno.dirty || _materno.touched)) || (materno == '' && ValActiva == '1')" class="alert alert-danger">
+                          <div *ngIf="_materno.errors.required ">
+                            A. Materno requerido.
+                          </div>
+                          <div *ngIf="!_materno.errors.required">
+                            A. Materno Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_email="ngModel" [disabled]="deshabilita" name="_email" id="_email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" [(ngModel)]="email" placeholder="Correo" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(_email.invalid && (_email.dirty || _email.touched)) || (email == '' && ValActiva == '1')" class="alert alert-danger">
+                          <div *ngIf="_email.errors.required ">
+                            Correo  requerido.
+                          </div>
+                          <div *ngIf="!_email.errors.required">
+                            Correo no válido
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3 col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_telefono="ngModel" PhoneValidator [disabled]="deshabilita" name="_telefono" [textMask]="{mask: mask, guide: false}" id="_telefono" [(ngModel)]="telefono" placeholder="Télefono Fijo" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="_telefono.errors?.Vacio && _telefono.touched && ValActiva =='1'" class="alert alert-danger">
+                          Teléfono requerido
+                        </div>
+                        <div *ngIf="_telefono.errors?.LongitudMinima && _telefono.touched && ValActiva =='1'" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput #_telefono_movil="ngModel" PhoneValidator [disabled]="deshabilita" name="_telefono_movil" [textMask]="{mask: mask, guide: false}" id="_telefono_movil" [(ngModel)]="telefono_movil" placeholder="Télefono Cel." value="" required>
+                        </mat-form-field>
+                        <div *ngIf="_telefono_movil.errors?.Vacio && _telefono_movil.touched && ValActiva =='1'" class="alert alert-danger">
+                          Teléfono C. requerido.
+                        </div>
+                        <div *ngIf="_telefono_movil.errors?.LongitudMinima && _telefono_movil.touched && ValActiva =='1'" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="" *ngIf="Id_Canal == 3">
+                        <mat-checkbox class="example-margin" [(ngModel)]="captura_direc" [ngModelOptions]="{standalone: true}">Capturar dirección</mat-checkbox>
+                      </div>
+                      <div class="form-group col-md-3  col-sm-6" style="" *ngIf="Id_Canal == 3">
+                        <mat-checkbox class="example-margin" [(ngModel)]="es_referido" [ngModelOptions]="{standalone: true}">Referir</mat-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-body" *ngIf="captura_direc">
+                <div class="example-container mat-elevation-z2">
+                  <div class="input-group col-xs-12">
+                    <div class="box-header with-border">
+                      <h3 class="box-title negritas">Dirección de Instalación</h3>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput autofocus [textMask]="{mask: maskcp, guide: false}" name="CP_ins" id="CP_ins" (keydown)="ActualizaDirCP($event);" [disabled]="false" [(ngModel)]="dir_ins.cp" placeholder="Código Postal" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.cp == null || dir_ins.cp == '')  && ValActiva == '1' ; " class="alert alert-danger">
+                          CP Requerido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Estado_ins" (change)="getCat_municipios_ins();" name="Id_Estado_ins" [disabled]="deshabilitains" [(ngModel)]="dir_ins.id_estado" #tipoproducto="ngModel" placeholder="Estado" required>
+                              <mat-option *ngFor="let estado of estados" [value]="estado.id">
+                                {{estado.desc_estado}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <div *ngIf="(dir_ins.id_estado == null || dir_ins.id_estado =='0') && ValActiva =='1' ; " class="alert alert-danger">
+                            Estado Requerido.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Dele_ins" name="Id_Dele_ins" [disabled]="deshabilitains" [(ngModel)]="dir_ins.id_municipio" #tipoproducto="ngModel" placeholder="Delegación" required>
+                              <mat-option *ngFor="let mun of Municipios_Ins" [value]="mun.id_municipio">
+                                {{mun.municipio}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <div *ngIf="(dir_ins.id_municipio == null || dir_ins.id_municipio =='0') && ValActiva == '1' ; " class="alert alert-danger">
+                            Delegación Requerida.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="padding-right:0;">
+                        <div class="input-append">
+                          <mat-form-field class="full-width">
+                            <mat-select id="Id_Localidad" name="Id_Localidad" [disabled]="deshabilitains" [(ngModel)]="dir_ins.id_localidad" #tipoproducto="ngModel" placeholder="Localidad" required>
+                              <mat-option *ngFor="let local of Localidades_Ins" [value]="local.id_localidad">
+                                {{local.localidad}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <div *ngIf="(dir_ins.id_localidad == null || dir_ins.id_localidad =='0') && ValActiva == '1' ; " class="alert alert-danger">
+                            Delegación Requerida.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-2" style="">
+                        <mat-form-field class="example-full-width" style="">
+                          <mat-select id="_prefijo_ins" name="_prefijo_ins" #_prefijo_ins="ngModel" [(ngModel)]="dir_ins.id_prefijo_calle" placeholder="Prefijo Calle">
+                            <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                              {{prefijo.prefijo}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="form-group col-md-4" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Calle_ins" id="Calle_ins" [disabled]="deshabilitains" [(ngModel)]="dir_ins.calle_numero" placeholder="Calle" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.calle_numero == null || dir_ins.calle_numero == '') && ValActiva == '1' ; " class="alert alert-danger">
+                          Calle Inst. Requerida.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Ext_ins" id="Ext_ins" [disabled]="deshabilitains" [(ngModel)]="dir_ins.NumExt" placeholder="Núm Ext." value="" required>
+                        </mat-form-field>
+                        <div *ngIf=" (dir_ins.NumExt == null || dir_ins.NumExt == '') && ValActiva == '1' ; " class="alert alert-danger">
+                          Núm Ext. Requerido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="Int_ins" id="Int_ins" [disabled]="deshabilitains" [(ngModel)]="dir_ins.NumInt" placeholder="Núm Int." value="">
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+                    <div class="input-group col-xs-12">
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="_nombre_ins" id="_nombre_ins" #_nombre_ins="ngModel" [disabled]="deshabilitains" [(ngModel)]="dir_ins.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+                        </mat-form-field>
+                        <div *ngIf="(dir_ins.nombrecontacto == null || dir_ins.nombrecontacto == '') && ValActiva =='1' ; " class="alert alert-danger">
+                          Nombre Requerido.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_ins" id="telefono_ins" [textMask]="{mask: mask, guide: false}" [disabled]="deshabilitains"
+                                 [(ngModel)]="dir_ins.telefono" #telefono_ins="ngModel" PhoneValidator placeholder="Télefono Fijo" value="" required>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_ins.telefono ==  null || dir_ins.telefono == '') && ValActiva =='1' ; " class="alert alert-danger">
+                          Teléfono Requerido.
+                        </div>-->
+                        <div *ngIf="telefono_ins.errors?.Vacio && telefono_ins.touched && ValActiva =='1'" class="alert alert-danger">
+                          Teléfono requerido.
+                        </div>
+                        <div *ngIf="telefono_ins.errors?.LongitudMinima && telefono_ins.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3" style="">
+                        <mat-form-field class="example-full-width">
+                          <input matInput name="telefono_movil_ins" id="telefono_movil_ins" [textMask]="{mask: mask, guide: false}" [disabled]="deshabilitains"
+                                 [(ngModel)]="dir_ins.telefono_movil" #telefono_movil_ins="ngModel" PhoneValidator placeholder="Télefono Cel." value="" required>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_ins.telefono_movil == null || dir_ins.telefono_movil == '') && ValActiva =='1';" class="alert alert-danger">
+                          Celular Requerido.
+                        </div>-->
+                        <div *ngIf="telefono_movil_ins.errors?.Vacio && telefono_movil_ins.touched && ValActiva =='1'" class="alert alert-danger">
+                          Celular requerido.
+                        </div>
+                        <div *ngIf="telefono_movil_ins.errors?.LongitudMinima && telefono_movil_ins.touched" class="alert alert-danger">
+                          Formato inválido
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Información del Vendedor</h3>
+                  </div>
+                  <div class="form-group col-md-6" style="padding-right:0;">
+                    <br />
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="id_suc_vendedor"  name="id_suc_vendedor" placeholder="Selecciona una sucursal"
+                                    #id_suc_vendedor="ngModel" [(ngModel)]="id_suc_ven"
+                                    (change)="getVendedoresSuc()" required>
+                          <mat-option *ngFor="let suc of Sucursales" value={{suc.id_sucursal}}>
+                            {{ suc.nombre}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-6" style="padding-right:0;">
+                    <br />
+                    <div class="input-append">
+                      <mat-form-field class="full-width">
+                        <mat-select id="_IdVende" name="_IdVende" #_IdVende="ngModel" [(ngModel)]="IdVende_" placeholder="Selecciona un vendedor" required>
+                          <mat-option *ngFor="let vendedor of Vendedores" [value]="vendedor.id">
+                            {{ vendedor.nombrecompleto}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div *ngIf="(IdVende_ == '' || IdVende_ == '0')  && ValActiva =='1';" class="alert alert-danger">
+                        Vendedor requerido.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-9" style="">
+                    <mat-form-field class="example-full-width">
+                      <textarea matInput name="Observaciones" id="Observaciones" [(ngModel)]="Observaciones" placeholder="Observaciones" value=""></textarea>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="example-container">
+                <div style="width:100%; padding:10px;">
+                  <br />
+                  <div style=" padding-left:50px; float:right;">
+                    <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="Guardar(cotizacionfrm.valid)" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Buscando...' : 'Guardar' }}
+                    </button>
+                  </div>
+                  <div style="padding-right:0px; padding-left:20px; float:left;">
+                    <button style="" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="regresar()">
+                      {{ preventAbuse ? 'Buscando...' : 'Cargar Más Productos' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box -->
+
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>
+

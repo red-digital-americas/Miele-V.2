@@ -1,0 +1,181 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Actualizacion de precios</h3>
+
+            <form #sublineasForm="ngForm">
+              <br />
+              <div class="row">
+                <div class="form-group col-md-4" style="vertical-align:central">
+                  <button id="btncomp"
+                          name="btncomp"
+                          style="vertical-align:central; text-align:center"
+                          class="pull-center btn btn-default btn-default-rojo"
+                          (click)="downloadFile()"
+                          [disabled]="newFiles.length == 0">
+                    Descargar Plantilla
+                    <i class="fa fa-download" aria-hidden="true" style="font-size: 21px;"></i>
+                  </button>
+                </div>
+                <div class="form-group col-md-8">
+                  <div class="box-title">Instrucciones</div>
+                  <div>Para actualizar el precio de diferentes productos de manera simultanea es
+                  necesario utilizar esta plantilla para asegurar el correcto funcionamiento.
+                  <br />
+                  El precio ingresado en la plantilla debe ser SIN IVA para cada uno de los productos.
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="form-group col-md-8">
+                  <div id="guiaForm">
+                    <input class="pull-center btn btn-default btn-default"
+                           style="float:left; padding-left: 0px; padding-right: 5px;"
+                           #fileInput
+                           id="subirPlantilla"
+                           name="subirPlantilla"
+                           type="file"
+                           accept="application/vnd.ms-excel"
+                           (change)="prepareFile($event)" />
+
+                    <button id="btncomp"
+                            name="btncomp"
+                            style="float:left;"
+                            class="pull-center btn btn-default btn-default-rojo"
+                            (click)="uploadFile()"
+                            [disabled]="newFiles.length == 0">
+                      Subir Plantilla de precios
+                      <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="input-group col-xs-12">
+              
+              <!--<div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+
+                  <mat-select [disabled]="false"
+                              (change)="searchProduct();"
+                              placeholder="Linea"
+                              name="line-filter"
+                              id="line-filter"
+                              #line_filter_="ngModel"
+                              [(ngModel)]="filters.lineID">
+
+                    <mat-option *ngFor="let line of this.lines; trackBy: index;" [value]="line.id">
+                      {{ line.descripcion }}
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+              </div>-->
+
+              
+            </div>
+            <br />
+
+            <!-- div class="input-group col-xs-12" style="">
+              <div class="form-group col-md-3" style="padding-right:0;">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="_tipos" name="_tipos" [(ngModel)]="tipos" #_tipos="ngModel" placeholder="Entidades">
+                      <mat-option *ngFor="let tipo of tipos_entidades" value="{{tipo.id}}">
+                        {{tipo.tipo}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div-->
+
+            <div class="col-xs-12" style="padding:0;">
+              <span class="form-group col-md-3">
+              </span>
+            </div>
+          </div>
+          <!-- /.box-header -->
+
+
+          <div class="box-body">
+            <!--<table class="table table-striped sortable">
+              <thead>
+                <tr>
+                  <th>Descripcion</th>
+                  <th>Linea de Producto</th>
+                  <th>Activado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of filtroSublineas  let i = index" (click)="onSelectedItem(usuario.id)">
+                  <td>{{item.descripcion}}</td>
+                  <td>{{item.id_linea_producto}}</td>
+                  <td>{{item.status}}</td>
+                </tr>
+
+
+              </tbody>
+            </table>-->
+
+            <!--<div class="example-container mat-elevation-z2">
+              <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                <ng-container matColumnDef="descripcion">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Descripcion </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.descripcion}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="linea_producto_desc">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Linea </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.linea_producto_desc}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="estatus">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Activo </mat-header-cell>
+                  <mat-cell *matCellDef="let element" style="cursor:pointer; text-align:center;" (click)="goTodetalle(element.id)">
+                    <span>{{element.estatus}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container *ngFor="let column of displayedColumns; let i=index">
+                  <ng-container matColumnDef="{{column}}">
+                    <mat-header-cell *matHeaderCellDef style="text-align:center;"> {{columNames[column]}} </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let j = index" style="text-align:center;">
+                      <span>{{element[i].descripcion}}</span>
+                      <span>{{element[i].id_linea_producto}}</span>
+                      <span>{{element[i].estatus}}</span>
+                    </mat-cell>
+                  </ng-container>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+              </mat-table>
+
+              <mat-paginator #paginator
+                             [pageSize]="10"
+                             [pageSizeOptions]="[5, 10]">
+              </mat-paginator>
+            </div>-->
+          </div>
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+
+</div>

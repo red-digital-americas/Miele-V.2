@@ -1,0 +1,96 @@
+.btn-default {
+  background-color: #EEEDEB;
+  color: #847d70;
+  border-color: #ddd;
+  padding-left: 50px;
+  padding-right: 50px;
+  font-weight: bold;
+}
+
+.btn-default-rojo {
+  background-color: #A5000D;
+  color: #fff;
+  border-color: #A5000D;
+}
+
+  .btn-default-rojo:hover {
+    background-color: #A5000D;
+    color: #fff;
+    border-color: #A5000D;
+  }
+
+.alert-danger-aviso {
+  background-color: #FFDB4B;
+  border-color: #FFDB4B;
+  color: #847d70;
+  padding: 10px 10px 10px 10px;
+  border-radius: 3px;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+.customWidthClass {
+  flex: 0 0 50px;
+}
+
+.customWidthClass1 {
+  flex: 0 0 200px;
+}
+
+.centerTextCell {
+  text-align: center;
+}
+
+/*.mat-header-row, .mat-row {
+  display: flex;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 10px;
+}*/
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+
+
+.mat-card {
+  padding: 50px;
+}
+
+
+.mat-chip {
+  font-size: 10px;
+  line-height: 18px;
+}
+
+  .mat-chip:not(.mat-basic-chip) {
+    transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+    display: inline-flex;
+    padding: 5px 5px;
+    border-radius: 24px;
+    align-items: center;
+    cursor: default;
+  }
+
+.example-input-label,
+.example-add-tab-button,
+.example-delete-tab-button {
+  margin: 8px;
+}

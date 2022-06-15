@@ -1,0 +1,146 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas"> Sucursales</h3>
+              <!--<div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>-->
+              <div class="input-gro col-md-12" style="">
+                <div class="form-group col-md-7" style="">
+                </div>
+                
+                  <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                    <button style="float:right; " *ngIf="permisos_edicion" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit(2)" [disabled]="preventAbuse">
+                      {{ preventAbuse ? 'Cargando...' : 'Nueva Sucursal' }}
+                    </button>
+                  </span>
+                </div>
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por Nombre o Correo Electónico">
+                  </mat-form-field>
+                </div>
+
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button type="submit" class="pull-center btn btn-default" (click)="verservicioForm.resetForm({});limpiar();" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Limpiando...' : 'Limpiar' }}
+                  </button>
+                </span>
+              </div>
+                <br />
+
+                <div class="input-group col-xs-12" style="">
+                  <div class="form-group col-md-3" style="padding-right:0;">
+                    <div class="input-group">
+                      <mat-form-field>
+                        <mat-select id="Canal" name="Canal" [(ngModel)]="Canal" #tipoproducto="ngModel" placeholder="Canal" (change)="this.Cuenta = ''; getCat_Cuentas(); selectCanal($event);" required>
+                          <mat-option *ngFor="let canal of canalesCo" [value]="canal.id">
+                            {{canal.canal_es}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-3" style="padding-right:0;">
+                    <div class="input-group">
+                      <mat-form-field>
+                        <mat-select id="Cuenta_" name="Cuenta_" [(ngModel)]="cuentafiltro" #Cuenta_="ngModel" placeholder="Cuenta" (change)="selectCuenta($event); " required>
+                          <mat-option *ngFor="let cuenta of Cuentas" [value]="cuenta.id">
+                            {{cuenta.cuenta_es}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+                <div class="col-xs-12" style="padding:0;">
+                  <span class="form-group col-md-3">
+                  </span>
+                </div>
+              </div>
+              <!-- /.box-header -->
+
+
+              <div class="box-body">
+                <div class="col-xs-12" style="padding:0;">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Lista de Sucursales</h3>
+                  </div>
+                </div>
+                <div class="example-container mat-elevation-z2">
+                  <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="id">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Indice </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a *ngIf="element.tipo > 'Canal'"  routerLink="/editar-sucursal/{{element.id}}" style="cursor:pointer; color:inherit">{{element.id}}</a>
+                        <span *ngIf="element.tipo == 'Canal'" style="color:inherit">{{element.id}}</span>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="tipo">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Estatus </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a  routerLink="/editar-sucursal/{{element.id}}" style="cursor:pointer; color:inherit">Activa</a>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="canal">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;">Canal </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a *ngIf="element.tipo > 'Canal'" routerLink="/editar-sucursal/{{element.id}}" style="cursor:pointer; color:inherit">{{element.canal}}</a>
+                        <span *ngIf="element.tipo == 'Canal'" style="color:inherit">{{element.canal}}</span>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="cuenta">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;">Cuenta </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a *ngIf="element.tipo > 'Canal'"  routerLink="/editar-sucursal/{{element.id}}" style="cursor:pointer; color:inherit">{{element.cuenta}}</a>
+                        <span *ngIf="element.tipo == 'Canal'" style="color:inherit">{{element.cuenta}}</span>
+                      </mat-cell>
+                    </ng-container>
+                    <!-- Weight Column -->
+                    <ng-container matColumnDef="entidad">
+                      <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre </mat-header-cell>
+                      <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                        <a *ngIf="element.tipo > 'Canal'" routerLink="/editar-sucursal/{{element.id}}" style="cursor:pointer; color:inherit">{{element.entidad}}</a>
+                        <span *ngIf="element.tipo == 'Canal'" style="color:inherit">{{element.entidad}}</span>
+                      </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                  </mat-table>
+
+                  <mat-paginator #paginator
+                                 [pageSize]="10"
+                                 [pageSizeOptions]="[5, 10]">
+                  </mat-paginator>
+                </div>
+              </div>
+
+
+              <!-- /.box -->
+            </div>
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

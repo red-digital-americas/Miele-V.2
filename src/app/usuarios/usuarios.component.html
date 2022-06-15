@@ -1,0 +1,200 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title negritas">Búsqueda de usuarios</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+            <span class="input-group-btn " style="padding-bottom:15px;">
+              <button style="float:right; " *ngIf="permisos_edicion" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit(1)">Nuevo usuario
+              </button>
+            </span>
+
+            <div class="input-group col-xs-12">
+              <!-- <div class="form-group col-md-12" style="">
+              <mat-form-field class="example-full-width">
+                <input matInput type="text" id="TextoLibre" name="TextoLibre" [(ngModel)]="TextoLibre" #busqueda="ngModel" required placeholder=" Nombre del usuario" class="form-control">
+              </mat-form-field>
+            </div>-->
+
+              <div class="form-group col-md-12" style="">
+                <mat-form-field class="example-full-width">
+                  <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por Nombre o Correo Electónico"
+                         id="txtBuscar" name="txtBuscar" [(ngModel)]="txtBuscar" #txtBuscar_="ngModel">
+                </mat-form-field>
+              </div>
+
+
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button class="pull-center btn btn-default" (click)="limpiar();">Limpiar
+                </button>
+              </span>
+            </div>
+            <br />
+
+            <div class="input-group col-xs-12" style="">
+              <div class="form-group col-md-3" style="padding-right:0;">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="Canal" name="Canal" [(ngModel)]="Canal" #tipoproducto="ngModel" placeholder="Canal" (change)=" this.cuentafiltro = '';getCat_Cuentas(); getCat_Sucursales(); selectCanal($event);">
+                      <mat-option *ngFor="let canal of canalesCo" value="{{canal.id}}">
+                        {{canal.canal_es}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="form-group col-md-3" style="padding-right:0;">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="Cuenta" name="Cuenta" [(ngModel)]="cuentafiltro" #Cuenta_="ngModel" placeholder="Cuenta" (selectionChange)="selectCuenta($event)" (change)="this.sucursalfiltro = ''; getCat_Sucursales();">
+                      <mat-option *ngFor="let cuenta of Cuentas" value="{{cuenta.id}}">
+                        {{cuenta.cuenta_es}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-group col-md-3" style="padding-right:0;">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="Sucursal" name="Sucursal" [(ngModel)]="sucursalfiltro" #Sucursal_="ngModel" (selectionChange)="selectSucursal($event)" placeholder="Sucursal">
+                      <mat-option *ngFor="let suc of Sucursales" value="{{suc.id}}">
+                        {{suc.sucursal}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="input-group col-xs-12" style="">
+              <div class="form-group col-md-3" style="">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="Rol" name="Rol" [(ngModel)]="rolvar" #Rol_="ngModel" placeholder="Rol" (change)="selectRol();">
+                      <mat-option *ngFor="let rol of Roles;" [value]="rol.id">
+                        {{rol.rol}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="form-group col-md-3" style="">
+                <div class="input-group">
+                  <mat-form-field>
+                    <mat-select id="nivel" name="nivel" #nivel="ngModel" [(ngModel)]="nivelfiltro" [disabled]="!permisos_niveles" placeholder="Nivel" (change)="selectNivel();">
+                      <mat-option *ngFor="let nivel of Niveles;" [value]="nivel.nivel">
+                        {{ nivel.nivel}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-xs-12" style="padding:0;">
+              <span class="form-group col-md-3">
+              </span>
+            </div>
+          </div>
+          <div class="box-body">
+            <div class="col-xs-12" style="padding:0;">
+              <div class="box-header with-border">
+                <h3 class="box-title negritas">Usuarios</h3>
+              </div>
+            </div>
+            <div class="example-container mat-elevation-z2">
+              <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                <!-- Position Column -->
+                <ng-container matColumnDef="nombre">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre  </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.name }} {{element.paterno}} {{element.materno}}</a>
+                  </mat-cell>
+                </ng-container>
+                <!-- Name Column  'id_Sucursales', 'id_canal', 'id_cuenta', 'name', 'name','username','username'];
+              -->
+                <!-- Weight Column -->
+                <ng-container matColumnDef="rol">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Rol </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.rol}}</a>
+
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="nivel">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nivel  </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.nivel}}</a>
+
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="canal">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Canal </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.canal}}</a>
+
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cuenta">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Cuenta </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.cuenta}}</a>
+
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="sucursal">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Sucursal </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.sucursal}}</a>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                  <mat-header-cell *matHeaderCellDef style="text-align:center;"> Email </mat-header-cell>
+                  <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                    <a routerLink="/editar-usuarios/{{element.id}}" style="cursor:pointer; color:inherit">{{element.email}}</a>
+
+                  </mat-cell>
+                </ng-container>
+
+                <!---
+              email: "admin@miele.com"
+                id: 35
+                id_Sucursales: 1
+                id_canal: 0
+                id_cuenta: 0
+                name: "Erick"
+                nivel: "sucursal"
+                paterno: "Hernandez"
+                username: "admin"-->
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+              </mat-table>
+
+              <mat-paginator #paginator
+                             [pageSize]="10"
+                             [pageSizeOptions]="[5, 10]">
+              </mat-paginator>
+            </div>
+          </div>
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,281 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #verservicioForm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h1 class="box-title negritas" style="font-size: 23px;">Gestión Comercial &nbsp; <i style="font-size: 35px;" class="fa fa-list-alt" aria-hidden="true"></i></h1>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+              <span class="input-group-btn " style="padding-bottom:15px;">
+                <button style="float:right; padding: 15px; padding-bottom:5px; padding-top:5px;" *ngIf="this.rol_user != '9' && this.rol_user != '8'" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="ToAddProd($event)" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Cargando...' : 'Nueva Cotización' }}
+                  &nbsp;&nbsp;&nbsp; <i class="fa fa-file-text" aria-hidden="true"></i>
+                </button>
+              </span>
+
+              <div class="input-group col-xs-12">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="text" id="busqueda" name="busqueda" [(ngModel)]="TextoLibre" #busqueda="ngModel" placeholder=" Nombre del ciente, Número de orden/compra, Nombre del Vendedor, IBS" class="form-control">
+                  </mat-form-field>
+                </div>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button style="padding: 25px; padding-bottom:5px; padding-top:5px;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="CallgetCotizaciones($event)" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Cargando...' : 'Buscar' }}
+                    &nbsp;&nbsp;&nbsp;<i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                  <button style="padding: 25px; padding-bottom:5px; padding-top:5px;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="limpia();" [disabled]="preventAbuse">
+                    {{ preventAbuse ? 'Cargando...' : 'Limpiar' }}
+                    &nbsp;&nbsp;&nbsp;<i class="fa fa-outdent" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <!--<span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+      <button type="submit" class="pull-center btn btn-default" (click)="refresh();" [disabled]="preventAbuse">
+        {{ preventAbuse ? 'Cargando...' : 'Exportar' }}
+      </button>
+    </span>-->
+              </div>
+              <br />
+
+              <div class="input-group col-xs-12" style="">
+                <div class="form-group col-md-3" style="">
+                  <mat-form-field class="">
+                    <input matInput id="rangofechas" [(ngModel)]="rangofechas" name="rangofechas" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Rango de Fechas aaaa/mm/dd" />
+                    <mat-icon matSuffix><i class="fa fa-calendar" aria-hidden="true"></i></mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Canal" name="Canal" [(ngModel)]="Canal" #tipoproducto="ngModel" placeholder="Canal" (change)="this.Cuenta = ''; getCat_Cuentas();getCat_Sucursales();">
+                        <mat-option *ngFor="let canal of canalesCo" value="{{canal.id}}">
+                          {{canal.canal_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Cuenta_" name="Cuenta_" [(ngModel)]="Cuenta" #Cuenta_="ngModel" placeholder="Cuenta" (change)="this.Id_sucursal = ''; getCat_Sucursales();">
+                        <mat-option *ngFor="let cuenta of Cuentas" value="{{cuenta.id}}">
+                          {{cuenta.cuenta_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Suc_" name="Suc_" [(ngModel)]="Id_sucursal" #Suc_="ngModel" placeholder="Sucursal">
+                        <mat-option *ngFor="let suc of Sucursales" value="{{suc.id}}">
+                          {{suc.sucursal}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-xs-12" style="padding:0;">
+                <div class="form-group col-md-12" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput [matAutocomplete]="autop" name="_TextoProd" id="_TextoProd" [(ngModel)]="TextoProd" [formControl]="myControl" placeholder="Productos" value="">
+                    <mat-autocomplete #autop="matAutocomplete">
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.nombre">
+                        {{ option.nombre }} | {{option.sku}} | {{option.sublinea}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-xs-12" style="padding:0;">
+
+                <div class="form-group col-md-3" style="">
+                  <mat-form-field class="example-full-width">
+                    <input matInput [matAutocomplete]="autocuentas" name="Modelo" id="Modelo" [(ngModel)]="_Modelo" [formControl]="myControlM" placeholder="Modelo" value="">
+                    <mat-autocomplete #autocuentas="matAutocomplete">
+                      <mat-option *ngFor="let modelo of filteredOptionsM | async" [value]="modelo.modelo">
+                        {{ modelo.modelo }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <!--<mat-autocomplete #auto="matAutocomplete">
+                    <mat-optgroup *ngFor="let group of filteredGroups | async" [label]="group.name">
+                      <mat-option *ngFor="let option of group.options" [value]="option">
+                        {{ option.name }}
+                      </mat-option>
+                    </mat-optgroup>
+                  </mat-autocomplete>-->
+                </div>
+                <mat-checkbox class="example-margin" [(ngModel)]="duplicadas" [ngModelOptions]="{standalone: true}">Incluir Duplicadas</mat-checkbox>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field class="full-width">
+                      <mat-select id="Estatus" name="Estatus" [(ngModel)]="Estatus" #tipoproducto="ngModel" placeholder="Estatus">
+                        <mat-option *ngFor="let estatus of estatusCo" value="{{estatus.id}}">
+                          {{estatus.estatus_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12" style="padding:0;">
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-checkbox class="example-margin" [(ngModel)]="canceladas" [ngModelOptions]="{standalone: true}">Canceladas</mat-checkbox>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-checkbox class="example-margin" [(ngModel)]="rechazadas" [ngModelOptions]="{standalone: true}">Rechazadas</mat-checkbox>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-checkbox class="example-margin" [(ngModel)]="solicitudes" [ngModelOptions]="{standalone: true}">Solicitudes Envío</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="col-xs-12" style="padding:0;">
+                <div class="box-header with-border">
+                  <h3 class="box-title negritas">Cotizaciones/Ordenes</h3>
+                </div>
+              </div>
+              <div class="example-container mat-elevation-z2">
+                <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                  <!-- Position Column -->
+                  <ng-container matColumnDef="folio">
+                    <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass'"> Folio   </mat-header-cell>
+                    <mat-cell style="cursor: pointer;" *matCellDef="let element" [ngClass]="'customWidthClass'" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; cursor: pointer;">{{element.folio}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="cuenta">
+                    <mat-header-cell *matHeaderCellDef> Cuenta </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-weight:400; cursor: pointer;">{{element.cuenta}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="sucursal">
+                    <mat-header-cell *matHeaderCellDef> Sucursal </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-weight:400; cursor: pointer;">{{element.sucursal}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="cliente">
+                    <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass1'">&nbsp;&nbsp;&nbsp; Cliente </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" [ngClass]="'customWidthClass1'" (click)="goTodetalle(element.id)">&nbsp;&nbsp; {{element.cliente.substring(0,25)}}... </mat-cell>
+                  </ng-container>
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="fecha">
+                    <mat-header-cell *matHeaderCellDef> Fecha de creación </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-style:normal; cursor: pointer;">{{element.fecha}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="cambio_ord_comp_generada">
+                    <mat-header-cell *matHeaderCellDef> Cambio a Orden. CG </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-style:normal; cursor: pointer;">{{element.cambio_ord_comp_generada}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="ibs">
+                    <mat-header-cell *matHeaderCellDef> IBS </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-style:normal; cursor: pointer;">{{element.ibs}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="vendedor">
+                    <mat-header-cell *matHeaderCellDef [ngClass]="'customWidthClass1'">&nbsp;&nbsp;&nbsp; Vendedor </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" [ngClass]="'customWidthClass1'" (click)="goTodetalle(element.id)">&nbsp;&nbsp; {{element.vendedor.substring(0,25)}}... </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="importe">
+                    <mat-header-cell *matHeaderCellDef> Importe </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-style:normal; cursor: pointer;">{{element.importe}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="importe_c">
+                    <mat-header-cell *matHeaderCellDef> Imp. C.C. </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="goTodetalle(element.id)">
+                      <label style="font-size:smaller; font-style:normal; cursor: pointer;">{{element.importe_c}}</label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="nprod">
+                    <mat-header-cell *matHeaderCellDef [ngClass]="'centerTextCell'"> N. Prods </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" [ngClass]="'centerTextCell'" (click)="goTodetalle(element.id)"> {{element.nprod}} </mat-cell>
+                  </ng-container>
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="estatus">
+                    <mat-header-cell *matHeaderCellDef> Estatus </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;">
+                      <img (click)="goTodetalle(element.id)" _ngcontent-c2="" class="img-responsive" src="/front/miele_partners/assets/img/{{carpetaestatus}}/{{element.estatus}}.png" style="padding:0 0px; cursor: pointer;">
+                      <label (click)="goTodetalle(element.id)" *ngIf="element.rechazada" style="font-size:xx-small; color:red; cursor: pointer;">Rechazada <i class="fa fa-arrow-circle-o-left" aria-hidden="true" style="font-size: 15px;"></i></label>
+                      <label (click)="goTodetalle(element.id)" *ngIf="element.cancelada" style="font-size:xx-small; color:red; cursor: pointer;">Cancelada <i class="fa fa-ban" style="font-size: 15px;"></i></label>
+                      <label (click)="goTodetalle(element.id)" *ngIf="!element.rechazada && !element.cancelada" style="font-size:xx-small;">{{element.estatus_desc}}</label>
+                      <label *ngIf="element.entrega_sol" (click)="openDialog_(element)" style="font-size:xx-small; color:#228B22; cursor: pointer;  text-decoration:underline;">Envío Sol.<i class="fa fa-truck" aria-hidden="true" style="font-size: 15px;"></i></label>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="acciones">
+                    <mat-header-cell *matHeaderCellDef [ngClass]="'centerTextCell'"> Acciones </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="cursor: pointer;" [ngClass]="'centerTextCell'">
+                      <i *ngIf="!element.cancelada" class="fa fa-ban" style="font-size: 21px; color:#A5000D;" (click)="Cancelar_cotizacion(element.id);"></i>
+                      <i class="fa fa-print" style="font-size: 21px; color:#A5000D;" (click)="imprimir_cotizacion(element.id);"></i>
+                      <img *ngIf="element.puede_solicitar_env > 0 && this.rol_user == 1 && !element.rechazada && !element.cancelada" _ngcontent-c2="" (click)="openDialog_(element)" class="img-responsive" src="/front/miele_partners/assets/img/ENVbutton.png" style="padding:0 0px;">
+                      <img *ngIf="element.acciones == 1 && this.rol_user == 9 && !element.rechazada && !element.cancelada" _ngcontent-c2="" (click)="openIBSDialog(element.id, element.correo)" class="img-responsive" src="/front/miele_partners/assets/img/IBSbutton.png" style="padding:0 0px;">
+                      <img *ngIf="element.estatus == 4 && this.rol_user == 8 && !element.rechazada && !element.cancelada" _ngcontent-c2="" (click)="LiberarCotizacion(element.id)" class="img-responsive" src="/front/miele_partners/assets/img/LIBERARbutton.png" style="padding:0 0px;">
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator #paginator
+                               [pageSize]="10"
+                               [pageSizeOptions]="[5, 10]">
+                </mat-paginator>
+              </div>
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!--<div class="col-md-12">
+          <ol>
+            <li>
+              <mat-form-field>
+                <input matInput [(ngModel)]="name" placeholder="What's your name?" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </li>
+            <li>
+              <button mat-raised-button (click)="openDialog_()">Pick one</button>
+            </li>
+            <li *ngIf="animal">
+              You chose: <i>{{animal}}</i>
+            </li>
+          </ol>
+        </div>-->
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

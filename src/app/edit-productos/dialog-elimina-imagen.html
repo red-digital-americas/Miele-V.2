@@ -1,0 +1,32 @@
+<form #EliminaForm="ngForm" (keydown.enter)="$event.preventDefault()">
+  <div class="box-body">
+    <div class="example-container mat-elevation-z2" style="height:180px">
+      <div class="input-group col-xs-12">
+        <div class="box-header with-border">
+          <h3 class="box-title negritas">Eliminar</h3>
+        </div>
+
+        <div class="col-xs-12" style="margin-top:50px">
+          <p>Estas seguro que desaes eliminar esta imagen?</p>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+  <div class="mat-dialog-actions col-md-12">
+    <div class="col-md-6">
+      <button style="background-color: #A5000D;color: #fff; border-color: #A5000D" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="ConfirmaEliminar()">
+        Guardar
+      </button>
+    </div>
+    <div class="col-md-6">
+      <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="onNoClick()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</form>
+
+

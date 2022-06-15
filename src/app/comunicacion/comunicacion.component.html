@@ -1,0 +1,73 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #msjfrm="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas"> Comunicación </h3>
+            </div>
+            <div class="box-body">
+              <div class="form-group col-md-4">
+                <mat-form-field class="full-width">
+                  <mat-select
+                    placeholder="Motivo"
+                    (change)="verInput()"
+                    required
+                    id="motivo_id" name="motivo_id"
+                    #motivo_id="ngModel"
+                    [(ngModel)]="mensaje.motivo_id">
+                    <mat-option *ngFor="let motivo of motivos;" [value]="motivo.id">
+                      {{ motivo.descripcion }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group col-md-4" >
+              <!--div class="=form-group col-md-4" *ngIf ="orden"-->
+                <mat-form-field class="full-width">
+                  <input matInput type="number"
+                         id="modelo" name="modelo"
+                         [(ngModel)]="mensaje.orden_id"
+                         #modelo_="ngModel"
+                         placeholder="Orden/Cotización Relacionada"
+                  >
+                </mat-form-field>
+              </div>
+
+              <div class="form-group col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea
+                    matInput type="textarea"
+                    id="descripcionLarga"
+                    name="descripcionLarga"
+                    [(ngModel)]="mensaje.detalle_msj">
+                    placeholder="Descripción"
+                    style="height: 200px"
+                    required>
+                  </textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <span class="input-group-btn">
+              <button class="pull-right btn btn-default btn-default-rojo" (click) ="enviarmsj(msjfrm.valid)">
+                Enviar
+              </button>
+              <button class="pull-right btn btn-default btn-default-rojo" (click)="goBack()">
+                Regresar
+              </button>
+            </span>
+
+          </div>
+        </div>
+
+
+
+
+      </div>
+    </section>
+  </form>
+</div>

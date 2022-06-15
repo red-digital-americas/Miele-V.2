@@ -1,0 +1,175 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #formusu="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Usuario</h3>
+            </div>
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Datos del usuario</h3>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-6" style="">
+                      <label>NOMBRE:</label>
+                      <label> {{com.name}} {{com.paterno}} {{com.materno}}</label>
+                      <br />
+                      <label>SUCURSAL:</label>
+                      <label>{{com.sucursal}} </label>
+                    </div>
+                   
+                  </div>
+
+                  <div class="input-group col-xs-12">
+
+                    <div class="form-group col-md-6" style="">
+
+                      <!---  <span class="input-group-btn">
+
+                        <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="porpagar()" [disabled]="preventAbuse">
+      {{ preventAbuse ? 'Cargando...' : 'Mostrar Todo' }}
+    </button>
+                      <mat-checkbox id="mostrar_todo"type="checkbox" (change)="porpagar($event);" name="mostrar_todo" #mostrar_todo="ngModel" [(ngModel)]="com.mostrar_todo" [disabled]="desa1">Mostrar Todo</mat-checkbox>
+  </span>-->
+                      <mat-checkbox id="mostrar_pagadas" type="checkbox" (change)="pagadas($event);" name="mostrar_pagadas" #mostrar_pagadas="ngModel" [(ngModel)]="com.mostrar_pagadas" [disabled]="desa2"> Mostrar sólo Pagadas</mat-checkbox>
+                      <mat-checkbox id="com_directa" type="checkbox" (change)="com_directas($event);" name="com_directa" #com_directa="ngModel" [(ngModel)]="com.com_directa" [disabled]="desa3">Mostrar sólo Comisión  Directa</mat-checkbox>
+
+                      <!-- <span class="input-group-btn">
+
+                     <button style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="pagadas() ">
+    {{ preventAbuse ? 'Cargando...' : 'Mostrar Pagadas' }}
+  </button>
+                      </span>-->
+                    </div>
+                    <div class="form-group col-md-4">
+                      <input matInput id="rangofechas" [(ngModel)]="rangofechas" name="rangofechas" daterangepicker [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Rango de Fechas aaaa/mm/dd" />
+                      <mat-icon matSuffix><i class="fa fa-calendar" aria-hidden="true"></i></mat-icon>
+                    </div>
+
+                  </div>
+
+                    <div class="box-body">
+                      <div class="col-xs-12" style="padding:0;">
+                        <div class="box-header with-border">
+                          <h3 class="box-title negritas">Ordenes</h3>
+                        </div>
+                      </div>
+                      <div class="example-container mat-elevation-z2">
+                        <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                          <!-- Position Column -->
+                          <ng-container matColumnDef="id">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Indice </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.id_comision}}</a>
+                            </mat-cell>
+                          </ng-container>
+                          <!-- Name Column  'id_Sucursales', 'id_canal', 'id_cuenta', 'name', 'name','username','username'];
+  -->
+                          <!-- Weight Column -->
+                          <ng-container matColumnDef="nombre">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Nombre </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.name }} {{element.paterno }} {{element.materno }}</a>
+                            </mat-cell>
+                          </ng-container>
+                          <ng-container matColumnDef="paterno">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Canal  </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.canal}}</a>
+                            </mat-cell>
+                          </ng-container>
+                          <ng-container matColumnDef="username">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Cuenta </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.cuenta}}</a>
+                            </mat-cell>
+                          </ng-container>
+
+                          <ng-container matColumnDef="fec_generacion">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Fecha de la comisión generada </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.fec_generacion}}</a>
+                            </mat-cell>
+                          </ng-container>
+                          
+                          <ng-container matColumnDef="tipo_comision">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Tipo Comisión  </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.tipo_comision}}</a>
+                            </mat-cell>
+                          </ng-container>
+                          <ng-container matColumnDef="comisiones">
+                            <mat-header-cell *matHeaderCellDef style="text-align:center;"> Comisión </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                              <a href="/detallecotizacion/{{element.id}}" style="cursor:pointer; color:inherit" target="_blank">{{element.comision | currency }}</a>
+                            </mat-cell>
+                          </ng-container>
+                          <ng-container matColumnDef="acciones">
+                            <mat-header-cell *matHeaderCellDef [ngClass]="'centerTextCell'"> Pagado/Acciones </mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="cursor: pointer;" [ngClass]="'centerTextCell'">
+                              <img *ngIf="element.fecha_pago == 0  && permisos_edicion" _ngcontent-c2="" (click)="pagar_comision(element.id_comision , element.estatus )" class="img-responsive" src="/front/miele_partners/assets/img/pagarbutton.jpg" style="padding:0 0px;">
+
+                              <label *ngIf="element.fecha_pago !=0" style="font-size:xx-small; color:#228B22; cursor: pointer;">{{element.fecha_pago}}<i class="fa fa-check" style="font-size: 15px;"></i></label>
+                            </mat-cell>
+                          </ng-container>
+
+                          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                        </mat-table>
+
+                        <mat-paginator #paginator
+                                       [pageSize]="10"
+                                       [pageSizeOptions]="[5, 10]">
+                        </mat-paginator>
+                      </div>
+                    </div>
+
+                  </div>
+              </div>
+            </div>
+
+
+            <!-- Fin facturas-->
+            <!-- /.box-header -->
+
+            <div class="input-group col-xs-12">
+
+              <div class="form-group col-md-6" style="">
+                <label>VENTAS TOTALES:</label>
+                <label> {{ventas_totales | currency }}</label>
+                <br />
+                <label>COMISIONES TOTALES:</label>
+                <label>{{com.comisiontotal | currency }} </label>
+                <br />
+                <label>TOTAL COMISIONES PAGADAS :</label>
+                <label>{{comisiones_pagadas | currency }} </label>
+                <br />
+                <label>TOTAL COMISIONES POR PAGAR:</label>
+                <label>{{comisiones_por_pagar | currency}} </label>
+
+              </div>
+
+
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotousu(1)">Cancelar
+                </button>
+              </span>
+
+            </div>
+
+            <!-- /.box -->
+            <!-- /.col -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

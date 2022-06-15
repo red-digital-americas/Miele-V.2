@@ -1,0 +1,24 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<div style="text-align:center;">
+  <h1 mat-dialog-title>Gracias!</h1>
+  <div mat-dialog-content>
+    <p>La cotización ha sido actualizada.</p>
+    <!--<mat-form-field>
+      <input matInput [(ngModel)]="data.animal" style="display:none;">
+    </mat-form-field>-->
+  </div>
+  <div mat-dialog-actions style="text-align:center;">
+    <!--<button mat-button (click)="onNoClick()">Ir a cotizaciones</button>
+    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>-->
+    <br />
+    <br />
+    <br />
+    <span class="input-group-btn " style="padding: 40px 0 0 135px;">
+      <button style="background-color: #A5000D;
+    color: #fff;
+    border-color: #A5000D;" class="pull-center btn btn-default btn-default-rojo" (click)="onNoClick()">
+        Ir a Cotizaciones
+      </button>
+    </span>
+  </div>
+</div>

@@ -1,0 +1,459 @@
+<div class="content-wrapper">
+  <br class="visible-xs" />
+  <br class="visible-xs" />
+  <form #sucurusalform="ngForm">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title negritas">Sucursal</h3>
+              <div class="input-group col-xs-12" style="">
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Canal" name="Canal" [(ngModel)]="Cat_Suc.id_Canal" [disabled]="Cat_Suc.id > 0 || !permisos_edicion" #tipoproducto="ngModel" placeholder="Canal" (change)="Cat_Suc.id_Cuenta = -1; getCat_Cuentas();" required>
+                        <mat-option *ngFor="let canal of canalesCo" [value]="canal.id">
+                          {{canal.canal_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-3" style="padding-right:0;">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="Cuenta_" name="Cuenta_" [(ngModel)]="Cat_Suc.id_Cuenta" [disabled]="Cat_Suc.id > 0 || !permisos_edicion" #Cuenta_="ngModel" placeholder="Cuenta" required>
+                        <mat-option *ngFor="let cuenta of Cuentas" [value]="cuenta.id">
+                          {{cuenta.cuenta_es}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form-group col-md-4" style="">
+                  <mat-form-field class="example-full-width">
+                    <input [disabled]="!permisos_edicion" matInput #_nombre="ngModel" name="_nombre" id="_nombre" [(ngModel)]="Cat_Suc.sucursal" placeholder="Nombre sucursal" value="" required>
+                  </mat-form-field>
+                </div>
+                <div class="col-xs-12" style="padding:0;">
+                  <span class="form-group col-md-3">
+                  </span>
+                </div>
+              </div>
+              
+              <div class="input-group col-xs-12" style="">
+                <!--<label>Comisión vendedores: </label>
+                <div class="form-group col-md-3" style="">
+                  <mat-form-field>
+                    <input matInput type="number" #_comision="ngModel" [disabled]="deshabilita" name="_comision" id="_comision" [(ngModel)]="Cat_Suc.margen_vendedores" placeholder="" value="" required>
+                    <span matSuffix>%</span>
+                  </mat-form-field>
+                </div>-->
+                <div class="form-group col-md-2" style="">
+                  <div class="input-group">
+                    <mat-form-field>
+                      <mat-select id="tipo_suc_" name="tipo_suc_" [(ngModel)]="Cat_Suc.tipo" [disabled]="!permisos_edicion" #tipo_suc_="ngModel"
+                                  placeholder="Tipo de sucursal" required>
+                        <mat-option *ngFor="let item of lista_tipos" [value]="item.tipo">
+                          {{item.tipo}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Dirección de Sucursal</h3>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput maxlength="5" [textMask]="{mask: maskcp, guide: false}" name="CP_ins" id="CP_ins" (keydown)="getDireccionPorCP(0);" [(ngModel)]="dir_suc.cp" placeholder="Código Postal" value="" required>
+                        <mat-hint *ngIf="dir_suc.cp" align="right">{{dir_suc.cp.length}} / 5</mat-hint>
+                      </mat-form-field>
+
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="Id_Estado_ins" name="Id_Estado_ins" [(ngModel)]="dir_suc.id_estado" #tipoproducto="ngModel" placeholder="Estado" required>
+                            <mat-option *ngFor="let estado of estados_ins" [value]="estado.id">
+                              {{estado.desc_estado}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_suc.id_estado == null || dir_suc.id_estado ==0) " class="alert alert-danger">
+                          Estado Requerido.
+                        </div>-->
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="Id_Dele_ins" name="Id_Dele_ins" [(ngModel)]="dir_suc.id_municipio" #tipoproducto="ngModel" placeholder="Delegación" required>
+                            <mat-option *ngFor="let mun of Municipios_Ins" [value]="mun.id_municipio">
+                              {{mun.municipio}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_suc.id_municipio == null || dir_suc.id_municipio ==0) " class="alert alert-danger">
+                          Delegación Requerida.
+                        </div>-->
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="Id_Localidad_ins" name="Id_Localidad_ins" [(ngModel)]="dir_suc.id_localidad" #tipoproducto="ngModel" placeholder="Localidad" required>
+                            <mat-option *ngFor="let local_ins of Localidades_Ins" [value]="local_ins.id_localidad">
+                              {{local_ins.localidad}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <!--<div *ngIf="(dir_suc.id_localidad == null || dir_suc.id_localidad ==0) " class="alert alert-danger">
+                          Delegación Requerida.
+                        </div>-->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-2" style="">
+                      <mat-form-field class="example-full-width" style="">
+                        <mat-select id="_prefijo_ins" name="_prefijo_ins" #_prefijo_ins="ngModel" [(ngModel)]="dir_suc.id_prefijo_calle" placeholder="Prefijo Calle" required>
+                          <mat-option *ngFor="let prefijo of prefijos_calle" [value]="prefijo.id">
+                            {{prefijo.prefijo}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir_suc.id_prefijo_calle == null || dir_suc.id_prefijo_calle == 0) " class="alert alert-danger">
+                        Prefijo requerido
+                      </div>-->
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput (ngModelChange)="validar_prefijos(dir_suc.calle_numero);" name="Calle_ins" id="Calle_ins" [(ngModel)]="dir_suc.calle_numero" placeholder="Calle" value="" required>
+                      </mat-form-field>
+                      <!--<div *ngIf="(dir_suc.calle_numero == null || dir_suc.calle_numero == '') " class="alert alert-danger">
+                        Calle Inst. Requerida.
+                      </div>-->
+                      <div *ngIf="!Calle_ins_valido" class="alert alert-danger">
+                        Capture la calle sin prefijos.
+                      </div>
+                    </div>
+                    <div class="form-group col-md-2" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="Ext_ins" id="Ext_ins" [(ngModel)]="dir_suc.numExt" placeholder="Núm Ext." value="" required>
+                      </mat-form-field>
+                      <!--<div *ngIf=" (dir_suc.numExt == null || dir_suc.numExt == '') " class="alert alert-danger">
+                        Núm Ext. Requerido.
+                      </div>-->
+                    </div>
+                    <div class="form-group col-md-2" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="Int_ins" id="Int_ins" [(ngModel)]="dir_suc.numInt" placeholder="Núm Int." value="">
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="telefono_ins" id="telefono_ins" #telefono_ins="ngModel" [(ngModel)]="dir_suc.telefono"
+                               placeholder="Teléfono Fijo" value="" [textMask]="{mask: mask, guide: false}" PhoneValidator required>
+                      </mat-form-field>
+                      <div *ngIf="telefono_ins.errors?.Vacio && telefono_ins.touched" class="alert alert-danger">
+                        Teléfono Requerido.
+                      </div>
+                      <div *ngIf="telefono_ins.errors?.LongitudMinima && telefono_ins.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                    <!--<div class="form-group col-md-3" style="">
+              <mat-form-field class="example-full-width">
+                <input matInput name="_nombre_ins" id="_nombre_ins" #_nombre_ins="ngModel" [(ngModel)]="dir_suc.nombrecontacto" placeholder="Nombre Contacto" value="" required>
+              </mat-form-field>
+              <div *ngIf="(dir_suc.nombrecontacto == null || dir_suc.nombrecontacto == '') " class="alert alert-danger">
+                Teléfono Requerido.
+              </div>
+            </div>-->
+                  </div>
+                  <!--<div class="input-group col-xs-12">
+
+            <div class="form-group col-md-3" style="">
+              <mat-form-field class="example-full-width">
+                <input matInput name="telefono_movil_ins" id="telefono_movil_ins" [textMask]="{mask: mask, guide: false}" [(ngModel)]="dir_suc.telefono_movil" placeholder="Télefono Cel." value="" required>
+              </mat-form-field>
+              <div *ngIf="(dir_suc.telefono_movil == null || dir_suc.telefono_movil == '') && ValActiva;" class="alert alert-danger">
+                Celular Requerido.
+              </div>
+            </div>
+
+
+          </div>-->
+                </div>
+              </div>
+            </div>
+
+            <!--IMAGENES-->
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title negritas">Imagenes</h3>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="box-body">
+                <div class="imageGalery col-md-12">
+                  <ul>
+                    <span (click)="openImage(Cat_Suc.url_logo, Cat_Suc.id)">
+                      <img [attr.src]="Cat_Suc.url_logo" ng-src="Cat_Suc.url_logo" class="image-product" [attr.id]="Cat_Suc.id" style="width:30%" />
+                    </span>
+                  </ul>
+                </div>
+                <mat-divider class='col-md-12'></mat-divider><br>
+                <div class="form-group col-md-12 upload-image-form">
+                  <input class="pull-center btn btn-default btn-default"
+                         style="float:left; padding-left: 0px; padding-right: 5px;"
+                         #fileInput multiple
+                         type="file"
+                         accept="image/*"
+                         (change)="prepareImages($event)" />
+
+                  <button id="btncomp"
+                          name="btncomp"
+                          style="float:left;"
+                          type="submit"
+                          class="pull-center btn btn-default btn-default-rojo"
+                          (click)="addImages()"
+                          [disabled]="newImages.length == 0">
+                    Subir Imagenes
+                    <i class="fa fa-upload" aria-hidden="true" style="font-size: 21px;"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div><!-- FIN IMAGENES -->
+            <!--facturas -->
+
+
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <div class="box-header with-border">
+                    <h3 class="box-title negritas">Datos de Facturación</h3>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_RFC_fact" id="_RFC_fact" #_RFC_fact="ngModel" [(ngModel)]="DatoFis_Suc.rfc" placeholder="RFC" value="" required>
+                      </mat-form-field>
+
+
+                    </div>
+
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_nombre_fact" id="_nombre_fact" #_nombre_fact="ngModel" [(ngModel)]="DatoFis_Suc.nombre_fact" placeholder="Nombre Comercial" value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_RS_fact" id="_RS_fact" #_RS_fact="ngModel" [(ngModel)]="DatoFis_Suc.razon_social" placeholder="Nombre o Razón Social" value="" required>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput #_email_fact="ngModel" name="_email_fact" id="_email_fact" [(ngModel)]="DatoFis_Suc.email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" placeholder="Correo Electrónico" value="" required>
+                      </mat-form-field>
+
+                    </div>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput maxlength="5" name="_CP_fact" id="_CP_fact" #_CP_fact="ngModel" [(ngModel)]="DatoFis_Suc.cp" placeholder="CP" value="" required>
+                        <mat-hint align="end" *ngIf="DatoFis_Suc.cp">{{DatoFis_Suc.cp.length }} / 5</mat-hint>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="_Id_Estado_fact" (change)="getCat_municipios_fac();" #_Id_Estado_fact="ngModel" name="_Id_Estado_fact" [(ngModel)]="DatoFis_Suc.id_estado" placeholder="Estado" required>
+                            <mat-option *ngFor="let estado of estados" [value]="estado.id">
+                              {{estado.desc_estado}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-append">
+                        <mat-form-field class="full-width">
+                          <mat-select id="_Id_Dele_fact" name="_Id_Dele_fact" [(ngModel)]="DatoFis_Suc.id_municipio" #_Id_Dele_fact="ngModel" placeholder="Delegación" required>
+                            <mat-option *ngFor="let mun of Municipios_fac" [value]="mun.id">
+                              {{mun.municipio}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_Colonia_fact" #_Colonia_fact="ngModel" id="_Colonia_fact" [(ngModel)]="DatoFis_Suc.colonia" placeholder="Colonia" value="" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_calle_fact" id="_calle_fact" #_calle_fact="ngModel" [(ngModel)]="DatoFis_Suc.calle_numero" placeholder="Calle" value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-2" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_Ext_fact" id="_Ext_fact" #_Ext_fact="ngModel" [(ngModel)]="DatoFis_Suc.Ext_fact" placeholder="Núm Ext." value="" required>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="form-group col-md-2" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_Int_fact" id="_Int_fact" [(ngModel)]="DatoFis_Suc.Int_fact" placeholder="Núm. int." value="" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-3" style="">
+                      <mat-form-field class="example-full-width">
+                        <input matInput name="_telefono_fact" id="_telefono_fact" #_telefono_fact="ngModel" [(ngModel)]="DatoFis_Suc.telefono_fact"
+                               placeholder="Télefono" value="" [textMask]="{mask: mask, guide: false}" PhoneValidator required>
+                      </mat-form-field>
+                      <div *ngIf="_telefono_fact.errors?.Vacio && _telefono_fact.touched" class="alert alert-danger">
+                        Teléfono Requerido.
+                      </div>
+                      <div *ngIf="_telefono_fact.errors?.LongitudMinima && _telefono_fact.touched" class="alert alert-danger">
+                        Formato inválido
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="box-body">
+              <div class="example-container mat-elevation-z2">
+                <div class="input-group col-xs-12">
+                  <br />
+                  <div class="form-group col-md-4">
+                    <mat-form-field class="full-width">
+
+                      <mat-select [disabled]="false" (change)="filtrar_cc(true);" placeholder="Filtrar por Línea" name="line-filter" id="line-filter" #_linea_filtro_="ngModel" [(ngModel)]="_linea_filtro">
+                        <mat-option *ngFor="let line of this.lines" [value]="line.id">
+                          {{ line.descripcion }}
+                        </mat-option>
+                      </mat-select>
+
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <mat-form-field class="full-width">
+                      <mat-select [disabled]="false" (change)="filtrar_cc(false);" placeholder="Filtrar por SubLínea" name="_sublinea_filtro" id="_sublinea_filtro" #_sublinea_filtro_="ngModel" [(ngModel)]="_sublinea_filtro" required>
+                        <mat-option *ngFor="let sublinea of sublineas_aplicables" [value]="sublinea.id">
+                          {{ sublinea.descripcion}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <mat-form-field class="full-width" style="max-width:80px">
+                      <input matInput type="number" id="_margen_adic_gral" name="_margen_adic_gral" [(ngModel)]="margen_adic_gral" #_margen_adic_gral="ngModel" placeholder="% General">
+                      <span matSuffix>%&nbsp;</span>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <div style="float:left; padding-left:0px;">
+                      <button class="pull-center btn btn-default-rojo" (click)="aplicar_margen_gral();">Aplicar</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="example-container mat-elevation-z2">
+                  <div class="example-container mat-elevation-z2">
+                    <mat-table #table [dataSource]="dataSource_suc_part">
+                      <!-- Position Column -->
+                      <ng-container matColumnDef="linea">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> Línea </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit">{{element.linea}}</a>
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="sublinea">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> Sublínea </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <a style="cursor:pointer; color:inherit">{{element.sublinea}}</a>
+                        </mat-cell>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="displayedColumns_suc_part"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: displayedColumns_suc_part;" style="min-height:20px;"></mat-row>
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="margen_original">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;">Margen Base</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" style="text-align:center;">
+                          <p align="center">
+                            <input [disabled]="false" class="form-control" id="ccs_{{element.id}}" type="number" (blur)="set_nuevo_margen($event, row, i);" value="{{element.margen}}" style="width:35px; height: auto; font-size:13px;  padding: 1px 2px;">
+                          </p>
+                        </mat-cell>
+                      </ng-container>
+                      
+                    </mat-table>
+                  </div>
+                  <br />
+                  <div>
+                    <div style="float:right; width: 300px; padding-left:15px;">
+                      <mat-checkbox id="cc_validadas_" name="cc_validadas_"
+                                    #cc_validadas_="ngModel" [(ngModel)]="cc_validadas">
+                      Confirmar condiciones comerciales</mat-checkbox>
+                      </div>
+                      <br />
+                  </div>
+                  <!--<div style="float:right; width: 300px; padding-left:15px;">
+                    <mat-checkbox id="valida_cc" required name="valida_cc"
+                                  [(ngModel)]="cc_validadas"
+                                  #valida_cc="ngModel">
+                      Acepto condiciones comerciales
+                    </mat-checkbox>
+                  </div>-->
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group col-xs-12">
+              <div class="form-group col-md-12" style="">
+              </div>
+
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button type="submit" class="pull-center btn btn-default" (click)="this.gotosuc(1);" [disabled]="preventAbuse">
+                  {{ preventAbuse ? 'Limpiando...' : 'Cancelar' }}
+                </button>
+              </span>
+              <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                <button *ngIf="permisos_edicion" [disabled]="!cc_validadas" style="float:right;" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="GuardarEditarSucursal(sucurusalform.valid)">
+                  {{ preventAbuse ? 'Cargando...' : 'Guardar' }}
+                </button>
+              </span>
+            </div>
+
+            <!-- /.box -->
+          </div>
+          
+          <!-- /.col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </form>
+</div>

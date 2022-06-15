@@ -1,0 +1,174 @@
+<div class="content-wrapper">
+    <br class="visible-xs" />
+    <br class="visible-xs" />
+    
+      <section class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title negritas">Clientes</h3>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+                <div class="input-gro col-md-12" style="">
+                  <div class="form-group col-md-7" style="">
+                  </div>
+                  <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                    <button style="float:right; " ng-if="textoLibre =! ''" type="submit" class="pull-center btn btn-default btn-default-rojo" (click)="gotoedit(0)">Nuevo Cliente
+                    </button>
+                  </span>
+                  
+                </div>
+                <form #productosForm="ngForm">
+                  <div class="input-group col-xs-12">
+                    <div class="form-group col-md-12">
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Buscar por Nombre o Correo Electónico">
+                      </mat-form-field>
+                    </div>
+
+                   
+                    <span class="input-group-btn" style="padding:0px 5px 0px 5px;">
+                      <button type="submit" class="pull-center btn btn-default" (click)="productosForm.resetForm({}); getClientes(); clearFilters();">Limpiar
+                      </button>
+                    </span>
+                  </div>
+
+
+                  <div class="input-group col-xs-12" style="">
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Canal"
+                                      name="Canal"
+                                      [(ngModel)]="Canal"
+                                      #tipoproducto="ngModel"
+                                      placeholder="Canal"
+                                      (change)=" this.cuentafiltro = '';getCat_Cuentas(); getCat_Sucursales();selectCanal($event);">
+                            <mat-option *ngFor="let canal of canalesCo" value="{{canal.id}}">
+                              {{canal.canal_es}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Cuenta" name="Cuenta" [(ngModel)]="cuentafiltro" #Cuenta_="ngModel" placeholder="Cuenta" (selectionChange)="selectCuenta($event)" (change)="this.sucursalfiltro = ''; getCat_Sucursales();">
+                            <mat-option *ngFor="let cuenta of Cuentas" value="{{cuenta.id}}">
+                              {{cuenta.cuenta_es}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-right:0;">
+                      <div class="input-group">
+                        <mat-form-field>
+                          <mat-select id="Sucursal" name="Sucursal" [(ngModel)]="sucursalfiltro" #Sucursal_="ngModel" (selectionChange)="selectSucursal($event)" placeholder="Sucursal">
+                            <mat-option *ngFor="let suc of Sucursales" value="{{suc.id}}">
+                              {{suc.sucursal}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <br />
+  
+        
+  
+                <div class="col-xs-12" style="padding:0;">
+                  <span class="form-group col-md-3">
+                  </span>
+                </div>
+              </div>
+              <!-- /.box-header -->
+  
+  
+              <div class="box-body">
+                <div class="example-container mat-elevation-z2">
+                  <mat-table #table [dataSource]="dataSource" style="max-height:100%;">
+                    <ng-container *ngFor = "let column of displayedColumns; let i=index" >
+                      <ng-container matColumnDef="{{column}}">
+                        <mat-header-cell *matHeaderCellDef style="text-align:center;"> {{columNames[column]}} </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"  style="text-align:center;">
+                          <a (click)="gotoedit(element.id)" style="cursor:pointer; color:inherit">
+
+                            <ng-container *ngIf="column == 'id'; else regSLine">
+                              {{element.id}}
+                            </ng-container>
+
+                            <ng-container *ngIf="column == 'nombre'; else regSLine">
+                              {{element.nombre}} {{element.paterno}} {{element.materno}}
+                            </ng-container>
+
+                            <ng-container *ngIf="column == 'email'  else regSLine">
+                              {{element.email }}
+                            </ng-container>
+
+                            <ng-container *ngIf="column == 'telefono'  else regSLine">
+                              {{element.telefono }}
+                            </ng-container>
+
+                            <ng-container *ngIf="column == 'telefono_movil'  else regSLine">
+                              {{element.telefono_movil }}
+                            </ng-container>
+                            <ng-container *ngIf="column == 'canal'  else regSLine">
+
+                              {{element.canal}}
+
+                            </ng-container>
+                            <ng-container *ngIf="column == 'cuenta'  else regSLine">
+
+                              {{element.cuenta}}
+
+                            </ng-container>
+
+
+                            <ng-container *ngIf="column == 'sucursal'  else regSLine">
+
+                              {{element.sucursal}}
+
+                            </ng-container>
+
+
+
+                          </a>
+
+                          <ng-container *ngIf = "column == 'renovar'  else regSLine">
+                            <button class = "btn btn-renovar" (click) = "renovarVigencia(element.id)">Renovar</button>
+                          </ng-container>
+                        </mat-cell>
+                      </ng-container>
+                    </ng-container>
+                    
+  
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  
+                  </mat-table>
+  
+                  <mat-paginator #paginator
+                                 [pageSize]="10"
+                                 [pageSizeOptions]="[5, 10]">
+                  </mat-paginator>
+                </div>
+              </div>
+  
+  
+              <!-- /.box -->
+            </div>
+            <!-- /.col -->
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+    
+  </div>

@@ -1,0 +1,48 @@
+<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
+<div style="text-align:center;">
+  <h1 mat-dialog-title>Captura IBS</h1>
+  <div mat-dialog-content>
+    <!--<p>Orden de Venta IBS</p>-->
+    <div class="box-body">
+      <div class="example-container mat-elevation-z2">
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-3" style="">
+            <mat-form-field class="example-full-width">
+              <input matInput name="_IBS" id="_IBS" #_IBS="ngModel" [(ngModel)]="IBS" placeholder="Orden de Venta IBS" value="" required>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-body">
+      <div class="example-container mat-elevation-z2">
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-12" style="">
+            <label>
+              Envío de Documentación (Guías Mecánicas y Manual):
+            </label>
+          </div>
+        </div>
+        <div class="input-group col-xs-12">
+          <div class="form-group col-md-12" style="">
+            <mat-form-field class="full-width">
+              <input matInput [(ngModel)]="data.email" style="">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions style="text-align:center;">
+    <!--<button mat-button (click)="onNoClick()">Ir a cotizaciones</button>
+    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>-->
+
+    <span class="input-group-btn " style="padding: 10px 0 0 165px;">
+      <button style="background-color: #A5000D;
+    color: #fff;
+    border-color: #A5000D;" class="pull-center btn btn-default btn-default-rojo" (click)="onNoClick()">
+        Guardar
+      </button>
+    </span>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+p {
+  font-size:x-large;
+  text-align:center;
+}
+
+.box-title negritas {
+  color:red;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.input-group-btn {
+  position: relative;
+  font-size: 0;
+  white-space: nowrap;
+  padding: 0px 5px 0px 5px;
+}
+
+.btn-default {
+  padding-left: 50px;
+  padding-right: 50px;
+  font-weight: bold;
+  border-radius: 3px
+}
+
+.btn-default-rojo {
+  background-color: #A5000D;
+  color: #fff;
+  border-color: #A5000D;
+  border-radius:3px;
+}
+
+.btn-default-rojo:hover {
+  background-color: #A5000D;
+  color: #fff;
+  border-color: #A5000D;
+}
+
+.pull-right {
+  margin: 10px;
+}
