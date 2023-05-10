@@ -777,6 +777,7 @@ export class DatosService {
     return this.http.get(this.heroesUrl + url + parametros);
   }
 
+  
   ServicioPostGeneral_Remoto(url, parametros): Observable<any> {
     debugger;
     // console.log(parametros);
