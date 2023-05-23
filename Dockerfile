@@ -4,7 +4,7 @@ RUN mkdir -p /app
 RUN apt-get install python2.7
 WORKDIR /app
 COPY package.json /app
-RUN npm install
+RUN npm install --force
 COPY . /app
 RUN npm run build
 
